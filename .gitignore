@@ -1,0 +1,120 @@
+# Gaming Workforce Observatory - .gitignore
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Streamlit
+.streamlit/secrets.toml
+*.db
+.streamlit/config.toml
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Data files (garder les exemples, exclure données réelles)
+data/raw/*.csv
+data/processed/*.csv
+!data/sample/
+*.parquet
+*.json
+!**/sample*.json
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Secrets et configuration
+secrets.toml
+.env
+.env.local
+.env.production
+config/production.py
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+
+# Distribution
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Model files (trop volumineux pour Git)
+models/*.pkl
+models/*.joblib
+*.h5
+*.pb
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Documentation build
+docs/_build/
+site/
+
+# Cache
+.cache/
+.pytest_cache/
+
+# Docker
+.dockerignore
+
+# MacOS
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+.coverage
+.tox
+nosetests.xml
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json

@@ -1,0 +1,185 @@
+name: Security Scans
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 2 * * 1'  # Weekly Monday 2 AM
+
+jobs:
+  bandit-security-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install Bandit
+      run: pip install bandit[toml]
+    
+    - name: Run Bandit security scan
+      run: |
+        bandit -r src/ pages/ scripts/ -f json -o bandit-report.json
+        bandit -r src/ pages/ scripts/ -f txt
+    
+    - name: Upload Bandit results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: bandit-security-report
+        path: bandit-report.json
+
+  dependency-vulnerability-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install safety
+      run: pip install safety
+    
+    - name: Check dependencies for vulnerabilities
+      run: |
+        pip install -r requirements.txt
+        safety check --json --output safety-report.json
+        safety check
+    
+    - name: Upload safety results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: safety-vulnerability-report
+        path: safety-report.json
+
+  secrets-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Install GitLeaks
+      run: |
+        wget https://github.com/zricethezav/gitleaks/releases/download/v8.15.0/gitleaks_8.15.0_linux_x64.tar.gz
+        tar xzf gitleaks_8.15.0_linux_x64.tar.gz
+        sudo mv gitleaks /usr/local/bin/
+    
+    - name: Run GitLeaks scan
+      run: |
+        gitleaks detect --report-format json --report-path gitleaks-report.json --verbose
+    
+    - name: Upload GitLeaks results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: gitleaks-secrets-report
+        path: gitleaks-report.json
+
+  docker-security-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Build Docker image
+      run: docker build -t gaming-workforce:security-scan .
+    
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: 'gaming-workforce:security-scan'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+    
+    - name: Upload Trivy scan results
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  code-quality-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        pip install -r requirements-dev.txt
+    
+    - name: Run CodeQL analysis
+      uses: github/codeql-action/init@v2
+      with:
+        languages: python
+    
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v2
+    
+    - name: Perform CodeQL analysis
+      uses: github/codeql-action/analyze@v2
+
+  security-report:
+    needs: [bandit-security-scan, dependency-vulnerability-scan, secrets-scan, docker-security-scan]
+    if: always()
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Download all reports
+      uses: actions/download-artifact@v3
+    
+    - name: Generate security summary
+      run: |
+        echo "# 🔒 Security Scan Summary" > security-summary.md
+        echo "## 📊 Gaming Workforce Observatory Security Report" >> security-summary.md
+        echo "**Scan Date**: $(date)" >> security-summary.md
+        echo "" >> security-summary.md
+        
+        # Add results summary
+        if [ -f bandit-security-report/bandit-report.json ]; then
+          echo "### 🐍 Python Security (Bandit)" >> security-summary.md
+          echo "- Status: ✅ Completed" >> security-summary.md
+        fi
+        
+        if [ -f safety-vulnerability-report/safety-report.json ]; then
+          echo "### 📦 Dependency Vulnerabilities (Safety)" >> security-summary.md
+          echo "- Status: ✅ Completed" >> security-summary.md
+        fi
+        
+        if [ -f gitleaks-secrets-report/gitleaks-report.json ]; then
+          echo "### 🔑 Secrets Scan (GitLeaks)" >> security-summary.md
+          echo "- Status: ✅ Completed" >> security-summary.md
+        fi
+        
+        echo "" >> security-summary.md
+        echo "### 🎮 Gaming Industry Security Focus" >> security-summary.md
+        echo "- Employee data privacy compliance" >> security-summary.md
+        echo "- Gaming performance metrics protection" >> security-summary.md
+        echo "- Secure KPI calculation algorithms" >> security-summary.md
+        
+        cat security-summary.md
+    
+    - name: Upload security summary
+      uses: actions/upload-artifact@v3
+      with:
+        name: security-summary
+        path: security-summary.md

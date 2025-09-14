@@ -1,0 +1,168 @@
+version: '3.8'
+
+services:
+  gaming-workforce-dev:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: development
+    container_name: gaming-workforce-dev
+    ports:
+      - "8501:8501"
+      - "8502:8502"  # Additional port for debugging
+    volumes:
+      - ../:/app
+      - /app/venv  # Anonymous volume for venv
+      - gaming-workforce-data:/app/data
+    environment:
+      - STREAMLIT_SERVER_HEADLESS=true
+      - STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+      - STREAMLIT_SERVER_FILE_WATCHER_TYPE=poll
+      - STREAMLIT_SERVER_ENABLE_CORS=true
+      - PYTHONPATH=/app
+      - ENVIRONMENT=development
+      - LOG_LEVEL=DEBUG
+    stdin_open: true
+    tty: true
+    command: streamlit run app.py --server.address 0.0.0.0 --server.fileWatcherType poll
+    depends_on:
+      - gaming-db-dev
+      - redis-cache
+    networks:
+      - gaming-network
+
+  gaming-db-dev:
+    image: postgres:15-alpine
+    container_name: gaming-db-dev
+    environment:
+      - POSTGRES_DB=gaming_workforce_dev
+      - POSTGRES_USER=gaming_dev
+      - POSTGRES_PASSWORD=dev_password_123
+      - POSTGRES_INITDB_ARGS="--encoding=UTF8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - gaming-db-data:/var/lib/postgresql/data
+      - ../scripts/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    networks:
+      - gaming-network
+
+  redis-cache:
+    image: redis:7-alpine
+    container_name: gaming-cache-dev
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - gaming-cache-data:/data
+    networks:
+      - gaming-network
+
+  gaming-monitoring:
+    image: prom/prometheus:latest
+    container_name: gaming-monitoring-dev
+    ports:
+      - "9090:9090"
+    volumes:
+      - ../monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - gaming-monitoring-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+    networks:
+      - gaming-network
+
+  gaming-grafana:
+    image: grafana/grafana:latest
+    container_name: gaming-grafana-dev
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=gaming_admin_123
+    volumes:
+      - gaming-grafana-data:/var/lib/grafana
+      - ../monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+    networks:
+      - gaming-network
+
+  # Gaming Industry Data Simulator
+  data-generator:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.data-generator
+    container_name: gaming-data-generator
+    volumes:
+      - gaming-workforce-data:/app/data
+    environment:
+      - GENERATE_EMPLOYEES=200
+      - GAMING_DEPARTMENTS=6
+      - SIMULATION_MONTHS=18
+    command: python scripts/generate_sample_data.py --continuous
+    depends_on:
+      - gaming-db-dev
+    networks:
+      - gaming-network
+
+volumes:
+  gaming-workforce-data:
+    driver: local
+  gaming-db-data:
+    driver: local  
+  gaming-cache-data:
+    driver: local
+  gaming-monitoring-data:
+    driver: local
+  gaming-grafana-data:
+    driver: local
+
+networks:
+  gaming-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# Development utilities
+x-gaming-dev-utils: &gaming-dev-utils
+  gaming-jupyter:
+    image: jupyter/datascience-notebook:latest
+    container_name: gaming-jupyter-dev
+    ports:
+      - "8888:8888"
+    volumes:
+      - ../:/home/jovyan/gaming-workforce
+      - gaming-workforce-data:/home/jovyan/data
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - JUPYTER_TOKEN=gaming_dev_token_123
+    networks:
+      - gaming-network
+
+# Override for specific development scenarios
+services:
+  # Uncomment for Jupyter development
+  # gaming-jupyter:
+  #   <<: *gaming-dev-utils
+
+# Health checks
+healthcheck:
+  gaming-workforce-dev: &app-healthcheck
+    test: ["CMD", "curl", "-f", "http://localhost:8501/healthz"]
+    interval: 30s
+    timeout: 10s
+    retries: 3
+    start_period: 40s
+
+  gaming-db-dev:
+    test: ["CMD-SHELL", "pg_isready -U gaming_dev -d gaming_workforce_dev"]
+    interval: 10s
+    timeout: 5s
+    retries: 5
+
+  redis-cache:
+    test: ["CMD", "redis-cli", "ping"]
+    interval: 10s
+    timeout: 3s
+    retries: 3

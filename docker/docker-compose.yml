@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  gaming-workforce-app:
+    build: .
+    ports:
+      - "8501:8501"
+    environment:
+      - ENVIRONMENT=development
+    volumes:
+      - ./data:/app/data
+      - ./.streamlit:/app/.streamlit
+    restart: unless-stopped
+
+  # Optionnel: Base de données PostgreSQL pour production
+  # postgres:
+  #   image: postgres:15
+  #   environment:
+  #     POSTGRES_DB: workforce_db
+  #     POSTGRES_USER: workforce_user
+  #     POSTGRES_PASSWORD: workforce_pass
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+
+# volumes:
+#   postgres_data:

@@ -1,0 +1,293 @@
+# Gaming Workforce Observatory - KPI Definitions
+# Defines all Key Performance Indicators for gaming industry workforce analytics
+
+gaming_kpis:
+  
+  # Sprint & Development Velocity KPIs
+  sprint_velocity:
+    name: "Sprint Velocity"
+    description: "Average story points completed per sprint by development teams"
+    category: "development"
+    unit: "story_points"
+    target_value: 40
+    calculation: "average"
+    departments: ["Programming", "Game Design", "QA"]
+    frequency: "weekly"
+    gaming_context: "Agile development velocity in game projects"
+    
+  feature_delivery_rate:
+    name: "Feature Delivery Rate"
+    description: "Number of features delivered per milestone"
+    category: "development"
+    unit: "features"
+    target_value: 12
+    calculation: "sum"
+    departments: ["Programming", "Game Design", "Art"]
+    frequency: "monthly"
+    gaming_context: "Game feature completion tracking"
+
+  # Quality & Bug Management KPIs
+  bug_fix_rate:
+    name: "Bug Fix Rate"
+    description: "Percentage of bugs resolved within sprint cycle"
+    category: "quality"
+    unit: "percentage"
+    target_value: 85
+    calculation: "percentage"
+    departments: ["QA", "Programming"]
+    frequency: "weekly"
+    gaming_context: "Game stability and quality assurance"
+    
+  bug_discovery_rate:
+    name: "Bug Discovery Rate" 
+    description: "Number of bugs found per testing cycle"
+    category: "quality"
+    unit: "count"
+    target_value: null
+    calculation: "count"
+    departments: ["QA"]
+    frequency: "daily"
+    gaming_context: "QA effectiveness in game testing"
+    
+  critical_bug_resolution_time:
+    name: "Critical Bug Resolution Time"
+    description: "Average time to resolve critical/blocking bugs"
+    category: "quality"
+    unit: "hours"
+    target_value: 24
+    calculation: "average"
+    departments: ["Programming", "QA"]
+    frequency: "daily"
+    gaming_context: "Game-breaking bug response time"
+
+  # Employee Performance & Satisfaction KPIs
+  employee_satisfaction:
+    name: "Employee Satisfaction Score"
+    description: "Gaming industry adjusted satisfaction rating"
+    category: "satisfaction"
+    unit: "score_10"
+    target_value: 7.5
+    calculation: "average"
+    departments: "all"
+    frequency: "monthly"
+    gaming_context: "Gaming work culture satisfaction"
+    
+  performance_score:
+    name: "Performance Score"
+    description: "Individual performance rating in gaming context"
+    category: "performance"
+    unit: "score_5"
+    target_value: 4.0
+    calculation: "average"
+    departments: "all"
+    frequency: "quarterly"
+    gaming_context: "Gaming role-specific performance"
+    
+  innovation_index:
+    name: "Innovation Index"
+    description: "Creative contributions and new ideas generated"
+    category: "innovation"
+    unit: "score_100"
+    target_value: 75
+    calculation: "weighted_average"
+    departments: ["Game Design", "Art", "Programming"]
+    frequency: "monthly"
+    gaming_context: "Gaming creativity and innovation tracking"
+
+  # Team Collaboration & Synergy KPIs
+  team_synergy_score:
+    name: "Team Synergy Score"
+    description: "Cross-functional collaboration effectiveness"
+    category: "collaboration"
+    unit: "score_10"
+    target_value: 8.0
+    calculation: "average"
+    departments: "all"
+    frequency: "monthly"
+    gaming_context: "Gaming team interdisciplinary collaboration"
+    
+  code_review_efficiency:
+    name: "Code Review Efficiency"
+    description: "Quality and speed of code reviews"
+    category: "collaboration"
+    unit: "score_5"
+    target_value: 4.2
+    calculation: "average"
+    departments: ["Programming"]
+    frequency: "weekly"
+    gaming_context: "Gaming code quality and knowledge sharing"
+    
+  cross_department_projects:
+    name: "Cross-Department Projects"
+    description: "Number of collaborative cross-team initiatives"
+    category: "collaboration"
+    unit: "count"
+    target_value: 3
+    calculation: "count"
+    departments: "all"
+    frequency: "quarterly"
+    gaming_context: "Gaming interdisciplinary project work"
+
+  # Retention & Career Development KPIs
+  retention_rate:
+    name: "Retention Rate"
+    description: "Gaming industry employee retention percentage"
+    category: "retention"
+    unit: "percentage"
+    target_value: 85
+    calculation: "percentage"
+    departments: "all"
+    frequency: "quarterly"
+    gaming_context: "Gaming industry talent retention"
+    
+  promotion_rate:
+    name: "Promotion Rate"
+    description: "Internal career advancement rate"
+    category: "career"
+    unit: "percentage"
+    target_value: 15
+    calculation: "percentage"
+    departments: "all"
+    frequency: "yearly"
+    gaming_context: "Gaming career progression tracking"
+    
+  skill_development_hours:
+    name: "Skill Development Hours"
+    description: "Training and upskilling time per employee"
+    category: "development"
+    unit: "hours"
+    target_value: 40
+    calculation: "average"
+    departments: "all"
+    frequency: "quarterly"
+    gaming_context: "Gaming skills and technology learning"
+
+  # Gaming-Specific KPIs
+  crunch_impact_score:
+    name: "Crunch Impact Score"
+    description: "Overtime impact on team productivity and wellbeing"
+    category: "wellbeing"
+    unit: "score_10"
+    target_value: 3.0  # Lower is better
+    calculation: "weighted_average"
+    departments: "all"
+    frequency: "weekly"
+    gaming_context: "Gaming crunch period management"
+    
+  game_launch_readiness:
+    name: "Game Launch Readiness"
+    description: "Team preparedness for game launch milestones"
+    category: "delivery"
+    unit: "percentage"
+    target_value: 90
+    calculation: "percentage"
+    departments: ["Programming", "QA", "Game Design"]
+    frequency: "milestone"
+    gaming_context: "Game delivery and launch preparation"
+    
+  player_feedback_integration:
+    name: "Player Feedback Integration Rate"
+    description: "Rate of incorporating player feedback into development"
+    category: "user_focus"
+    unit: "percentage"
+    target_value: 70
+    calculation: "percentage"
+    departments: ["Game Design", "Programming", "QA"]
+    frequency: "monthly"
+    gaming_context: "Gaming user experience improvement"
+
+  # Advanced Analytics KPIs
+  burnout_risk_score:
+    name: "Burnout Risk Score"
+    description: "ML-calculated burnout probability"
+    category: "wellbeing"
+    unit: "probability"
+    target_value: 0.3  # Lower is better
+    calculation: "ml_prediction"
+    departments: "all"
+    frequency: "weekly"
+    gaming_context: "Gaming work-life balance prediction"
+    
+  flight_risk_score:
+    name: "Flight Risk Score"
+    description: "Employee turnover probability"
+    category: "retention"
+    unit: "probability"
+    target_value: 0.2  # Lower is better
+    calculation: "ml_prediction"
+    departments: "all"
+    frequency: "monthly"
+    gaming_context: "Gaming talent retention prediction"
+
+# Gaming Industry Benchmarks
+industry_benchmarks:
+  game_development_phases:
+    pre_production:
+      velocity_factor: 0.7
+      quality_factor: 0.6
+      satisfaction_target: 8.0
+    production:
+      velocity_factor: 1.0
+      quality_factor: 0.9
+      satisfaction_target: 7.0
+    alpha:
+      velocity_factor: 1.2
+      quality_factor: 1.0
+      satisfaction_target: 6.5
+    beta:
+      velocity_factor: 0.9
+      quality_factor: 1.2
+      satisfaction_target: 6.8
+    live_ops:
+      velocity_factor: 0.8
+      quality_factor: 1.1
+      satisfaction_target: 7.5
+
+  department_weights:
+    Programming: 1.2  # Higher impact on technical KPIs
+    Game Design: 1.1  # Higher impact on creative KPIs
+    Art: 1.0
+    QA: 1.3  # Higher impact on quality KPIs
+    Marketing: 0.8
+    Management: 1.0
+
+  studio_size_modifiers:
+    indie: # 1-20 employees
+      satisfaction_bonus: 0.5
+      innovation_bonus: 0.3
+      velocity_modifier: 1.1
+    mid_size: # 21-100 employees  
+      satisfaction_bonus: 0.2
+      innovation_bonus: 0.1
+      velocity_modifier: 1.0
+    large: # 100+ employees
+      satisfaction_bonus: 0.0
+      innovation_bonus: -0.1
+      velocity_modifier: 0.9
+
+# KPI Calculation Formulas
+calculation_formulas:
+  sprint_velocity: "SUM(story_points_completed) / COUNT(sprints)"
+  bug_fix_rate: "(bugs_resolved / bugs_total) * 100"
+  satisfaction_weighted: "SUM(satisfaction * department_weight) / SUM(department_weight)"
+  innovation_composite: "(creative_contributions * 0.4) + (patents * 0.3) + (process_improvements * 0.3)"
+  crunch_impact: "(overtime_hours / regular_hours) * satisfaction_impact_factor"
+  burnout_risk_ml: "machine_learning_model(velocity, satisfaction, overtime, performance)"
+
+# Alert Thresholds
+alert_thresholds:
+  critical: # Red alerts
+    satisfaction: 6.0
+    burnout_risk: 0.7
+    bug_fix_rate: 70
+    retention_rate: 75
+  warning: # Yellow alerts  
+    satisfaction: 7.0
+    burnout_risk: 0.5
+    bug_fix_rate: 80
+    retention_rate: 80
+  good: # Green status
+    satisfaction: 8.0
+    burnout_risk: 0.3
+    bug_fix_rate: 90
+    retention_rate: 90

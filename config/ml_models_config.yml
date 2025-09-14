@@ -1,0 +1,112 @@
+# Gaming Workforce Observatory - ML Models Configuration
+# Advanced machine learning configuration for gaming workforce analytics
+
+ml_models:
+
+  # Turnover Prediction Model
+  turnover_prediction:
+    model_name: "GamingTurnoverPredictor"
+    algorithm: "RandomForestClassifier"
+    version: "1.2.0"
+    accuracy_target: 0.85
+    current_accuracy: 0.82
+    
+    features:
+      numerical:
+        - salary
+        - satisfaction_score
+        - performance_score
+        - years_experience
+        - sprint_velocity
+        - bug_fix_rate
+        - crunch_hours_last_month
+        - team_collaboration_score
+        - innovation_index
+      categorical:
+        - department
+        - level
+        - specialization
+        - game_development_phase
+      
+    hyperparameters:
+      n_estimators: 100
+      max_depth: 10
+      min_samples_split: 5
+      min_samples_leaf: 2
+      random_state: 42
+      class_weight: "balanced"
+    
+    gaming_specific:
+      crunch_weight: 2.0  # Double weight for crunch impact
+      satisfaction_threshold: 6.5  # Gaming industry satisfaction floor
+      department_weights:
+        Programming: 1.2
+        Game Design: 1.1
+        QA: 1.3
+        Art: 1.0
+        Marketing: 0.9
+
+  # Performance Clustering
+  performance_clustering:
+    model_name: "GamingPerformanceCluster"
+    algorithm: "KMeans"
+    version: "1.0.0"
+    n_clusters: 5
+    
+    features:
+      - performance_score
+      - sprint_velocity
+      - innovation_index
+      - team_collaboration_score
+      - skill_development_hours
+    
+    hyperparameters:
+      n_clusters: 5
+      init: "k-means++"
+      random_state: 42
+
+  # Burnout Risk Prediction
+  burnout_prediction:
+    model_name: "GamingBurnoutRiskModel"
+    algorithm: "GradientBoostingClassifier"
+    version: "1.1.0"
+    accuracy_target: 0.80
+    
+    features:
+      - crunch_hours_last_month
+      - satisfaction_score
+      - sprint_velocity_trend
+      - work_life_balance_score
+    
+    gaming_risk_factors:
+      crunch_periods:
+        weight: 3.0
+        threshold_hours: 60
+      project_phases:
+        alpha: 1.5
+        beta: 1.3
+        live_ops: 0.7
+
+# Training Pipeline
+training_pipeline:
+  data_sources:
+    primary: "employee_performance_data"
+    external: ["gaming_industry_benchmarks", "salary_surveys"]
+  
+  preprocessing:
+    scaling: "StandardScaler"
+    encoding: "OneHotEncoder"
+    missing_values: "iterative_imputer"
+  
+  validation:
+    cross_validation: 5
+    gaming_stratification: "department"
+
+# Model Monitoring
+monitoring:
+  performance_metrics: ["accuracy", "precision", "recall", "f1_score"]
+  drift_detection:
+    threshold: 0.05
+  retraining_triggers:
+    accuracy_drop: 0.05
+    quarterly_schedule: true

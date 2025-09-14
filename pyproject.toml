@@ -1,0 +1,109 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gaming-workforce-observatory"
+version = "1.0.0"
+description = "Gaming industry workforce analytics dashboard"
+readme = "README.md"
+authors = [
+    {name = "Rémi Chenouri", email = "remi.chenouri@example.com"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "streamlit>=1.28.0",
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    "plotly>=5.15.0",
+    "scikit-learn>=1.3.0",
+    "python-dotenv>=1.0.0",
+    "psutil>=5.9.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.7.0",
+    "flake8>=6.0.0",
+    "isort>=5.12.0",
+    "mypy>=1.5.1",
+    "pre-commit>=3.3.3",
+]
+docs = [
+    "sphinx>=7.1.2",
+    "sphinx-rtd-theme>=1.3.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/remichenouri/gaming-workforce-observatory"
+"Bug Tracker" = "https://github.com/remichenouri/gaming-workforce-observatory/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*", "pages*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["src", "pages"]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[tool.coverage.run]
+source = ["src"]
+omit = [
+    "*/tests/*",
+    "*/venv/*",
+    "*/__pycache__/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+]

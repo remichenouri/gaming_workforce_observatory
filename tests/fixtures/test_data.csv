@@ -1,0 +1,16 @@
+employee_id,name,department,level,salary,satisfaction_score,performance_score,years_experience,hire_date,last_promotion,sprint_velocity,bug_fix_rate,innovation_index,burnout_risk
+1,Alice Johnson,Programming,Senior,95000,8.2,4.5,6,2019-03-15,2022-01-10,42,88,85,0.2
+2,Bob Chen,Game Design,Lead,110000,7.8,4.8,8,2017-08-22,2021-06-15,38,0,92,0.3
+3,Carol Davis,Art,Mid,65000,9.1,4.2,4,2020-11-03,2023-02-28,0,0,78,0.1
+4,David Wilson,QA,Senior,82000,6.5,3.8,7,2018-05-17,2021-11-20,0,92,65,0.6
+5,Emma Rodriguez,Marketing,Mid,58000,8.7,4.1,3,2021-09-14,2024-01-05,0,0,71,0.2
+6,Frank Thompson,Management,Principal,145000,7.3,4.6,12,2015-01-20,2020-07-10,0,0,88,0.4
+7,Grace Kim,Programming,Junior,52000,8.9,3.9,2,2023-02-01,,35,85,82,0.1
+8,Henry Brown,Game Design,Mid,72000,7.6,4.3,5,2019-10-12,2022-08-15,39,0,74,0.3
+9,Ivy Martinez,Art,Senior,85000,8.4,4.7,9,2016-12-05,2020-03-22,0,0,89,0.2
+10,Jack Taylor,QA,Lead,98000,6.8,4.0,10,2016-07-18,2019-11-30,0,90,70,0.5
+11,Kate Wilson,Programming,Mid,78000,8.1,4.1,4,2020-06-10,2023-03-15,41,87,80,0.25
+12,Liam Foster,Art,Junior,48000,7.9,3.7,1,2024-01-15,,0,0,75,0.15
+13,Maya Patel,QA,Mid,68000,8.6,4.4,5,2019-09-20,2022-11-05,0,89,77,0.2
+14,Noah Clark,Game Design,Senior,88000,7.4,4.2,7,2018-02-28,2021-09-12,36,0,86,0.35
+15,Olivia Lee,Marketing,Senior,75000,8.3,4.5,6,2019-07-03,2022-04-18,0,0,73,0.18

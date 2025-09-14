@@ -1,0 +1,165 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+        - staging
+        - production
+
+jobs:
+  deploy-streamlit-cloud:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+    
+    - name: Run final tests
+      run: |
+        pytest tests/ --cov=src --cov-report=xml
+        
+    - name: Deploy to Streamlit Cloud
+      env:
+        STREAMLIT_CLOUD_TOKEN: ${{ secrets.STREAMLIT_CLOUD_TOKEN }}
+      run: |
+        echo "🚀 Deploying Gaming Workforce Observatory to Streamlit Cloud"
+        # Auto-deployment via GitHub integration
+        echo "✅ Deployment triggered successfully"
+
+  deploy-docker:
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+    
+    - name: Login to DockerHub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: ${{ secrets.DOCKERHUB_USERNAME }}/gaming-workforce-observatory
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+    
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        file: ./docker/Dockerfile
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+  deploy-aws-ecs:
+    if: github.event.inputs.environment == 'production'
+    runs-on: ubuntu-latest
+    environment: aws-production
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+    
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+    
+    - name: Build, tag, and push image to Amazon ECR
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: gaming-workforce-observatory
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+    
+    - name: Deploy to Amazon ECS
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: gaming-workforce-observatory
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        aws ecs update-service \
+          --cluster gaming-workforce-cluster \
+          --service gaming-workforce-service \
+          --force-new-deployment
+
+  deploy-heroku:
+    if: github.event.inputs.environment == 'staging'
+    runs-on: ubuntu-latest
+    environment: staging
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    
+    - name: Deploy to Heroku
+      uses: akhileshns/heroku-deploy@v3.12.12
+      with:
+        heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+        heroku_app_name: "gaming-workforce-staging"
+        heroku_email: "your-email@example.com"
+        dockerfile: "docker/Dockerfile"
+
+  notify-deployment:
+    needs: [deploy-streamlit-cloud, deploy-docker, deploy-aws-ecs, deploy-heroku]
+    if: always()
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Notify Slack
+      uses: 8398a7/action-slack@v3
+      if: always()
+      with:
+        status: ${{ job.status }}
+        channel: '#gaming-workforce-deployments'
+        webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        fields: repo,message,commit,author,action,eventName,ref,workflow
+        text: |
+          🎮 Gaming Workforce Observatory Deployment
+          Status: ${{ job.status }}
+          Environment: ${{ github.event.inputs.environment || 'production' }}
+          Commit: ${{ github.sha }}
