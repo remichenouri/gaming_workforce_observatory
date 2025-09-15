@@ -1,131 +1,252 @@
 """
-Gaming Workforce Observatory Enterprise - Configuration centralisée
-Optimisé pour entretien Ubisoft HR Data Analyst
+Gaming Workforce Observatory - Configuration Settings
+Enterprise Edition - Gaming Industry Specialized Configuration
 """
+
 import os
-from pathlib import Path
+from typing import Dict, Any
 
-# Application Configuration
-APP_NAME = "Gaming Workforce Observatory Enterprise"
-VERSION = "2.0.0"
-DEBUG = os.getenv("DEBUG", "False").lower() == "true"
-SECRET_KEY = os.getenv("SECRET_KEY", "gaming-workforce-secret-key-2025")
-
-# Paths
-BASE_DIR = Path(__file__).parent.parent
-DATA_DIR = BASE_DIR / "data"
-MODELS_DIR = BASE_DIR / "models"
-EXPORTS_DIR = BASE_DIR / "exports"
-
-# Database Configuration
-DATABASE_CONFIG = {
-    "host": os.getenv("DB_HOST", "localhost"),
-    "port": int(os.getenv("DB_PORT", 5432)),
-    "database": os.getenv("DB_NAME", "gaming_workforce"),
-    "user": os.getenv("DB_USER", "postgres"),
-    "password": os.getenv("DB_PASSWORD", "password"),
-    "sslmode": os.getenv("DB_SSLMODE", "prefer")
+# === GAMING THEME CONFIGURATION ===
+GAMING_THEME = {
+    # Primary Gaming Colors
+    'primary': '#0066CC',        # Professional Gaming Blue
+    'primary_dark': '#0052A3',   # Darker shade for hover states
+    'accent': '#FF6B35',         # Gaming Orange for highlights
+    'accent_light': '#FF8C61',   # Lighter accent for backgrounds
+    
+    # Status Colors
+    'success': '#28A745',        # Green for positive metrics
+    'warning': '#FFB020',        # Orange for attention needed
+    'danger': '#DC3545',         # Red for critical alerts
+    'info': '#17A2B8',          # Cyan for informational
+    
+    # Background Colors
+    'background': '#F8F9FA',     # Light professional background
+    'surface': '#FFFFFF',        # Card surfaces
+    'surface_dark': '#F1F3F4',   # Darker surface variant
+    
+    # Text Colors
+    'text': '#2C3E50',          # Primary text color
+    'text_light': '#6C757D',    # Secondary text color
+    'text_muted': '#ADB5BD',    # Muted text color
+    
+    # Gaming-Specific Colors
+    'gaming_blue': '#0066CC',    # Gaming industry standard blue
+    'gaming_orange': '#FF6B35',  # Gaming industry accent
+    'gaming_purple': '#9B59B6',  # Creative/innovation color
+    'gaming_green': '#28A745',   # Performance/success color
+    'gaming_red': '#E74C3C',     # Alert/critical color
 }
 
-# API Configuration
-API_CONFIG = {
-    "linkedin": {
-        "client_id": os.getenv("LINKEDIN_CLIENT_ID"),
-        "client_secret": os.getenv("LINKEDIN_CLIENT_SECRET"),
-        "base_url": "https://api.linkedin.com/v2",
-        "rate_limit": 500  # requests per hour
-    },
-    "glassdoor": {
-        "api_key": os.getenv("GLASSDOOR_API_KEY"),
-        "base_url": "https://api.glassdoor.com/api/api.htm",
-        "rate_limit": 1000  # requests per day
-    },
-    "indeed": {
-        "publisher_id": os.getenv("INDEED_PUBLISHER_ID"),
-        "base_url": "https://api.indeed.com/ads/apisearch",
-        "rate_limit": 3600  # requests per hour
-    }
-}
-
-# Cache Configuration
-CACHE_CONFIG = {
-    "default_ttl": 3600,  # 1 hour
-    "ml_models_ttl": 86400,  # 24 hours
-    "api_data_ttl": 1800,  # 30 minutes
-    "user_session_ttl": 28800  # 8 hours
-}
-
-# ML Configuration
-ML_CONFIG = {
-    "model_versions": {
-        "attrition_predictor": "v2.1.0",
-        "salary_recommender": "v1.8.0",
-        "team_clusterer": "v1.5.0",
-        "sentiment_analyzer": "v2.0.0"
-    },
-    "performance_thresholds": {
-        "accuracy_min": 0.85,
-        "precision_min": 0.80,
-        "recall_min": 0.75,
-        "f1_score_min": 0.80
-    },
-    "training_schedule": "0 2 * * 0",  # Weekly Sunday 2 AM
-    "batch_size": 1000,
-    "max_training_time": 7200  # 2 hours
-}
-
-# Gaming Industry Constants
-GAMING_CONFIG = {
-    "major_studios": [
-        "Microsoft Gaming", "Ubisoft", "Electronic Arts", "Sony Interactive",
-        "Take-Two Interactive", "Embracer Group", "Nintendo", "Nexon",
-        "NetEase Games", "Epic Games", "Activision Blizzard"
-    ],
-    "departments": [
-        "Programming", "Art & Animation", "Game Design", "Quality Assurance",
-        "Marketing", "Management", "Audio", "Technical Art", "Production"
-    ],
-    "experience_levels": ["Intern", "Junior", "Mid", "Senior", "Lead", "Principal"],
-    "regions": ["North America", "Europe", "Asia-Pacific", "Latin America"],
-    "salary_currencies": ["USD", "EUR", "GBP", "CAD", "AUD", "JPY"]
-}
-
-# Notification Configuration
-NOTIFICATION_CONFIG = {
-    "email": {
-        "smtp_server": os.getenv("SMTP_SERVER", "smtp.gmail.com"),
-        "smtp_port": int(os.getenv("SMTP_PORT", 587)),
-        "username": os.getenv("EMAIL_USERNAME"),
-        "password": os.getenv("EMAIL_PASSWORD"),
-        "from_address": os.getenv("FROM_EMAIL", "noreply@gaming-workforce.com")
-    },
-    "slack": {
-        "webhook_url": os.getenv("SLACK_WEBHOOK_URL"),
-        "channel": "#hr-analytics",
-        "username": "Gaming Workforce Bot"
-    }
-}
-
-# Security Configuration
-SECURITY_CONFIG = {
-    "session_timeout": 28800,  # 8 hours
-    "max_login_attempts": 5,
-    "password_min_length": 12,
-    "require_2fa": True,
-    "allowed_domains": ["ubisoft.com", "gaming-workforce.com"],
-    "audit_retention_days": 365
-}
-UBISOFT_THEME = {
-    'primary_color': '#6366f1',
-    'background_color': '#ffffff',
-    'secondary_background_color': '#f8fafc',
-    'text_color': '#1e293b',
-    'accent_color': '#ff6b35'
-}
-
+# === APPLICATION CONFIGURATION ===
 APP_CONFIG = {
-    'app_name': 'Gaming Workforce Observatory',
-    'version': '1.0.0',
-    'debug': False,
-    'max_upload_size': 200
+    'app_name': 'Gaming Workforce Observatory Enterprise',
+    'version': '2.0.0',
+    'description': 'Advanced Gaming Industry Workforce Analytics Platform',
+    'author': 'remichenouri',
+    'github_url': 'https://github.com/remichenouri/gaming_workforce_observatory',
+    'contact_email': 'contact@gaming-workforce-observatory.com',
+    
+    # Performance Settings
+    'cache_ttl': 300,  # 5 minutes cache
+    'max_cache_entries': 1000,
+    'chart_animation_duration': 500,
+    'loading_timeout': 30,
+    
+    # Gaming Industry Specific
+    'supported_gaming_roles': [
+        'Game Developer', 'Game Designer', 'Technical Artist',
+        'QA Tester', 'Audio Engineer', 'Game Producer',
+        'Level Designer', '3D Artist', 'Animator',
+        'UI/UX Designer', 'Community Manager', 'Data Analyst'
+    ],
+    
+    'gaming_departments': [
+        'Programming', 'Art & Animation', 'Game Design',
+        'Quality Assurance', 'Production', 'Audio',
+        'Marketing', 'Management', 'Operations'
+    ],
+    
+    'gaming_platforms': [
+        'PC', 'PlayStation', 'Xbox', 'Nintendo Switch',
+        'Mobile (iOS/Android)', 'VR Headsets', 'Web Browser',
+        'Arcade', 'Console (Generic)', 'Steam Deck'
+    ],
+    
+    'project_phases': [
+        'Concept', 'Pre-production', 'Production',
+        'Alpha', 'Beta', 'Gold Master', 'Launch',
+        'Live Operations', 'Post-Launch Support', 'Sunset'
+    ]
 }
+
+# === DASHBOARD CONFIGURATION ===
+DASHBOARD_CONFIG = {
+    'pages': [
+        {
+            'name': 'Executive Dashboard',
+            'icon': '🏠',
+            'description': 'C-suite gaming analytics and KPIs',
+            'access_level': 'executive'
+        },
+        {
+            'name': 'Talent Wars',
+            'icon': '⚔️',
+            'description': 'Gaming vs Tech industry comparison',
+            'access_level': 'manager'
+        },
+        {
+            'name': 'Neurodiversity ROI',
+            'icon': '🧠',
+            'description': 'Cognitive diversity impact analysis',
+            'access_level': 'hr'
+        },
+        {
+            'name': 'Predictive Analytics',
+            'icon': '🎯',
+            'description': 'AI/ML workforce models and predictions',
+            'access_level': 'analyst'
+        },
+        {
+            'name': 'Global Studios',
+            'icon': '🌍',
+            'description': 'Worldwide gaming operations view',
+            'access_level': 'manager'
+        },
+        {
+            'name': 'Compensation Intel',
+            'icon': '💰',
+            'description': 'Gaming industry salary benchmarking',
+            'access_level': 'hr'
+        },
+        {
+            'name': 'Future Insights',
+            'icon': '🔮',
+            'description': 'Gaming workforce forecasting',
+            'access_level': 'executive'
+        },
+        {
+            'name': 'Admin Panel',
+            'icon': '⚙️',
+            'description': 'System administration and configuration',
+            'access_level': 'admin'
+        }
+    ],
+    
+    'kpi_refresh_interval': 60,  # seconds
+    'chart_default_height': 400,
+    'table_page_size': 50,
+    'export_formats': ['CSV', 'Excel', 'PDF', 'JSON']
+}
+
+# === GAMING INDUSTRY BENCHMARKS ===
+GAMING_BENCHMARKS = {
+    'salary_ranges': {
+        'Junior': {'min': 35000, 'max': 65000, 'median': 50000},
+        'Mid': {'min': 55000, 'max': 95000, 'median': 75000},
+        'Senior': {'min': 80000, 'max': 140000, 'median': 110000},
+        'Lead': {'min': 110000, 'max': 180000, 'median': 145000},
+        'Director': {'min': 150000, 'max': 250000, 'median': 200000}
+    },
+    
+    'satisfaction_targets': {
+        'Gaming': 7.8,
+        'Tech': 7.1,
+        'Industry_Average': 6.9
+    },
+    
+    'retention_targets': {
+        'Gaming': 82.0,
+        'Tech': 78.5,
+        'Industry_Average': 75.2
+    },
+    
+    'performance_metrics': {
+        'sprint_velocity_target': 40,
+        'bug_fix_rate_target': 85,
+        'innovation_index_target': 75,
+        'team_synergy_target': 8.0
+    }
+}
+
+# === SECURITY CONFIGURATION ===
+SECURITY_CONFIG = {
+    'authentication_required': True,
+    'session_timeout': 3600,  # 1 hour
+    'max_login_attempts': 3,
+    'password_min_length': 8,
+    
+    'access_levels': {
+        'viewer': ['Executive Dashboard', 'Global Studios'],
+        'analyst': ['Executive Dashboard', 'Global Studios', 'Predictive Analytics', 'Compensation Intel'],
+        'manager': ['Executive Dashboard', 'Talent Wars', 'Global Studios', 'Predictive Analytics', 'Compensation Intel'],
+        'hr': ['Executive Dashboard', 'Talent Wars', 'Neurodiversity ROI', 'Compensation Intel', 'Future Insights'],
+        'executive': ['Executive Dashboard', 'Talent Wars', 'Neurodiversity ROI', 'Global Studios', 'Future Insights'],
+        'admin': ['all']
+    },
+    
+    'demo_users': {
+        'admin': {'password': 'demo', 'level': 'admin'},
+        'manager': {'password': 'gaming123', 'level': 'manager'},
+        'analyst': {'password': 'data123', 'level': 'analyst'}
+    }
+}
+
+# === PERFORMANCE CONFIGURATION ===
+PERFORMANCE_CONFIG = {
+    'targets': {
+        'page_load_time': 2.0,      # seconds
+        'chart_render_time': 0.5,   # seconds
+        'filter_response_time': 0.1, # seconds
+        'ml_prediction_time': 3.0,  # seconds
+        'cache_hit_rate': 0.85      # 85%
+    },
+    
+    'optimization': {
+        'enable_caching': True,
+        'cache_compression': True,
+        'lazy_loading': True,
+        'chart_streaming': False,
+        'data_pagination': True
+    }
+}
+
+# === ENVIRONMENT CONFIGURATION ===
+def get_environment_config():
+    """Get configuration based on environment"""
+    env = os.getenv('ENVIRONMENT', 'development')
+    
+    if env == 'production':
+        return {
+            'debug': False,
+            'cache_ttl': 600,  # 10 minutes
+            'logging_level': 'INFO',
+            'enable_telemetry': True
+        }
+    elif env == 'staging':
+        return {
+            'debug': True,
+            'cache_ttl': 300,  # 5 minutes
+            'logging_level': 'DEBUG',
+            'enable_telemetry': True
+        }
+    else:  # development
+        return {
+            'debug': True,
+            'cache_ttl': 60,   # 1 minute
+            'logging_level': 'DEBUG',
+            'enable_telemetry': False
+        }
+
+# === EXPORT CONFIGURATION ===
+def get_config() -> Dict[str, Any]:
+    """Get complete configuration dictionary"""
+    return {
+        'theme': GAMING_THEME,
+        'app': APP_CONFIG,
+        'dashboard': DASHBOARD_CONFIG,
+        'benchmarks': GAMING_BENCHMARKS,
+        'security': SECURITY_CONFIG,
+        'performance': PERFORMANCE_CONFIG,
+        'environment': get_environment_config()
+    }
