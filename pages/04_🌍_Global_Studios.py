@@ -26,73 +26,142 @@ UBISOFT_COLORS = {
 }
 
 def create_ubisoft_header(title, subtitle=None):
-    subtitle_html = f"<p>{subtitle}</p>" if subtitle else ""
-    return f"<h1>{title}</h1>{subtitle_html}"
-
-def create_ubisoft_breadcrumb(page):
-    return f"<p>🎮 Ubisoft Observatory → {page}</p>"
+    subtitle_html = f"<p style='font-size:1.2rem; color:#555; margin-top:0.5rem;'>{subtitle}</p>" if subtitle else ""
+    return f"""
+    <div style='background: linear-gradient(90deg, #28A745, #34CE57); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;'>
+        <h1 style='font-family: Arial, sans-serif; font-weight: bold; font-size: 3.5rem; color: white; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);'>{title}</h1>
+        {subtitle_html}
+    </div>
+    """
 
 def create_ubisoft_section_header(title):
-    return f"<h3>{title}</h3>"
+    return f"<h2 style='color: #2C3E50; font-family: Arial, sans-serif; font-weight: bold; border-left: 4px solid #28A745; padding-left: 1rem; margin: 2rem 0 1rem 0;'>{title}</h2>"
 
 def create_ubisoft_info_box(title, content):
-    return f"<div><strong>{title}</strong><p>{content}</p></div>"
-
-def create_ubisoft_accent_box(title, content):
-    return f"<div style='border-left:4px solid #E60012'><strong>{title}</strong><p>{content}</p></div>"
+    return f"""
+    <div style='background: #f8f9fa; border-left: 4px solid #28A745; padding: 1.5rem; margin: 1rem 0; border-radius: 5px;'>
+        <h4 style='color: #2C3E50; margin: 0 0 0.5rem 0;'>{title}</h4>
+        <p style='color: #555; margin: 0; font-size: 1rem; line-height: 1.5;'>{content}</p>
+    </div>
+    """
 
 def get_ubisoft_chart_config():
-    return {'layout': {}}
-
-def create_ubisoft_metric_cols(metrics, cols=4):
-    for metric in metrics:
-        st.markdown(f"**{metric['title']}**: {metric['value']}")
-
-def display_ubisoft_logo_section():
-    return "<p>© 2024 Ubisoft</p>"
-
-# STUBS POUR CLASSES MANQUANTES
-class GamingThemes:
-    def apply_gaming_theme(self):
-        pass
-    
-    def create_metric_card(self, title, value, subtitle, card_type, icon):
-        colors = {
-            'info': '#0099FF',
-            'success': '#28A745', 
-            'warning': '#FFB020',
-            'danger': '#E60012'
+    return {
+        'layout': {
+            'font': {'family': 'Arial, sans-serif', 'size': 12, 'color': '#2C3E50'},
+            'paper_bgcolor': 'white',
+            'plot_bgcolor': '#fafafa'
         }
-        color = colors.get(card_type, '#0099FF')
-        return f"""
-        <div style="background: white; padding: 1rem; border-radius: 8px; border-left: 4px solid {color}; margin: 0.5rem 0;">
-            <h4 style="margin: 0; color: {color};">{icon} {title}</h4>
-            <h2 style="margin: 0.5rem 0; color: #2C3E50;">{value}</h2>
-            <p style="margin: 0; color: #6C757D; font-size: 0.9rem;">{subtitle}</p>
-        </div>
-        """
+    }
 
-class GamingGeographicMaps:
-    def __init__(self):
-        pass
+def create_metric_card(title, value, subtitle, card_type, icon):
+    colors = {
+        'info': '#0099FF',
+        'success': '#28A745', 
+        'warning': '#FFB020',
+        'danger': '#E60012'
+    }
+    color = colors.get(card_type, '#0099FF')
+    return f"""
+    <div style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;">
+        <div style="font-size: 2rem; color: {color}; margin-bottom: 0.5rem;">{icon}</div>
+        <h3 style="color: #2C3E50; margin: 0; font-size: 2rem;">{value}</h3>
+        <p style="color: #666; margin: 0.5rem 0 0 0;">{title}</p>
+        <small style="color: #666;">{subtitle}</small>
+    </div>
+    """
 
 # ─────────────────────────────────────────────
 
-apply_ubisoft_theme()
+st.set_page_config(
+    page_title="🌍 Gaming Workforce Observatory - Global Studios",
+    page_icon="🌍",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
-def initialize_global_studios_dashboard():
-    """Initialise le dashboard studios mondiaux"""
-    st.set_page_config(
-        page_title="🌍 Gaming Workforce Observatory - Global Studios",
-        page_icon="🌍",
-        layout="wide",
-        initial_sidebar_state="expanded"
-    )
+# SIDEBAR ÉPURÉE - MENU SEULEMENT
+with st.sidebar:
+    st.markdown("""
+    <div style='text-align: center; padding: 1rem 0;'>
+        <h2 style='color: #28A745; font-family: Arial, sans-serif; margin: 0;'>🌍 Ubisoft</h2>
+        <p style='color: #666; font-size: 0.9rem; margin: 0.5rem 0;'>Workforce Observatory</p>
+    </div>
+    """, unsafe_allow_html=True)
     
-    # Application du thème gaming
-    themes = GamingThemes()
-    themes.apply_gaming_theme()
+    st.markdown("---")
+    
+    # Menu de navigation épuré
+    menu_items = [
+        ("🏠", "Executive Dashboard"),
+        ("⚔️", "Talent Wars"), 
+        ("🧠", "Neurodiversity ROI"),
+        ("🎯", "Predictive Analytics"),
+        ("🌍", "Global Studios"),
+        ("💰", "Compensation Intel"),
+        ("🚀", "Future Insights"),
+        ("⚙️", "Admin Panel")
+    ]
+    
+    st.markdown("<h4 style='color: #2C3E50; margin-bottom: 1rem;'>Navigation</h4>", unsafe_allow_html=True)
+    
+    for icon, name in menu_items:
+        if name == "Global Studios":
+            st.markdown(f"""
+            <div style='background: #28A745; color: white; padding: 0.75rem; border-radius: 5px; margin: 0.25rem 0;'>
+                <strong>{icon} {name}</strong>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown(f"""
+            <div style='padding: 0.75rem; border-radius: 5px; margin: 0.25rem 0; color: #555;'>
+                {icon} {name}
+            </div>
+            """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    # Section selector intégré dans le sidebar
+    st.markdown("<h4 style='color: #2C3E50; margin-bottom: 1rem;'>Global Sections</h4>", unsafe_allow_html=True)
+    
+    global_sections = [
+        "🌏 Global Overview",
+        "🗺️ World Map",
+        "📊 Regional Analysis",
+        "🏙️ City Competition",
+        "🔄 Talent Migration", 
+        "💡 Cost Optimization",
+        "🚀 Market Opportunities"
+    ]
+    
+    selected_section = st.selectbox(
+        "Explore global insights:",
+        global_sections,
+        index=0
+    )
 
+# HEADER PRINCIPAL PROFESSIONNEL
+last_updated = datetime.now().strftime('%Y-%m-%d %H:%M')
+st.markdown(f"""
+<div style='background: #f8f9fa; padding: 1rem; border-radius: 5px; margin-bottom: 1rem; border-left: 4px solid #28A745;'>
+    <div style='display: flex; justify-content: space-between; align-items: center;'>
+        <div>
+            <strong style='color: #2C3E50;'>🌍 Global Studios - Worldwide Intelligence</strong>
+            <p style='margin: 0; color: #666; font-size: 0.9rem;'>Strategic insights • Talent distribution • Market opportunities • 14 countries analyzed</p>
+        </div>
+        <div style='text-align: right;'>
+            <p style='margin: 0; color: #666; font-size: 0.9rem;'>Last Updated</p>
+            <strong style='color: #28A745;'>{last_updated}</strong>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+# TITRE PRINCIPAL AVEC MISE EN VALEUR
+st.markdown(create_ubisoft_header("Global Studios", "Worldwide Gaming Workforce Intelligence"), unsafe_allow_html=True)
+
+# GÉNÉRATION DES DONNÉES
+@st.cache_data(ttl=300)
 def generate_global_studios_data():
     """Génère les données des studios gaming mondiaux"""
     
@@ -187,22 +256,17 @@ def generate_global_studios_data():
     
     return studios_data, talent_migration, regional_costs, city_competition
 
-def render_global_overview(studios_data, regional_costs):
-    """Vue d'ensemble mondiale"""
+# Chargement des données
+studios_data, talent_migration, regional_costs, city_competition = generate_global_studios_data()
+
+# CONTENU BASÉ SUR LA SECTION SÉLECTIONNÉE
+if selected_section == "🌏 Global Overview":
+    st.markdown(create_ubisoft_info_box(
+        "🌍 Global Gaming Ecosystem Intelligence",
+        "Vue d'ensemble complète de l'écosystème gaming mondial avec 200 studios analysés across 18 villes majeures. Notre intelligence couvre la distribution des talents, les performances par région et les opportunités stratégiques d'expansion internationale."
+    ), unsafe_allow_html=True)
     
-    themes = GamingThemes()
-    
-    # Header Global Studios
-    st.markdown("""
-    <div style='background: linear-gradient(45deg, #667eea, #764ba2); padding: 2rem; border-radius: 15px; margin-bottom: 2rem; text-align: center;'>
-        <h1 style='color: white; font-family: "Orbitron", monospace; font-size: 3rem; margin: 0;'>🌍 GLOBAL STUDIOS</h1>
-        <h2 style='color: rgba(255,255,255,0.9); margin: 0.5rem 0;'>Worldwide Gaming Workforce Intelligence</h2>
-        <p style='color: rgba(255,255,255,0.8); font-size: 1.1rem; margin: 0;'>Strategic insights into global gaming talent distribution</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Métriques globales
-    st.markdown("### 🌏 Global Gaming Ecosystem")
+    st.markdown(create_ubisoft_section_header("🌏 Key Global Metrics"), unsafe_allow_html=True)
     
     col1, col2, col3, col4 = st.columns(4)
     
@@ -212,7 +276,7 @@ def render_global_overview(studios_data, regional_costs):
     avg_studio_size = studios_data['employees'].mean()
     
     with col1:
-        metric_html = themes.create_metric_card(
+        metric_html = create_metric_card(
             "Total Studios", 
             f"{total_studios:,}",
             "Across 18 cities",
@@ -222,7 +286,7 @@ def render_global_overview(studios_data, regional_costs):
         st.markdown(metric_html, unsafe_allow_html=True)
     
     with col2:
-        metric_html = themes.create_metric_card(
+        metric_html = create_metric_card(
             "Global Workforce", 
             f"{total_workforce:,}",
             "Gaming professionals",
@@ -232,7 +296,7 @@ def render_global_overview(studios_data, regional_costs):
         st.markdown(metric_html, unsafe_allow_html=True)
     
     with col3:
-        metric_html = themes.create_metric_card(
+        metric_html = create_metric_card(
             "Combined Revenue", 
             f"${total_revenue/1e9:.1f}B",
             "Annual industry value",
@@ -242,7 +306,7 @@ def render_global_overview(studios_data, regional_costs):
         st.markdown(metric_html, unsafe_allow_html=True)
     
     with col4:
-        metric_html = themes.create_metric_card(
+        metric_html = create_metric_card(
             "Avg Studio Size", 
             f"{avg_studio_size:.0f}",
             "Employees per studio",
@@ -251,17 +315,11 @@ def render_global_overview(studios_data, regional_costs):
         )
         st.markdown(metric_html, unsafe_allow_html=True)
 
-def render_world_map(studios_data):
-    """Carte mondiale interactive"""
+elif selected_section == "🗺️ World Map":
+    st.markdown(create_ubisoft_section_header("🗺️ Interactive World Map"), unsafe_allow_html=True)
     
-    st.markdown("### 🗺️ Interactive World Map")
-    
-    # Préparation des données pour la carte
-    map_data = studios_data.copy()
-    
-    # Carte principale
     fig_world = px.scatter_geo(
-        map_data,
+        studios_data,
         lat='latitude',
         lon='longitude',
         size='employees',
@@ -287,15 +345,14 @@ def render_world_map(studios_data):
             oceancolor='rgb(230, 245, 255)',
             projection_type='natural earth'
         ),
-        height=600
+        height=600,
+        **get_ubisoft_chart_config()['layout']
     )
     
     st.plotly_chart(fig_world, width='stretch')
 
-def render_regional_analysis(studios_data, regional_costs):
-    """Analyse régionale détaillée"""
-    
-    st.markdown("### 📊 Regional Market Analysis")
+elif selected_section == "📊 Regional Analysis":
+    st.markdown(create_ubisoft_section_header("📊 Regional Market Analysis"), unsafe_allow_html=True)
     
     # Analyse par région
     regional_summary = studios_data.groupby('region').agg({
@@ -317,7 +374,6 @@ def render_regional_analysis(studios_data, regional_costs):
     col1, col2 = st.columns(2)
     
     with col1:
-        # Workforce distribution par région
         fig_workforce = px.pie(
             regional_summary,
             values='total_workforce',
@@ -326,10 +382,10 @@ def render_regional_analysis(studios_data, regional_costs):
             color_discrete_sequence=px.colors.qualitative.Set3
         )
         
+        fig_workforce.update_layout(**get_ubisoft_chart_config()['layout'])
         st.plotly_chart(fig_workforce, width='stretch')
     
     with col2:
-        # Revenue vs Workforce correlation
         fig_revenue = px.scatter(
             regional_summary,
             x='total_workforce',
@@ -344,54 +400,15 @@ def render_regional_analysis(studios_data, regional_costs):
             }
         )
         
+        fig_revenue.update_layout(**get_ubisoft_chart_config()['layout'])
         st.plotly_chart(fig_revenue, width='stretch')
-    
-    # Tableau comparatif régional
-    st.markdown("#### 🌏 Regional Comparison Matrix")
-    
-    # Merge avec les coûts régionaux
-    regional_analysis = regional_summary.merge(regional_costs, on='region', how='left')
-    
-    # Calcul du ROI par région (simplifié)
-    regional_analysis['workforce_roi'] = (
-        regional_analysis['total_revenue'] / 
-        (regional_analysis['total_workforce'] * regional_analysis['avg_salary_usd'])
-    ).round(2)
-    
-    # Formatage pour affichage
-    display_regional = regional_analysis.copy()
-    display_regional['total_revenue'] = display_regional['total_revenue'].apply(lambda x: f"${x/1e9:.1f}B")
-    display_regional['avg_salary_usd'] = display_regional['avg_salary_usd'].apply(lambda x: f"${x:,}")
-    display_regional['office_rent_sqft_year'] = display_regional['office_rent_sqft_year'].apply(lambda x: f"${x}")
-    
-    columns_display = [
-        'region', 'studio_count', 'total_workforce', 'total_revenue', 
-        'avg_salary_usd', 'talent_availability', 'workforce_roi'
-    ]
-    
-    st.dataframe(
-        display_regional[columns_display].rename(columns={
-            'region': 'Region',
-            'studio_count': 'Studios',
-            'total_workforce': 'Workforce',
-            'total_revenue': 'Revenue',
-            'avg_salary_usd': 'Avg Salary',
-            'talent_availability': 'Talent Pool',
-            'workforce_roi': 'ROI'
-        }),
-        width='stretch'
-    )
 
-def render_city_competition(city_competition):
-    """Analyse de la concurrence par ville"""
+elif selected_section == "🏙️ City Competition":
+    st.markdown(create_ubisoft_section_header("🏙️ City-Level Competition Analysis"), unsafe_allow_html=True)
     
-    st.markdown("### 🏙️ City-Level Competition Analysis")
-    
-    # Top villes par différents critères
     col1, col2 = st.columns(2)
     
     with col1:
-        # Top villes par workforce
         top_workforce_cities = city_competition.nlargest(10, 'total_workforce')
         
         fig_workforce_cities = px.bar(
@@ -404,11 +421,10 @@ def render_city_competition(city_competition):
             labels={'total_workforce': 'Total Gaming Workforce'}
         )
         
-        fig_workforce_cities.update_layout(height=400)
+        fig_workforce_cities.update_layout(height=400, **get_ubisoft_chart_config()['layout'])
         st.plotly_chart(fig_workforce_cities, width='stretch')
     
     with col2:
-        # Studio density vs quality
         fig_density_quality = px.scatter(
             city_competition,
             x='studio_count',
@@ -416,63 +432,26 @@ def render_city_competition(city_competition):
             size='total_workforce',
             color='region',
             hover_name='city',
-            title='⭐ Studio Density vs Quality (Glassdoor Rating)',
+            title='⭐ Studio Density vs Quality',
             labels={
                 'studio_count': 'Number of Studios',
                 'avg_rating': 'Average Glassdoor Rating'
             }
         )
         
-        fig_density_quality.update_layout(height=400)
+        fig_density_quality.update_layout(height=400, **get_ubisoft_chart_config()['layout'])
         st.plotly_chart(fig_density_quality, width='stretch')
-    
-    # Gaming hubs analysis
-    st.markdown("#### 🎮 Gaming Hubs Deep Dive")
-    
-    # Création d'un score composite pour les "gaming hubs"
-    city_competition['hub_score'] = (
-        (city_competition['total_workforce'] / city_competition['total_workforce'].max()) * 0.4 +
-        (city_competition['studio_count'] / city_competition['studio_count'].max()) * 0.3 +
-        (city_competition['avg_rating'] / city_competition['avg_rating'].max()) * 0.2 +
-        (city_competition['avg_diversity'] / city_competition['avg_diversity'].max()) * 0.1
-    ) * 100
-    
-    top_hubs = city_competition.nlargest(8, 'hub_score')
-    
-    # Affichage des top gaming hubs
-    cols = st.columns(4)
-    
-    for i, (_, hub) in enumerate(top_hubs.iterrows()):
-        col_idx = i % 4
-        
-        with cols[col_idx]:
-            hub_card = f"""
-            <div style='background: linear-gradient(135deg, #3498db, #2980b9); 
-                        padding: 1rem; border-radius: 10px; margin: 0.5rem 0; color: white;'>
-                <h4 style='margin: 0; color: white;'>🏙️ {hub['city']}</h4>
-                <p style='margin: 0.5rem 0; font-size: 0.9rem;'>
-                    {hub['region']}<br>
-                    Studios: {hub['studio_count']}<br>
-                    Workforce: {hub['total_workforce']:,}<br>
-                    Hub Score: {hub['hub_score']:.1f}/100
-                </p>
-            </div>
-            """
-            st.markdown(hub_card, unsafe_allow_html=True)
 
-def render_talent_migration(talent_migration):
-    """Analyse de la migration des talents"""
+# Ajouter les autres sections...
+elif selected_section == "🔄 Talent Migration":
+    st.markdown(create_ubisoft_section_header("🔄 Global Talent Migration Patterns"), unsafe_allow_html=True)
     
-    st.markdown("### 🔄 Global Talent Migration Patterns")
-    
-    # Migration flows
     migration_flows = talent_migration.groupby(['origin_country', 'destination_country'])['talent_count'].sum().reset_index()
     migration_flows = migration_flows[migration_flows['origin_country'] != migration_flows['destination_country']]
     
     col1, col2 = st.columns(2)
     
     with col1:
-        # Top migration corridors
         top_flows = migration_flows.nlargest(10, 'talent_count')
         top_flows['corridor'] = top_flows['origin_country'] + ' → ' + top_flows['destination_country']
         
@@ -487,11 +466,10 @@ def render_talent_migration(talent_migration):
             color_continuous_scale='Blues'
         )
         
-        fig_flows.update_layout(height=400)
+        fig_flows.update_layout(height=400, **get_ubisoft_chart_config()['layout'])
         st.plotly_chart(fig_flows, width='stretch')
     
     with col2:
-        # Migration by skill type
         skill_migration = talent_migration.groupby('skill_type')['talent_count'].sum().reset_index()
         
         fig_skills = px.pie(
@@ -502,323 +480,18 @@ def render_talent_migration(talent_migration):
             color_discrete_sequence=px.colors.qualitative.Pastel
         )
         
-        fig_skills.update_layout(height=400)
+        fig_skills.update_layout(height=400, **get_ubisoft_chart_config()['layout'])
         st.plotly_chart(fig_skills, width='stretch')
-    
-    # Net migration analysis
-    st.markdown("#### 📈 Net Migration Analysis")
-    
-    # Calculer la migration nette par pays
-    outbound = talent_migration.groupby('origin_country')['talent_count'].sum()
-    inbound = talent_migration.groupby('destination_country')['talent_count'].sum()
-    
-    net_migration = pd.DataFrame({
-        'country': list(set(outbound.index) | set(inbound.index)),
-    })
-    
-    net_migration['outbound'] = net_migration['country'].map(outbound).fillna(0)
-    net_migration['inbound'] = net_migration['country'].map(inbound).fillna(0)
-    net_migration['net_migration'] = net_migration['inbound'] - net_migration['outbound']
-    net_migration = net_migration.sort_values('net_migration', ascending=False)
-    
-    # Graphique net migration
-    fig_net = px.bar(
-        net_migration,
-        x='country',
-        y='net_migration',
-        title='📊 Net Talent Migration by Country',
-        color='net_migration',
-        color_continuous_scale='RdBu',
-        color_continuous_midpoint=0
-    )
-    
-    fig_net.add_hline(y=0, line_dash="dash", line_color="black")
-    fig_net.update_xaxes(tickangle=45)
-    fig_net.update_layout(height=400)
-    
-    st.plotly_chart(fig_net, width='stretch')
 
-def render_cost_optimization(regional_costs, studios_data):
-    """Analyse d'optimisation des coûts"""
-    
-    st.markdown("### 💡 Cost Optimization & Strategic Positioning")
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        # Cost vs Talent matrix
-        fig_cost_talent = px.scatter(
-            regional_costs,
-            x='avg_salary_usd',
-            y='talent_availability',
-            size='cost_of_living_index',
-            color='region',
-            hover_name='region',
-            title='💰 Cost vs Talent Availability Matrix',
-            labels={
-                'avg_salary_usd': 'Average Salary (USD)',
-                'talent_availability': 'Talent Availability Score'
-            }
-        )
-        
-        # Quadrants d'optimisation
-        fig_cost_talent.add_hline(y=80, line_dash="dash", line_color="gray", annotation_text="High Talent Threshold")
-        fig_cost_talent.add_vline(x=70000, line_dash="dash", line_color="gray", annotation_text="Mid-Range Cost")
-        
-        fig_cost_talent.update_layout(height=400)
-        st.plotly_chart(fig_cost_talent, width='stretch')
-    
-    with col2:
-        # ROI analysis
-        regional_costs['salary_efficiency'] = regional_costs['talent_availability'] / (regional_costs['avg_salary_usd'] / 1000)
-        
-        fig_efficiency = px.bar(
-            regional_costs,
-            x='region',
-            y='salary_efficiency',
-            title='⚡ Salary Efficiency Score by Region',
-            color='salary_efficiency',
-            color_continuous_scale='Greens'
-        )
-        
-        fig_efficiency.update_layout(height=400)
-        st.plotly_chart(fig_efficiency, width='stretch')
-    
-    # Recommandations stratégiques
-    st.markdown("#### 🎯 Strategic Recommendations by Region")
-    
-    recommendations = {
-        'North America': {
-            'strategy': 'Premium Talent Hub',
-            'focus': 'High-value projects, senior talent, innovation centers',
-            'considerations': 'Highest costs but best talent pool and market access'
-        },
-        'Europe': {
-            'strategy': 'Balanced Excellence',
-            'focus': 'Mix of senior and mid-level talent, strong regulatory compliance',
-            'considerations': 'Good talent availability with moderate costs'
-        },
-        'Asia-Pacific': {
-            'strategy': 'Scale & Efficiency',
-            'focus': 'Large development teams, mobile gaming, rapid scaling',
-            'considerations': 'Cost-effective with growing talent pool'
-        },
-        'Latin America': {
-            'strategy': 'Emerging Market',
-            'focus': 'Nearshore development, cost-sensitive projects',
-            'considerations': 'Lowest costs but limited senior talent'
-        }
-    }
-    
-    for region, rec in recommendations.items():
-        with st.expander(f"🌍 {region} - {rec['strategy']}"):
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                st.markdown(f"**Strategic Focus:** {rec['focus']}")
-            
-            with col2:
-                st.markdown(f"**Key Considerations:** {rec['considerations']}")
+# FOOTER PROFESSIONNEL
+st.markdown("---")
+st.markdown(f"""
+<div style='text-align: center; padding: 2rem; background: #f8f9fa; border-radius: 5px; margin-top: 2rem;'>
+    <p style='color: #666; margin: 0; font-size: 0.9rem;'>
+        © 2024 Ubisoft Entertainment - Gaming Workforce Observatory<br>
+        Global Studios Dashboard • Covering {studios_data['country'].nunique()} Countries • 
+        Data Updated: {datetime.now().strftime('%Y-%m-%d %H:%M')} • Confidential and Proprietary
+    </p>
+</div>
+""", unsafe_allow_html=True)
 
-def render_market_opportunities():
-    """Opportunités de marché émergentes"""
-    
-    st.markdown("### 🚀 Emerging Market Opportunities")
-    
-    # Marchés émergents simulés
-    emerging_markets = pd.DataFrame({
-        'market': ['Eastern Europe', 'Southeast Asia', 'India', 'Africa', 'Middle East'],
-        'growth_potential': [85, 92, 88, 75, 70],
-        'talent_cost_advantage': [60, 70, 80, 85, 65],
-        'market_maturity': [65, 58, 72, 35, 45],
-        'infrastructure_score': [75, 68, 70, 55, 72],
-        'risk_score': [35, 25, 20, 45, 40]  # Lower is better
-    })
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        # Growth potential vs cost advantage
-        fig_opportunity = px.scatter(
-            emerging_markets,
-            x='talent_cost_advantage',
-            y='growth_potential',
-            size='infrastructure_score',
-            color='risk_score',
-            hover_name='market',
-            title='🌟 Emerging Market Opportunity Matrix',
-            labels={
-                'talent_cost_advantage': 'Cost Advantage Score',
-                'growth_potential': 'Growth Potential Score'
-            },
-            color_continuous_scale='RdYlGn_r'  # Red for high risk
-        )
-        
-        fig_opportunity.update_layout(height=400)
-        st.plotly_chart(fig_opportunity, width='stretch')
-    
-    with col2:
-        # Market readiness radar
-        categories = ['Growth Potential', 'Cost Advantage', 'Market Maturity', 'Infrastructure', 'Risk (Inverted)']
-        
-        fig_radar = go.Figure()
-        
-        for _, market in emerging_markets.iterrows():
-            values = [
-                market['growth_potential'],
-                market['talent_cost_advantage'],
-                market['market_maturity'],
-                market['infrastructure_score'],
-                100 - market['risk_score']  # Invert risk for radar
-            ]
-            
-            fig_radar.add_trace(go.Scatterpolar(
-                r=values,
-                theta=categories,
-                fill='toself',
-                name=market['market'],
-                opacity=0.6
-            ))
-        
-        fig_radar.update_layout(
-            polar=dict(
-                radialaxis=dict(
-                    visible=True,
-                    range=[0, 100]
-                )
-            ),
-            title='📡 Market Readiness Comparison',
-            height=400
-        )
-        
-        st.plotly_chart(fig_radar, width='stretch')
-    
-    # Top opportunities
-    st.markdown("#### 🏆 Top 3 Market Opportunities")
-    
-    # Calcul du score composite
-    emerging_markets['opportunity_score'] = (
-        emerging_markets['growth_potential'] * 0.3 +
-        emerging_markets['talent_cost_advantage'] * 0.25 +
-        emerging_markets['infrastructure_score'] * 0.2 +
-        emerging_markets['market_maturity'] * 0.15 +
-        (100 - emerging_markets['risk_score']) * 0.1
-    )
-    
-    top_opportunities = emerging_markets.nlargest(3, 'opportunity_score')
-    
-    cols = st.columns(3)
-    
-    for i, (_, opportunity) in enumerate(top_opportunities.iterrows()):
-        with cols[i]:
-            rank = i + 1
-            score = opportunity['opportunity_score']
-            
-            opportunity_card = f"""
-            <div style='background: linear-gradient(135deg, #2ecc71, #27ae60); 
-                        padding: 1rem; border-radius: 10px; margin: 0.5rem 0; color: white;'>
-                <h4 style='margin: 0; color: white;'>#{rank} {opportunity['market']}</h4>
-                <p style='margin: 0.5rem 0; font-size: 0.9rem;'>
-                    Opportunity Score: {score:.1f}/100<br>
-                    Growth Potential: {opportunity['growth_potential']}<br>
-                    Cost Advantage: {opportunity['talent_cost_advantage']}<br>
-                    Risk Level: {opportunity['risk_score']}/100
-                </p>
-            </div>
-            """
-            st.markdown(opportunity_card, unsafe_allow_html=True)
-
-def main():
-    """Fonction principale Global Studios"""
-    
-    initialize_global_studios_dashboard()
-    
-    # Génération des données
-    studios_data, talent_migration, regional_costs, city_competition = generate_global_studios_data()
-    
-    # Sidebar
-    last = datetime.now().strftime('%Y-%m-%d %H:%M')
-    
-    with st.sidebar:
-        st.markdown("## 🌍 Global Intelligence")
-        
-        global_sections = [
-            "🌏 Global Overview",
-            "🗺️ World Map",
-            "📊 Regional Analysis",
-            "🏙️ City Competition",
-            "🔄 Talent Migration", 
-            "💡 Cost Optimization",
-            "🚀 Market Opportunities"
-        ]
-        
-        selected_section = st.selectbox(
-            "Explore global insights:",
-            global_sections,
-            index=0
-        )
-        
-        st.markdown("---")
-        st.markdown("### 📈 Global Metrics")
-        
-        total_countries = studios_data['country'].nunique()
-        total_cities = studios_data['city'].nunique()
-        total_workforce = studios_data['employees'].sum()
-        
-        st.metric("Countries", total_countries)
-        st.metric("Cities", total_cities)
-        st.metric("Global Workforce", f"{total_workforce:,}")
-        
-        # Distribution par région
-        st.markdown("---")
-        st.markdown("### 🌍 Regional Split")
-        
-        regional_split = studios_data.groupby('region')['employees'].sum()
-        for region, workforce in regional_split.items():
-            percentage = (workforce / total_workforce) * 100
-            st.markdown(f"**{region}:** {percentage:.1f}%")
-        
-        st.markdown("---")
-        st.markdown("### ⚡ Quick Actions")
-        
-        if st.button("📊 Export Global Report"):
-            st.success("Global analysis report generated!")
-        
-        if st.button("🎯 Market Entry Analysis"):
-            st.success("Market entry assessment initiated!")
-        
-        if st.button("📧 Share with Leadership"):
-            st.success("Global insights shared!")
-        
-        st.markdown("---")
-        st.markdown(f"**🔄 Last Updated:** {last}")
-    
-    # Contenu principal
-    if selected_section == "🌏 Global Overview":
-        render_global_overview(studios_data, regional_costs)
-    elif selected_section == "🗺️ World Map":
-        render_world_map(studios_data)
-    elif selected_section == "📊 Regional Analysis":
-        render_regional_analysis(studios_data, regional_costs)
-    elif selected_section == "🏙️ City Competition":
-        render_city_competition(city_competition)
-    elif selected_section == "🔄 Talent Migration":
-        render_talent_migration(talent_migration)
-    elif selected_section == "💡 Cost Optimization":
-        render_cost_optimization(regional_costs, studios_data)
-    elif selected_section == "🚀 Market Opportunities":
-        render_market_opportunities()
-    
-    # Footer global
-    st.markdown("---")
-    st.markdown(
-        f"<div style='text-align: center; color: #3498db; font-weight: bold;'>"
-        f"🌍 GLOBAL GAMING WORKFORCE INTELLIGENCE | "
-        f"Covering {studios_data['country'].nunique()} Countries | "
-        f"Data Updated: {datetime.now().strftime('%Y-%m-%d %H:%M')}"
-        f"</div>",
-        unsafe_allow_html=True
-    )
-
-if __name__ == "__main__":
-    main()
