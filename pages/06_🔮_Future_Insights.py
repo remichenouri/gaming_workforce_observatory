@@ -148,7 +148,7 @@ with col1:
     )
     
     fig_tech_adoption.update_layout(get_ubisoft_chart_config()['layout'])
-    st.plotly_chart(fig_tech_adoption, use_container_width=True)
+    st.plotly_chart(fig_tech_adoption, width='stretch')
 
 with col2:
     # Technology priorities ranking
@@ -202,7 +202,7 @@ fig_skills_evolution.update_layout(
     **get_ubisoft_chart_config()['layout']
 )
 
-st.plotly_chart(fig_skills_evolution, use_container_width=True)
+st.plotly_chart(fig_skills_evolution, width='stretch')
 
 # Future Workforce Scenarios
 st.markdown(create_ubisoft_section_header("🎲 Ubisoft Future Workforce Scenarios"))
@@ -307,7 +307,7 @@ fig_challenges = px.scatter(
 )
 
 fig_challenges.update_layout(get_ubisoft_chart_config()['layout'])
-st.plotly_chart(fig_challenges, use_container_width=True)
+st.plotly_chart(fig_challenges, width='stretch')
 
 with st.sidebar:
     st.markdown("""
