@@ -273,7 +273,7 @@ def render_world_map(studios_data):
         height=600
     )
     
-    st.plotly_chart(fig_world, use_container_width=True)
+    st.plotly_chart(fig_world, width='stretch')
 
 def render_regional_analysis(studios_data, regional_costs):
     """Analyse régionale détaillée"""
@@ -309,7 +309,7 @@ def render_regional_analysis(studios_data, regional_costs):
             color_discrete_sequence=px.colors.qualitative.Set3
         )
         
-        st.plotly_chart(fig_workforce, use_container_width=True)
+        st.plotly_chart(fig_workforce, width='stretch')
     
     with col2:
         # Revenue vs Workforce correlation
@@ -327,7 +327,7 @@ def render_regional_analysis(studios_data, regional_costs):
             }
         )
         
-        st.plotly_chart(fig_revenue, use_container_width=True)
+        st.plotly_chart(fig_revenue, width='stretch')
     
     # Tableau comparatif régional
     st.markdown("#### 🌏 Regional Comparison Matrix")
@@ -362,7 +362,7 @@ def render_regional_analysis(studios_data, regional_costs):
             'talent_availability': 'Talent Pool',
             'workforce_roi': 'ROI'
         }),
-        use_container_width=True
+        width='stretch'
     )
 
 def render_city_competition(city_competition):
@@ -388,7 +388,7 @@ def render_city_competition(city_competition):
         )
         
         fig_workforce_cities.update_layout(height=400)
-        st.plotly_chart(fig_workforce_cities, use_container_width=True)
+        st.plotly_chart(fig_workforce_cities, width='stretch')
     
     with col2:
         # Studio density vs quality
@@ -407,7 +407,7 @@ def render_city_competition(city_competition):
         )
         
         fig_density_quality.update_layout(height=400)
-        st.plotly_chart(fig_density_quality, use_container_width=True)
+        st.plotly_chart(fig_density_quality, width='stretch')
     
     # Gaming hubs analysis
     st.markdown("#### 🎮 Gaming Hubs Deep Dive")
@@ -471,7 +471,7 @@ def render_talent_migration(talent_migration):
         )
         
         fig_flows.update_layout(height=400)
-        st.plotly_chart(fig_flows, use_container_width=True)
+        st.plotly_chart(fig_flows, width='stretch')
     
     with col2:
         # Migration by skill type
@@ -486,7 +486,7 @@ def render_talent_migration(talent_migration):
         )
         
         fig_skills.update_layout(height=400)
-        st.plotly_chart(fig_skills, use_container_width=True)
+        st.plotly_chart(fig_skills, width='stretch')
     
     # Net migration analysis
     st.markdown("#### 📈 Net Migration Analysis")
@@ -519,7 +519,7 @@ def render_talent_migration(talent_migration):
     fig_net.update_xaxes(tickangle=45)
     fig_net.update_layout(height=400)
     
-    st.plotly_chart(fig_net, use_container_width=True)
+    st.plotly_chart(fig_net, width='stretch')
 
 def render_cost_optimization(regional_costs, studios_data):
     """Analyse d'optimisation des coûts"""
@@ -549,7 +549,7 @@ def render_cost_optimization(regional_costs, studios_data):
         fig_cost_talent.add_vline(x=70000, line_dash="dash", line_color="gray", annotation_text="Mid-Range Cost")
         
         fig_cost_talent.update_layout(height=400)
-        st.plotly_chart(fig_cost_talent, use_container_width=True)
+        st.plotly_chart(fig_cost_talent, width='stretch')
     
     with col2:
         # ROI analysis
@@ -565,7 +565,7 @@ def render_cost_optimization(regional_costs, studios_data):
         )
         
         fig_efficiency.update_layout(height=400)
-        st.plotly_chart(fig_efficiency, use_container_width=True)
+        st.plotly_chart(fig_efficiency, width='stretch')
     
     # Recommandations stratégiques
     st.markdown("#### 🎯 Strategic Recommendations by Region")
@@ -638,7 +638,7 @@ def render_market_opportunities():
         )
         
         fig_opportunity.update_layout(height=400)
-        st.plotly_chart(fig_opportunity, use_container_width=True)
+        st.plotly_chart(fig_opportunity, width='stretch')
     
     with col2:
         # Market readiness radar
@@ -674,7 +674,7 @@ def render_market_opportunities():
             height=400
         )
         
-        st.plotly_chart(fig_radar, use_container_width=True)
+        st.plotly_chart(fig_radar, width='stretch')
     
     # Top opportunities
     st.markdown("#### 🏆 Top 3 Market Opportunities")
