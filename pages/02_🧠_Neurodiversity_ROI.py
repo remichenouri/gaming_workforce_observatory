@@ -9,41 +9,12 @@ import plotly.express as px
 import plotly.graph_objects as go
 import numpy as np
 
-from src.themes.ubisoft_premium import apply_ubisoft_theme, UBISOFT_COLORS
-from src.utils.ubisoft_components import (
-    create_ubisoft_header, create_ubisoft_breadcrumb,
-    create_ubisoft_section_header, create_ubisoft_info_box,
-    create_ubisoft_metric_cols, get_ubisoft_chart_config
-)
 
 st.set_page_config(
     page_title="Ubisoft Neurodiversity ROI - Inclusion Excellence",
     page_icon="🧠",
     layout="wide"
 )
-
-apply_ubisoft_theme()
-
-st.markdown(
-    create_ubisoft_header(
-        "UBISOFT Neurodiversity ROI",
-        "Inclusion Excellence & Measurable Business Impact"
-    ),
-    unsafe_allow_html=True
-)
-
-st.markdown(create_ubisoft_breadcrumb("Neurodiversity ROI"), unsafe_allow_html=True)
-
-st.markdown(
-    create_ubisoft_info_box(
-        "🧠 Ubisoft's Commitment to Neurodiversity",
-        "Measuring the quantifiable business impact of our inclusive hiring practices across all Ubisoft studios. Our neurodivergent talent brings unique perspectives that enhance creativity, problem-solving, and innovation in game development."
-    ),
-    unsafe_allow_html=True
-)
-
-# ROI Metrics
-st.markdown(create_ubisoft_section_header("💎 Ubisoft Neurodiversity Business Impact"))
 
 neurodiversity_metrics = [
     {"title": "Neurodiverse Talent Pool", "value": "18.3%", "delta": "+4.2% vs 2023", "icon": "🧠"},
