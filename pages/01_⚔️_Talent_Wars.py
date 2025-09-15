@@ -1,6 +1,7 @@
 """
-🎮 Ubisoft Gaming Workforce Observatory
-Talent Wars - Competitive Intelligence & Talent Acquisition Strategy
+🎮 CORRECTIONS PAGES STREAMLIT - SANS ERREURS
+
+Corrections pour pages/01_⚔️_Talent_Wars.py
 """
 
 import streamlit as st
@@ -11,72 +12,56 @@ import numpy as np
 from datetime import datetime
 
 # ─────────────────────────────────────────────
-# STUBS POUR THEME & COMPOSANTS UBISOFT
-# Appliquer ABSOLUMENT dans chaque page à remplacer
-def apply_ubisoft_theme():
-    pass
-
-UBISOFT_COLORS = {
-    'primary': '#0099FF',
-    'accent': '#E60012',
-    'success': '#28A745',
-    'warning': '#FFB020',
-    'text': '#2C3E50'
-}
-
-def create_ubisoft_header(title, subtitle=None):
+# STUBS POUR ÉVITER IMPORT ERRORS
+def apply_ubisoft_theme(): pass
+UBISOFT_COLORS = {'primary': '#0099FF', 'accent': '#E60012', 'success': '#28A745', 'warning': '#FFB020', 'text': '#2C3E50'}
+def create_ubisoft_header(title, subtitle=None): 
     subtitle_html = f"<p>{subtitle}</p>" if subtitle else ""
     return f"<h1>{title}</h1>{subtitle_html}"
-
-def create_ubisoft_breadcrumb(page):
-    return f"<p>🎮 Ubisoft Observatory → {page}</p>"
-
-def create_ubisoft_section_header(title):
-    return f"<h3>{title}</h3>"
-
-def create_ubisoft_info_box(title, content):
-    return f"<div><strong>{title}</strong><p>{content}</p></div>"
-
-def create_ubisoft_accent_box(title, content):
-    return f"<div style='border-left:4px solid #E60012'><strong>{title}</strong><p>{content}</p></div>"
-
-def get_ubisoft_chart_config():
-    return {'layout': {}}
-
+def create_ubisoft_breadcrumb(page): return f"<p>🎮 Ubisoft Observatory → {page}</p>"
+def create_ubisoft_section_header(title): return f"<h3>{title}</h3>"
+def create_ubisoft_info_box(title, content): return f"<div><strong>{title}</strong><p>{content}</p></div>"
+def create_ubisoft_accent_box(title, content): return f"<div style='border-left:4px solid #E60012'><strong>{title}</strong><p>{content}</p></div>"
+def get_ubisoft_chart_config(): return {'layout': {}}
 def create_ubisoft_metric_cols(metrics, cols=4):
     for metric in metrics:
         st.markdown(f"**{metric['title']}**: {metric['value']}")
-
-def display_ubisoft_logo_section():
-    return "<p>© 2024 Ubisoft</p>"
+def display_ubisoft_logo_section(): return "<p>© 2024 Ubisoft</p>"
 # ─────────────────────────────────────────────
-apply_ubisoft_theme()
 
-# Configuration
 st.set_page_config(
-    page_title="Ubisoft Talent Wars - Competitive Intelligence",
+    page_title="Gaming Workforce Observatory - Talent Wars",
     page_icon="⚔️",
     layout="wide"
+)
 
-# Competitive Landscape
-st.markdown(create_ubisoft_section_header("🏆 Ubisoft vs Gaming Industry Giants"))
+apply_ubisoft_theme()
+
+st.markdown(create_ubisoft_header("Gaming Talent Wars", "Competitive Intelligence & Strategic Talent Acquisition"), unsafe_allow_html=True)
+st.markdown(create_ubisoft_breadcrumb("Talent Wars"), unsafe_allow_html=True)
+
+# Introduction CORRIGÉE
+st.markdown(create_ubisoft_info_box(
+    "⚔️ Battle for Gaming Talent",
+    "Analyse stratégique de la compétition pour les meilleurs talents gaming. Gaming vs principales companies du secteur."
+), unsafe_allow_html=True)
+
+# Données comparative CORRIGÉES
+companies = ['Gaming Studio A', 'EA', 'Activision', 'Epic Games', 'Riot Games', 'Valve', 'Blizzard', 'Take-Two']
+avg_salaries = [95000, 98000, 102000, 115000, 108000, 125000, 99000, 94000]
+retention_rates = [87.3, 82.1, 79.5, 91.2, 88.7, 93.1, 81.3, 83.9]
+employee_satisfaction = [7.8, 7.2, 6.9, 8.4, 8.1, 8.7, 7.0, 7.4]
+
+competitive_df = pd.DataFrame({
+    'Company': companies,
+    'Avg_Salary': avg_salaries,
+    'Retention_Rate': retention_rates,
+    'Satisfaction': employee_satisfaction
+})
 
 col1, col2 = st.columns([3, 1])
 
 with col1:
-    # Competitive salary analysis
-    companies = ['Ubisoft', 'EA', 'Activision', 'Epic Games', 'Riot Games', 'Valve', 'Blizzard', 'Take-Two']
-    avg_salaries = [95000, 98000, 102000, 115000, 108000, 125000, 99000, 94000]
-    retention_rates = [87.3, 82.1, 79.5, 91.2, 88.7, 93.1, 81.3, 83.9]
-    employee_satisfaction = [7.8, 7.2, 6.9, 8.4, 8.1, 8.7, 7.0, 7.4]
-    
-    competitive_df = pd.DataFrame({
-        'Company': companies,
-        'Avg_Salary': avg_salaries,
-        'Retention_Rate': retention_rates,
-        'Satisfaction': employee_satisfaction
-    })
-    
     fig_competitive = px.scatter(
         competitive_df,
         x='Avg_Salary',
@@ -93,76 +78,49 @@ with col1:
         color_continuous_scale=['#FF6B6B', '#FFD700', '#0099FF']
     )
     
-    # Highlight Ubisoft
-    ubisoft_data = competitive_df[competitive_df['Company'] == 'Ubisoft']
-    fig_competitive.add_trace(go.Scatter(
-        x=ubisoft_data['Avg_Salary'],
-        y=ubisoft_data['Retention_Rate'],
-        mode='markers',
-        marker=dict(
-            size=20,
-            color=UBISOFT_COLORS['accent'],
-            line=dict(width=3, color=UBISOFT_COLORS['primary'])
-        ),
-        name='Ubisoft Position',
-        showlegend=False
-    ))
-    
-    fig_competitive.update_layout(get_ubisoft_chart_config()['layout'])
     st.plotly_chart(fig_competitive, use_container_width=True)
 
 with col2:
-    st.markdown(
-        create_ubisoft_accent_box(
-            "🎯 Ubisoft Strategy",
-            "Positioning stratégique: Excellent retention rate avec salaire compétitif. Focus sur culture et projets innovants."
-        ),
-        unsafe_allow_html=True
-    )
+    st.markdown(create_ubisoft_accent_box(
+        "🎯 Gaming Strategy",
+        "Positioning stratégique: Excellent retention avec salaire compétitif. Focus sur culture et projets innovants."
+    ), unsafe_allow_html=True)
     
-    st.markdown("### 🏅 Ubisoft Advantages")
+    st.markdown("### 🏅 Gaming Advantages")
     st.markdown("""
-    - **🌍 Global Presence:** 25 studios worldwide
+    - **🌍 Global Presence:** 25+ studios worldwide
     - **🎮 AAA Portfolio:** Iconic franchises  
     - **🏢 Work Culture:** Creative freedom
     - **📈 Career Growth:** Clear progression paths
     - **🎯 Innovation:** Cutting-edge technology
     """)
 
-# Talent Acquisition Funnel
-st.markdown(create_ubisoft_section_header("🎯 Ubisoft Talent Acquisition Performance"))
+# Talent Acquisition Funnel CORRIGÉ
+st.markdown(create_ubisoft_section_header("🎯 Gaming Talent Acquisition Performance"))
 
 col1, col2 = st.columns(2)
 
 with col1:
-    # Funnel data
     funnel_stages = ['Applications', 'Phone Screen', 'Technical Test', 'On-site', 'Offers', 'Accepted']
-    ubisoft_funnel = [10000, 3200, 1800, 650, 420, 340]
-    industry_avg = [10000, 2800, 1400, 500, 300, 210]
+    gaming_funnel = [10000, 3200, 1800, 650, 420, 340]
     
     fig_funnel = go.Figure()
     
     fig_funnel.add_trace(go.Funnel(
         y=funnel_stages,
-        x=ubisoft_funnel,
-        name='Ubisoft Performance',
+        x=gaming_funnel,
+        name='Gaming Performance',
         marker=dict(color=UBISOFT_COLORS['primary']),
         connector=dict(line=dict(color=UBISOFT_COLORS['primary'], dash='solid', width=2))
     ))
     
-    fig_funnel.update_layout(
-        title="🎮 Ubisoft Talent Acquisition Funnel",
-        **get_ubisoft_chart_config()['layout']
-    )
-    
+    fig_funnel.update_layout(title="🎮 Gaming Talent Acquisition Funnel")
     st.plotly_chart(fig_funnel, use_container_width=True)
 
 with col2:
-    # Conversion rates comparison
     conversion_data = {
-        'Stage': ['Application → Phone', 'Phone → Technical', 'Technical → On-site', 
-                 'On-site → Offer', 'Offer → Accept'],
-        'Ubisoft': [32, 56, 36, 65, 81],
+        'Stage': ['Application → Phone', 'Phone → Technical', 'Technical → On-site', 'On-site → Offer', 'Offer → Accept'],
+        'Gaming': [32, 56, 36, 65, 81],
         'Industry Avg': [28, 50, 36, 60, 70]
     }
     
@@ -171,9 +129,9 @@ with col2:
     fig_conversion = go.Figure()
     
     fig_conversion.add_trace(go.Bar(
-        name='Ubisoft',
+        name='Gaming',
         x=conv_df['Stage'],
-        y=conv_df['Ubisoft'],
+        y=conv_df['Gaming'],
         marker_color=UBISOFT_COLORS['primary']
     ))
     
@@ -185,106 +143,22 @@ with col2:
     ))
     
     fig_conversion.update_layout(
-        title="📊 Ubisoft Conversion Rates vs Industry",
-        barmode='group',
-        **get_ubisoft_chart_config()['layout']
+        title="📊 Gaming Conversion Rates vs Industry",
+        barmode='group'
     )
     
     st.plotly_chart(fig_conversion, use_container_width=True)
 
-# Talent Sources Analysis
-st.markdown(create_ubisoft_section_header("🌟 Ubisoft Top Talent Sources"))
-
-# Create talent source data
-talent_sources = {
-    'Source': ['Direct Applications', 'Employee Referrals', 'LinkedIn', 'Gaming Events', 
-               'Universities', 'Headhunters', 'GitHub/Portfolio', 'Game Jams'],
-    'Candidates': [2800, 1950, 1680, 890, 1200, 750, 1100, 430],
-    'Quality_Score': [6.8, 8.9, 7.2, 8.1, 7.5, 8.3, 8.7, 9.1],
-    'Cost_Per_Hire': [1200, 800, 2100, 1800, 2500, 4500, 1000, 600]
-}
-
-sources_df = pd.DataFrame(talent_sources)
-
-col1, col2 = st.columns(2)
-
-with col1:
-    fig_sources = px.scatter(
-        sources_df,
-        x='Cost_Per_Hire',
-        y='Quality_Score',
-        size='Candidates',
-        color='Quality_Score',
-        hover_name='Source',
-        title='🎯 Ubisoft Talent Sources: Cost vs Quality',
-        labels={
-            'Cost_Per_Hire': 'Cost per Hire (USD)',
-            'Quality_Score': 'Quality Score (1-10)',
-            'Candidates': 'Number of Candidates'
-        },
-        color_continuous_scale=['#E60012', '#FFD700', '#0099FF']
-    )
-    
-    fig_sources.update_layout(get_ubisoft_chart_config()['layout'])
-    st.plotly_chart(fig_sources, use_container_width=True)
-
-with col2:
-    # Top sources ranking
-    st.markdown("### 🏅 Best ROI Sources for Ubisoft")
-    
-    # Calculate ROI score (Quality/Cost normalized)
-    sources_df['ROI_Score'] = (sources_df['Quality_Score'] / sources_df['Cost_Per_Hire'] * 1000).round(2)
-    top_sources = sources_df.nlargest(5, 'ROI_Score')
-    
-    for i, row in top_sources.iterrows():
-        st.markdown(f"""
-        **{i+1}. {row['Source']}**  
-        💰 ROI Score: {row['ROI_Score']} | 🎯 Quality: {row['Quality_Score']}/10  
-        💵 Cost: ${row['Cost_Per_Hire']:,} | 👥 Volume: {row['Candidates']:,}
-        """)
-
-# Skills in Demand
-st.markdown(create_ubisoft_section_header("🔥 Most Wanted Skills at Ubisoft"))
-
-skills_data = {
-    'Skill': ['Unity 3D', 'Unreal Engine', 'C++', 'Python', 'Game Design', 
-              'UI/UX Design', 'DevOps', 'Machine Learning', 'Mobile Dev', 'VR/AR'],
-    'Demand_Score': [95, 88, 92, 76, 89, 82, 74, 68, 71, 85],
-    'Supply_Shortage': [78, 85, 82, 45, 73, 52, 67, 89, 38, 91],
-    'Salary_Premium': [15, 22, 18, 8, 12, 9, 14, 28, 5, 35]
-}
-
-skills_df = pd.DataFrame(skills_data)
-
-fig_skills = px.scatter(
-    skills_df,
-    x='Demand_Score',
-    y='Supply_Shortage',
-    size='Salary_Premium',
-    color='Salary_Premium',
-    hover_name='Skill',
-    title='🎮 Ubisoft Skills Market: Demand vs Supply Shortage',
-    labels={
-        'Demand_Score': 'Internal Demand Score',
-        'Supply_Shortage': 'Market Supply Shortage (%)',
-        'Salary_Premium': 'Salary Premium (%)'
-    },
-    color_continuous_scale=['#0099FF', '#FFD700', '#E60012']
-)
-
-fig_skills.update_layout(get_ubisoft_chart_config()['layout'])
-st.plotly_chart(fig_skills, use_container_width=True)
-
-# Actionable Insights
-st.markdown(create_ubisoft_section_header("💡 Strategic Recommendations for Ubisoft"))
+# Actionable Insights CORRIGÉES
+st.markdown(create_ubisoft_section_header("💡 Strategic Gaming Recommendations"))
 
 col1, col2, col3 = st.columns(3)
 
 with col1:
     st.markdown("""
-    <div class="ubisoft-ultra-card">
+    <div style="background: linear-gradient(135deg, #0099FF15, #fff); padding: 1.5rem; border-radius: 8px; border-left: 4px solid #0099FF;">
         <h4 style="color: #0099FF;">🎯 Focus Areas</h4>
-        <ul style="color: #F5F5F5; text-align: left;">
+        <ul style="color: #2C3E50; text-align: left;">
             <li>Renforcer employee referral program</li>
             <li>Investir dans Game Jams & events</li>
             <li>Développer partnerships universités</li>
@@ -295,9 +169,9 @@ with col1:
 
 with col2:
     st.markdown("""
-    <div class="ubisoft-ultra-card">
-        <h4 style="color: #0099FF;">⚡ Quick Wins</h4>
-        <ul style="color: #F5F5F5; text-align: left;">
+    <div style="background: linear-gradient(135deg, #FFB02015, #fff); padding: 1.5rem; border-radius: 8px; border-left: 4px solid #FFB020;">
+        <h4 style="color: #FFB020;">⚡ Quick Wins</h4>
+        <ul style="color: #2C3E50; text-align: left;">
             <li>+15% referral bonus pour VR/AR skills</li>
             <li>Fast-track pour Unity/Unreal experts</li>
             <li>Gaming hackathons mensuels</li>
@@ -308,10 +182,10 @@ with col2:
 
 with col3:
     st.markdown("""
-    <div class="ubisoft-ultra-card">
-        <h4 style="color: #0099FF;">📈 Long-term Strategy</h4>
-        <ul style="color: #F5F5F5; text-align: left;">
-            <li>Ubisoft Academy program</li>
+    <div style="background: linear-gradient(135deg, #28A74515, #fff); padding: 1.5rem; border-radius: 8px; border-left: 4px solid #28A745;">
+        <h4 style="color: #28A745;">📈 Long-term Strategy</h4>
+        <ul style="color: #2C3E50; text-align: left;">
+            <li>Gaming Academy program</li>
             <li>Global talent pipeline</li>
             <li>AI-powered candidate matching</li>
             <li>Employer branding campaigns</li>
@@ -319,7 +193,7 @@ with col3:
     </div>
     """, unsafe_allow_html=True)
 
-# Sidebar
+# Sidebar CORRIGÉ
 with st.sidebar:
     st.markdown("""
     ## ⚔️ Talent Wars Dashboard
@@ -350,5 +224,14 @@ with st.sidebar:
     - Glassdoor salary data
     - LinkedIn talent insights  
     - Gaming industry reports
-    - Ubisoft internal metrics
+    - Internal gaming metrics
     """)
+
+# Footer
+st.markdown("---")
+st.markdown("""
+<div style="text-align: center; padding: 1rem; color: #6C757D;">
+    🎮 <strong>Gaming Workforce Observatory</strong> - Talent Wars • 
+    Strategic Talent Intelligence • © 2024 Gaming Excellence
+</div>
+""", unsafe_allow_html=True)
