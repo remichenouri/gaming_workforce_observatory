@@ -18,21 +18,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Header principal Ubisoft
-st.markdown(
-    create_ubisoft_header(
-        "UBISOFT Gaming Workforce Observatory",
-        "Executive Dashboard - Strategic Workforce Intelligence"
-    ),
-    unsafe_allow_html=True
-)
-
-# Breadcrumb navigation
-st.markdown(
-    create_ubisoft_breadcrumb("Executive Dashboard"),
-    unsafe_allow_html=True
-)
-
 # 📊 KPI METRICS UBISOFT - Section Executive
 st.markdown("## 🎯 Ubisoft Global Workforce Metrics")
 
