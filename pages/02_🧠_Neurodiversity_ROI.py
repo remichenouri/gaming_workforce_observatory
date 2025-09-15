@@ -23,34 +23,35 @@ UBISOFT_COLORS = {
 }
 
 def create_ubisoft_header(title, subtitle=None):
-    subtitle_html = f"<p>{subtitle}</p>" if subtitle else ""
-    return f"<h1>{title}</h1>{subtitle_html}"
-
-def create_ubisoft_breadcrumb(page):
-    return f"<p>🎮 Ubisoft Observatory → {page}</p>"
+    subtitle_html = f"<p style='font-size:1.2rem; color:#555; margin-top:0.5rem;'>{subtitle}</p>" if subtitle else ""
+    return f"""
+    <div style='background: linear-gradient(90deg, #0099FF, #00CCFF); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;'>
+        <h1 style='font-family: Arial, sans-serif; font-weight: bold; font-size: 3.5rem; color: white; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);'>{title}</h1>
+        {subtitle_html}
+    </div>
+    """
 
 def create_ubisoft_section_header(title):
-    return f"<h3>{title}</h3>"
+    return f"<h2 style='color: #2C3E50; font-family: Arial, sans-serif; font-weight: bold; border-left: 4px solid #0099FF; padding-left: 1rem; margin: 2rem 0 1rem 0;'>{title}</h2>"
 
 def create_ubisoft_info_box(title, content):
-    return f"<div><strong>{title}</strong><p>{content}</p></div>"
-
-def create_ubisoft_accent_box(title, content):
-    return f"<div style='border-left:4px solid #E60012'><strong>{title}</strong><p>{content}</p></div>"
+    return f"""
+    <div style='background: #f8f9fa; border-left: 4px solid #0099FF; padding: 1.5rem; margin: 1rem 0; border-radius: 5px;'>
+        <h4 style='color: #2C3E50; margin: 0 0 0.5rem 0;'>{title}</h4>
+        <p style='color: #555; margin: 0; font-size: 1rem; line-height: 1.5;'>{content}</p>
+    </div>
+    """
 
 def get_ubisoft_chart_config():
-    return {'layout': {}}
-
-def create_ubisoft_metric_cols(metrics, cols=4):
-    for metric in metrics:
-        st.markdown(f"**{metric['title']}**: {metric['value']}")
-
-def display_ubisoft_logo_section():
-    return "<p>© 2024 Ubisoft</p>"
+    return {
+        'layout': {
+            'font': {'family': 'Arial, sans-serif', 'size': 12, 'color': '#2C3E50'},
+            'paper_bgcolor': 'white',
+            'plot_bgcolor': '#fafafa'
+        }
+    }
 
 # ─────────────────────────────────────────────
-
-apply_ubisoft_theme()
 
 st.set_page_config(
     page_title="Ubisoft Neurodiversity ROI - Inclusion Excellence",
@@ -58,27 +59,122 @@ st.set_page_config(
     layout="wide"
 )
 
-# Header
-st.markdown(create_ubisoft_header("UBISOFT Neurodiversity ROI", "Inclusion Excellence & Measurable Business Impact"), unsafe_allow_html=True)
-st.markdown(create_ubisoft_breadcrumb("Neurodiversity ROI"), unsafe_allow_html=True)
+# SIDEBAR ÉPURÉE - MENU SEULEMENT
+with st.sidebar:
+    st.markdown("""
+    <div style='text-align: center; padding: 1rem 0;'>
+        <h2 style='color: #0099FF; font-family: Arial, sans-serif; margin: 0;'>🧠 Ubisoft</h2>
+        <p style='color: #666; font-size: 0.9rem; margin: 0.5rem 0;'>Workforce Observatory</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    # Menu de navigation épuré
+    menu_items = [
+        ("🏠", "Executive Dashboard"),
+        ("⚔️", "Talent Wars"), 
+        ("🧠", "Neurodiversity ROI"),
+        ("🎯", "Predictive Analytics"),
+        ("🌍", "Global Studios"),
+        ("💰", "Compensation Intel"),
+        ("🚀", "Future Insights"),
+        ("⚙️", "Admin Panel")
+    ]
+    
+    st.markdown("<h4 style='color: #2C3E50; margin-bottom: 1rem;'>Navigation</h4>", unsafe_allow_html=True)
+    
+    for icon, name in menu_items:
+        if name == "Neurodiversity ROI":
+            st.markdown(f"""
+            <div style='background: #0099FF; color: white; padding: 0.75rem; border-radius: 5px; margin: 0.25rem 0;'>
+                <strong>{icon} {name}</strong>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown(f"""
+            <div style='padding: 0.75rem; border-radius: 5px; margin: 0.25rem 0; color: #555;'>
+                {icon} {name}
+            </div>
+            """, unsafe_allow_html=True)
 
-# KPI Metrics
-neurodiversity_metrics = [
-    {"title": "Neurodiverse Talent Pool", "value": "18.3%", "delta": "+4.2% vs 2023", "icon": "🧠"},
-    {"title": "Innovation Score Increase", "value": "+23%", "delta": "Teams with ND members", "icon": "💡"},
-    {"title": "Bug Detection Rate", "value": "+31%", "delta": "QA teams advantage", "icon": "🔍"},
-    {"title": "ROI per ND Hire", "value": "$47K", "delta": "Annual value add", "icon": "💰"}
-]
+# HEADER PRINCIPAL PROFESSIONNEL
+last_updated = datetime.now().strftime('%Y-%m-%d %H:%M')
+st.markdown(f"""
+<div style='background: #f8f9fa; padding: 1rem; border-radius: 5px; margin-bottom: 1rem; border-left: 4px solid #0099FF;'>
+    <div style='display: flex; justify-content: space-between; align-items: center;'>
+        <div>
+            <strong style='color: #2C3E50;'>🧠 Neurodiversity ROI - Inclusion Excellence</strong>
+            <p style='margin: 0; color: #666; font-size: 0.9rem;'>Business Impact Analysis • Performance Metrics • Accommodation ROI</p>
+        </div>
+        <div style='text-align: right;'>
+            <p style='margin: 0; color: #666; font-size: 0.9rem;'>Last Updated</p>
+            <strong style='color: #0099FF;'>{last_updated}</strong>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-create_ubisoft_metric_cols(neurodiversity_metrics)
+# TITRE PRINCIPAL AVEC MISE EN VALEUR
+st.markdown(create_ubisoft_header("Neurodiversity ROI", "Inclusion Excellence & Measurable Business Impact"), unsafe_allow_html=True)
 
-# Performance Analysis
-st.markdown(create_ubisoft_section_header("📈 Ubisoft Neurodiverse Teams Performance"))
+# INTRODUCTION AVEC CONTEXTE BUSINESS
+st.markdown(create_ubisoft_info_box(
+    "🧠 Ubisoft Neurodiversity Excellence Program",
+    "Notre programme d'inclusion de la neurodiversité génère un impact business mesurable de $3.2M annuellement. Avec 18.3% de talents neurodivergents, Ubisoft démontre que l'inclusion améliore l'innovation (+23%), la qualité (+31% détection bugs) et la performance globale des équipes de développement gaming."
+), unsafe_allow_html=True)
+
+# MÉTRIQUES CLÉS AVEC STYLE PROFESSIONNEL
+st.markdown(create_ubisoft_section_header("🎯 Key Performance Indicators"), unsafe_allow_html=True)
+
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    st.markdown("""
+    <div style='background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;'>
+        <div style='font-size: 2rem; color: #0099FF; margin-bottom: 0.5rem;'>🧠</div>
+        <h3 style='color: #2C3E50; margin: 0; font-size: 2rem;'>18.3%</h3>
+        <p style='color: #666; margin: 0.5rem 0 0 0;'>Neurodiverse Talent Pool</p>
+        <small style='color: #28A745;'>+4.2% vs 2023</small>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    st.markdown("""
+    <div style='background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;'>
+        <div style='font-size: 2rem; color: #0099FF; margin-bottom: 0.5rem;'>💡</div>
+        <h3 style='color: #2C3E50; margin: 0; font-size: 2rem;'>+23%</h3>
+        <p style='color: #666; margin: 0.5rem 0 0 0;'>Innovation Score</p>
+        <small style='color: #28A745;'>Teams with ND members</small>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col3:
+    st.markdown("""
+    <div style='background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;'>
+        <div style='font-size: 2rem; color: #0099FF; margin-bottom: 0.5rem;'>🔍</div>
+        <h3 style='color: #2C3E50; margin: 0; font-size: 2rem;'>+31%</h3>
+        <p style='color: #666; margin: 0.5rem 0 0 0;'>Bug Detection Rate</p>
+        <small style='color: #28A745;'>QA teams advantage</small>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col4:
+    st.markdown("""
+    <div style='background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;'>
+        <div style='font-size: 2rem; color: #0099FF; margin-bottom: 0.5rem;'>💰</div>
+        <h3 style='color: #2C3E50; margin: 0; font-size: 2rem;'>$47K</h3>
+        <p style='color: #666; margin: 0.5rem 0 0 0;'>ROI per ND Hire</p>
+        <small style='color: #28A745;'>Annual value add</small>
+    </div>
+    """, unsafe_allow_html=True)
+
+# PERFORMANCE ANALYSIS
+st.markdown(create_ubisoft_section_header("📈 Team Performance Analysis"), unsafe_allow_html=True)
 
 col1, col2 = st.columns(2)
 
 with col1:
-    # Team performance comparison
     teams_data = {
         'Team_Type': ['Neurotypical Only', 'Mixed Teams (10-30%)', 'Mixed Teams (30%+)', 'ND-Led Teams'],
         'Innovation_Score': [72, 89, 94, 97],
@@ -106,7 +202,7 @@ with col1:
     ))
     
     fig_performance.update_layout(
-        title="🎮 Ubisoft Team Performance by Neurodiversity Composition",
+        title="🎮 Team Performance by Neurodiversity Composition",
         barmode='group',
         **get_ubisoft_chart_config()['layout']
     )
@@ -114,7 +210,6 @@ with col1:
     st.plotly_chart(fig_performance, width='stretch')
 
 with col2:
-    # ROI over time
     months = pd.date_range('2024-01-01', periods=12, freq='M')
     roi_data = {
         'Month': months,
@@ -138,14 +233,14 @@ with col2:
     ))
     
     fig_roi.update_layout(
-        title="💰 Ubisoft Neurodiversity Program ROI 2024",
+        title="💰 Neurodiversity Program ROI 2024",
         **get_ubisoft_chart_config()['layout']
     )
     
     st.plotly_chart(fig_roi, width='stretch')
 
-# Skills Analysis
-st.markdown(create_ubisoft_section_header("🎯 Ubisoft Neurodivergent Excellence Areas"))
+# SKILLS ANALYSIS
+st.markdown(create_ubisoft_section_header("🎯 Neurodivergent Excellence Areas"), unsafe_allow_html=True)
 
 skills_analysis = {
     'Skill_Area': ['Pattern Recognition', 'Quality Assurance', 'Data Analysis', 
@@ -164,63 +259,66 @@ fig_skills = px.bar(
     x='Skill_Area',
     y='Advantage',
     color='Ubisoft_Value',
-    title='🧠 Ubisoft: Neurodivergent Talent Advantages by Skill Area',
+    title='🧠 Neurodivergent Talent Advantages by Skill Area',
     labels={'Advantage': 'Performance Advantage (%)', 'Ubisoft_Value': 'Business Value ($K)'},
     color_continuous_scale=['#0066CC', '#0099FF', '#E60012']
 )
 
-fig_skills.update_layout(get_ubisoft_chart_config()['layout'])
+fig_skills.update_layout(**get_ubisoft_chart_config()['layout'])
 st.plotly_chart(fig_skills, width='stretch')
 
-# Success Stories
-st.markdown(create_ubisoft_section_header("🌟 Ubisoft Neurodiversity Success Stories"))
+# SUCCESS STORIES AVEC STYLE AMÉLIORÉ
+st.markdown(create_ubisoft_section_header("🌟 Success Stories"), unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns(3)
 
 with col1:
     st.markdown("""
-    <div class="ubisoft-ultra-card">
-        <h4 style="color: #0099FF;">🎮 QA Excellence</h4>
-        <p style="color: #F5F5F5;">
+    <div style='background: linear-gradient(135deg, #0099FF, #00CCFF); padding: 2rem; border-radius: 10px; text-align: center; color: white;'>
+        <div style='font-size: 3rem; margin-bottom: 1rem;'>🎮</div>
+        <h4 style='color: white; margin: 0;'>QA Excellence</h4>
+        <div style='margin: 1rem 0;'>
             <strong>Team Lead with Autism</strong><br/>
             • 47% faster bug detection<br/>
             • 89% accuracy improvement<br/>
             • Mentored 12 junior testers<br/>
             • Saved $340K in post-launch fixes
-        </p>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
 with col2:
     st.markdown("""
-    <div class="ubisoft-ultra-card">
-        <h4 style="color: #0099FF;">🎨 Creative Innovation</h4>
-        <p style="color: #F5F5F5;">
+    <div style='background: linear-gradient(135deg, #28A745, #34CE57); padding: 2rem; border-radius: 10px; text-align: center; color: white;'>
+        <div style='font-size: 3rem; margin-bottom: 1rem;'>🎨</div>
+        <h4 style='color: white; margin: 0;'>Creative Innovation</h4>
+        <div style='margin: 1rem 0;'>
             <strong>Game Designer with ADHD</strong><br/>
             • Led 3 award-winning features<br/>
             • 156% faster ideation process<br/>
             • Cross-team collaboration champion<br/>
             • Generated $2.3M in new revenue
-        </p>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
 with col3:
     st.markdown("""
-    <div class="ubisoft-ultra-card">
-        <h4 style="color: #0099FF;">⚙️ Technical Mastery</h4>
-        <p style="color: #F5F5F5;">
+    <div style='background: linear-gradient(135deg, #E60012, #FF1744); padding: 2rem; border-radius: 10px; text-align: center; color: white;'>
+        <div style='font-size: 3rem; margin-bottom: 1rem;'>⚙️</div>
+        <h4 style='color: white; margin: 0;'>Technical Mastery</h4>
+        <div style='margin: 1rem 0;'>
             <strong>Senior Developer with Dyslexia</strong><br/>
             • Optimized core engine (+34% perf)<br/>
             • Reduced load times by 52%<br/>
             • Mentored 8 junior developers<br/>
             • Patent holder (3 innovations)
-        </p>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-# Accommodation ROI
-st.markdown(create_ubisoft_section_header("🛠️ Ubisoft Accommodation Investment & Returns"))
+# ACCOMMODATION ROI
+st.markdown(create_ubisoft_section_header("🛠️ Accommodation Investment & Returns"), unsafe_allow_html=True)
 
 accommodation_data = {
     'Accommodation': ['Noise-Canceling Headphones', 'Flexible Work Hours', 'Specialized Software',
@@ -240,7 +338,7 @@ fig_accommodations = px.scatter(
     size='Satisfaction_Increase',
     color='Satisfaction_Increase',
     hover_name='Accommodation',
-    title='💡 Ubisoft: Accommodation Cost vs Productivity Impact',
+    title='💡 Accommodation Cost vs Productivity Impact',
     labels={
         'Cost_Per_Employee': 'Cost per Employee (USD)',
         'Productivity_Gain': 'Productivity Gain (%)',
@@ -249,49 +347,16 @@ fig_accommodations = px.scatter(
     color_continuous_scale=['#0066CC', '#0099FF', '#E60012']
 )
 
-fig_accommodations.update_layout(get_ubisoft_chart_config()['layout'])
+fig_accommodations.update_layout(**get_ubisoft_chart_config()['layout'])
 st.plotly_chart(fig_accommodations, width='stretch')
 
-# Footer
+# FOOTER PROFESSIONNEL
 st.markdown("---")
-st.markdown(display_ubisoft_logo_section(), unsafe_allow_html=True)
-
-# Sidebar CORRIGÉ avec datetime
-last = datetime.now().strftime('%Y-%m-%d %H:%M')
-
-with st.sidebar:
-    st.markdown(f"""
-    ## 🧠 Neurodiversity ROI
-    
-    **Inclusion Excellence**
-    
-    📊 **Measurable Impact** on business outcomes
-    
-    🎯 **Performance Analytics** by team composition
-    
-    💰 **ROI Tracking** accommodation investments
-    
-    🌟 **Success Stories** from Ubisoft teams
-    
-    ---
-    
-    ### 🎮 Key Focus Areas
-    - Quality Assurance Excellence
-    - Pattern Recognition
-    - Creative Problem Solving  
-    - Technical Innovation
-    - Data Analysis
-    - System Architecture
-    
-    ---
-    
-    ### 📈 2024 Achievements
-    - **18.3%** neurodiverse workforce
-    - **$3.2M** total ROI generated
-    - **94%** retention rate
-    - **23%** innovation boost
-    
-    ---
-    
-    **🔄 Last Updated:** {last}
-    """)
+st.markdown("""
+<div style='text-align: center; padding: 2rem; background: #f8f9fa; border-radius: 5px; margin-top: 2rem;'>
+    <p style='color: #666; margin: 0; font-size: 0.9rem;'>
+        © 2024 Ubisoft Entertainment - Gaming Workforce Observatory<br>
+        Neurodiversity ROI Dashboard • Inclusion Excellence • Confidential and Proprietary Information
+    </p>
+</div>
+""", unsafe_allow_html=True)
