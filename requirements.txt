@@ -1,5 +1,9 @@
+"""
+🎮 CORRECTIONS REQUIREMENTS.TXT - DÉPENDANCES COMPLÈTES
+"""
+
 # Gaming Workforce Observatory - Enterprise Edition v2.0
-# Production Requirements - Streamlit Cloud Compatible
+# Production Requirements - Streamlit Cloud Compatible - CORRIGÉ
 
 # === CORE FRAMEWORK ===
 streamlit>=1.28.0
@@ -17,5 +21,15 @@ scikit-learn>=1.3.0
 # === DATA PROCESSING ===
 scipy>=1.10.0
 
-# === GAMING INDUSTRY SPECIFIC ===
+# === WEB & HTTP ===
 requests>=2.31.0
+
+# === OPTIONAL: Geographic mapping (commenté pour éviter erreur) ===
+# geopandas>=0.13.0  # Décommenter si besoin de cartes géographiques
+# folium>=0.14.0
+
+# === PERFORMANCE & CACHING ===
+cachetools>=5.0.0
+
+# === UTILITIES ===
+python-dotenv>=1.0.0
