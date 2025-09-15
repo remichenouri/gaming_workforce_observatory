@@ -17,27 +17,6 @@ st.set_page_config(
     page_icon="⚔️",
     layout="wide"
 
-
-# Header
-st.markdown(
-    create_ubisoft_header(
-        "UBISOFT Talent Wars",
-        "Competitive Intelligence & Strategic Talent Acquisition"
-    ),
-    unsafe_allow_html=True
-)
-
-st.markdown(create_ubisoft_breadcrumb("Talent Wars"), unsafe_allow_html=True)
-
-# Introduction
-st.markdown(
-    create_ubisoft_info_box(
-        "⚔️ Battle for Gaming Talent",
-        "Analyse stratégique de la compétition pour les meilleurs talents gaming. Ubisoft vs principales companies du secteur pour attirer et retenir les développeurs, artists, et game designers de niveau mondial."
-    ),
-    unsafe_allow_html=True
-)
-
 # Competitive Landscape
 st.markdown(create_ubisoft_section_header("🏆 Ubisoft vs Gaming Industry Giants"))
 
