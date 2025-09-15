@@ -12,6 +12,47 @@ from datetime import datetime, timedelta
 import sys
 from pathlib import Path
 
+# ─────────────────────────────────────────────
+# STUBS POUR THEME & COMPOSANTS UBISOFT
+# Appliquer ABSOLUMENT dans chaque page à remplacer
+def apply_ubisoft_theme():
+    pass
+
+UBISOFT_COLORS = {
+    'primary': '#0099FF',
+    'accent': '#E60012',
+    'success': '#28A745',
+    'warning': '#FFB020',
+    'text': '#2C3E50'
+}
+
+def create_ubisoft_header(title, subtitle=None):
+    subtitle_html = f"<p>{subtitle}</p>" if subtitle else ""
+    return f"<h1>{title}</h1>{subtitle_html}"
+
+def create_ubisoft_breadcrumb(page):
+    return f"<p>🎮 Ubisoft Observatory → {page}</p>"
+
+def create_ubisoft_section_header(title):
+    return f"<h3>{title}</h3>"
+
+def create_ubisoft_info_box(title, content):
+    return f"<div><strong>{title}</strong><p>{content}</p></div>"
+
+def create_ubisoft_accent_box(title, content):
+    return f"<div style='border-left:4px solid #E60012'><strong>{title}</strong><p>{content}</p></div>"
+
+def get_ubisoft_chart_config():
+    return {'layout': {}}
+
+def create_ubisoft_metric_cols(metrics, cols=4):
+    for metric in metrics:
+        st.markdown(f"**{metric['title']}**: {metric['value']}")
+
+def display_ubisoft_logo_section():
+    return "<p>© 2024 Ubisoft</p>"
+# ─────────────────────────────────────────────
+
 # Ajout du chemin pour imports
 sys.path.append(str(Path(__file__).parent.parent))
 
