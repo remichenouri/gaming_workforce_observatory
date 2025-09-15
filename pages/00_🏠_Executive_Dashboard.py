@@ -290,5 +290,7 @@ with st.sidebar:
     
     ---
     
-    **🔄 Last Updated:** {datetime.now().strftime('%Y-%m-%d %H:%M')}
-    """.format(datetime=datetime))
+    last = datetime.now().strftime('%Y-%m-%d %H:%M')
+    st.markdown(f"""
+        … **🔄 Last Updated:** {last}
+    """, unsafe_allow_html=True)
