@@ -2,16 +2,15 @@
 🎮 Ubisoft Gaming Workforce Observatory
 Neurodiversity ROI - Inclusion Excellence & Business Impact
 """
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import numpy as np
+from datetime import datetime
 
 # ─────────────────────────────────────────────
 # STUBS POUR THEME & COMPOSANTS UBISOFT
-# Appliquer ABSOLUMENT dans chaque page à remplacer
 def apply_ubisoft_theme():
     pass
 
@@ -48,6 +47,7 @@ def create_ubisoft_metric_cols(metrics, cols=4):
 
 def display_ubisoft_logo_section():
     return "<p>© 2024 Ubisoft</p>"
+
 # ─────────────────────────────────────────────
 
 apply_ubisoft_theme()
@@ -58,6 +58,11 @@ st.set_page_config(
     layout="wide"
 )
 
+# Header
+st.markdown(create_ubisoft_header("UBISOFT Neurodiversity ROI", "Inclusion Excellence & Measurable Business Impact"), unsafe_allow_html=True)
+st.markdown(create_ubisoft_breadcrumb("Neurodiversity ROI"), unsafe_allow_html=True)
+
+# KPI Metrics
 neurodiversity_metrics = [
     {"title": "Neurodiverse Talent Pool", "value": "18.3%", "delta": "+4.2% vs 2023", "icon": "🧠"},
     {"title": "Innovation Score Increase", "value": "+23%", "delta": "Teams with ND members", "icon": "💡"},
@@ -106,7 +111,7 @@ with col1:
         **get_ubisoft_chart_config()['layout']
     )
     
-    st.plotly_chart(fig_performance, use_container_width=True)
+    st.plotly_chart(fig_performance, width='stretch')
 
 with col2:
     # ROI over time
@@ -137,7 +142,7 @@ with col2:
         **get_ubisoft_chart_config()['layout']
     )
     
-    st.plotly_chart(fig_roi, use_container_width=True)
+    st.plotly_chart(fig_roi, width='stretch')
 
 # Skills Analysis
 st.markdown(create_ubisoft_section_header("🎯 Ubisoft Neurodivergent Excellence Areas"))
@@ -165,7 +170,7 @@ fig_skills = px.bar(
 )
 
 fig_skills.update_layout(get_ubisoft_chart_config()['layout'])
-st.plotly_chart(fig_skills, use_container_width=True)
+st.plotly_chart(fig_skills, width='stretch')
 
 # Success Stories
 st.markdown(create_ubisoft_section_header("🌟 Ubisoft Neurodiversity Success Stories"))
@@ -245,10 +250,17 @@ fig_accommodations = px.scatter(
 )
 
 fig_accommodations.update_layout(get_ubisoft_chart_config()['layout'])
-st.plotly_chart(fig_accommodations, use_container_width=True)
+st.plotly_chart(fig_accommodations, width='stretch')
+
+# Footer
+st.markdown("---")
+st.markdown(display_ubisoft_logo_section(), unsafe_allow_html=True)
+
+# Sidebar CORRIGÉ avec datetime
+last = datetime.now().strftime('%Y-%m-%d %H:%M')
 
 with st.sidebar:
-    st.markdown("""
+    st.markdown(f"""
     ## 🧠 Neurodiversity ROI
     
     **Inclusion Excellence**
@@ -278,4 +290,8 @@ with st.sidebar:
     - **$3.2M** total ROI generated
     - **94%** retention rate
     - **23%** innovation boost
+    
+    ---
+    
+    **🔄 Last Updated:** {last}
     """)
