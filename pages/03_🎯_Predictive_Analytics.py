@@ -50,7 +50,7 @@ def create_ubisoft_metric_cols(metrics, cols=4):
 def display_ubisoft_logo_section():
     return "<p>© 2024 Ubisoft</p>"
 # ─────────────────────────────────────────────
-
+apply_ubisoft_theme()
 
 # Configuration page
 st.set_page_config(
