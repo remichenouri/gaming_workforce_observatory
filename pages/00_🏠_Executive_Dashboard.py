@@ -23,33 +23,35 @@ UBISOFT_COLORS = {
 }
 
 def create_ubisoft_header(title, subtitle=None):
-    subtitle_html = f"<p>{subtitle}</p>" if subtitle else ""
-    return f"<h1>{title}</h1>{subtitle_html}"
-
-def create_ubisoft_breadcrumb(page):
-    return f"<p>🎮 Ubisoft Observatory → {page}</p>"
+    subtitle_html = f"<p style='font-size:1.2rem; color:#555; margin-top:0.5rem;'>{subtitle}</p>" if subtitle else ""
+    return f"""
+    <div style='background: linear-gradient(90deg, #0099FF, #00CCFF); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;'>
+        <h1 style='font-family: Arial, sans-serif; font-weight: bold; font-size: 3.5rem; color: white; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);'>{title}</h1>
+        {subtitle_html}
+    </div>
+    """
 
 def create_ubisoft_section_header(title):
-    return f"<h3>{title}</h3>"
+    return f"<h2 style='color: #2C3E50; font-family: Arial, sans-serif; font-weight: bold; border-left: 4px solid #0099FF; padding-left: 1rem; margin: 2rem 0 1rem 0;'>{title}</h2>"
 
 def create_ubisoft_info_box(title, content):
-    return f"<div><strong>{title}</strong><p>{content}</p></div>"
-
-def create_ubisoft_accent_box(title, content):
-    return f"<div style='border-left:4px solid #E60012'><strong>{title}</strong><p>{content}</p></div>"
+    return f"""
+    <div style='background: #f8f9fa; border-left: 4px solid #0099FF; padding: 1.5rem; margin: 1rem 0; border-radius: 5px;'>
+        <h4 style='color: #2C3E50; margin: 0 0 0.5rem 0;'>{title}</h4>
+        <p style='color: #555; margin: 0; font-size: 1rem; line-height: 1.5;'>{content}</p>
+    </div>
+    """
 
 def get_ubisoft_chart_config():
-    return {'layout': {}}
+    return {
+        'layout': {
+            'font': {'family': 'Arial, sans-serif', 'size': 12, 'color': '#2C3E50'},
+            'paper_bgcolor': 'white',
+            'plot_bgcolor': '#fafafa'
+        }
+    }
 
-def create_ubisoft_metric_cols(metrics, cols=4):
-    for metric in metrics:
-        st.markdown(f"**{metric['title']}**: {metric['value']}")
-
-def display_ubisoft_logo_section():
-    return "<p>© 2024 Ubisoft</p>"
 # ─────────────────────────────────────────────
-
-apply_ubisoft_theme()
 
 # Configuration de la page
 st.set_page_config(
@@ -59,24 +61,121 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 📊 KPI METRICS UBISOFT - Section Executive
-st.markdown("## 🎯 Ubisoft Global Workforce Metrics")
+# SIDEBAR ÉPURÉE - MENU SEULEMENT
+with st.sidebar:
+    st.markdown("""
+    <div style='text-align: center; padding: 1rem 0;'>
+        <h2 style='color: #0099FF; font-family: Arial, sans-serif; margin: 0;'>🎮 Ubisoft</h2>
+        <p style='color: #666; font-size: 0.9rem; margin: 0.5rem 0;'>Workforce Observatory</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    # Menu de navigation épuré
+    menu_items = [
+        ("🏠", "Executive Dashboard"),
+        ("⚔️", "Talent Wars"), 
+        ("🧠", "Neurodiversity ROI"),
+        ("🎯", "Predictive Analytics"),
+        ("🌍", "Global Studios"),
+        ("💰", "Compensation Intel"),
+        ("🚀", "Future Insights"),
+        ("⚙️", "Admin Panel")
+    ]
+    
+    st.markdown("<h4 style='color: #2C3E50; margin-bottom: 1rem;'>Navigation</h4>", unsafe_allow_html=True)
+    
+    for icon, name in menu_items:
+        if name == "Executive Dashboard":
+            st.markdown(f"""
+            <div style='background: #0099FF; color: white; padding: 0.75rem; border-radius: 5px; margin: 0.25rem 0;'>
+                <strong>{icon} {name}</strong>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown(f"""
+            <div style='padding: 0.75rem; border-radius: 5px; margin: 0.25rem 0; color: #555;'>
+                {icon} {name}
+            </div>
+            """, unsafe_allow_html=True)
 
-# Génération de données exemple pour Ubisoft
-ubisoft_metrics = [
-    {"title": "Ubisoft Talent Pool", "value": "2,847", "delta": "+12% vs Q3", "icon": "👥"},
-    {"title": "Studios Worldwide", "value": "25", "delta": "Global Presence", "icon": "🌍"},
-    {"title": "Retention Rate", "value": "87.3%", "delta": "+5.2% YoY", "icon": "🎯"},
-    {"title": "Innovation Index", "value": "94/100", "delta": "Industry Leading", "icon": "🚀"}
-]
+# HEADER PRINCIPAL PROFESSIONNEL
+last_updated = datetime.now().strftime('%Y-%m-%d %H:%M')
+st.markdown(f"""
+<div style='background: #f8f9fa; padding: 1rem; border-radius: 5px; margin-bottom: 1rem; border-left: 4px solid #28A745;'>
+    <div style='display: flex; justify-content: space-between; align-items: center;'>
+        <div>
+            <strong style='color: #2C3E50;'>🎮 Ubisoft Gaming Workforce Observatory</strong>
+            <p style='margin: 0; color: #666; font-size: 0.9rem;'>Global Studios • 25 Locations • 15,847 Employees</p>
+        </div>
+        <div style='text-align: right;'>
+            <p style='margin: 0; color: #666; font-size: 0.9rem;'>Last Updated</p>
+            <strong style='color: #0099FF;'>{last_updated}</strong>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-# 🌍 Section Studios Ubisoft Worldwide
-st.markdown("## 🌍 Ubisoft Global Studios Performance")
+# TITRE PRINCIPAL AVEC MISE EN VALEUR
+st.markdown(create_ubisoft_header("Executive Dashboard", "C-Suite Strategic Workforce Intelligence"), unsafe_allow_html=True)
+
+# MÉTRIQUES CLÉS AVEC STYLE PROFESSIONNEL
+st.markdown(create_ubisoft_section_header("🎯 Key Performance Indicators"), unsafe_allow_html=True)
+
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    st.markdown("""
+    <div style='background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;'>
+        <div style='font-size: 2rem; color: #0099FF; margin-bottom: 0.5rem;'>👥</div>
+        <h3 style='color: #2C3E50; margin: 0; font-size: 2rem;'>2,847</h3>
+        <p style='color: #666; margin: 0.5rem 0 0 0;'>Talent Pool</p>
+        <small style='color: #28A745;'>+12% vs Q3</small>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    st.markdown("""
+    <div style='background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;'>
+        <div style='font-size: 2rem; color: #0099FF; margin-bottom: 0.5rem;'>🌍</div>
+        <h3 style='color: #2C3E50; margin: 0; font-size: 2rem;'>25</h3>
+        <p style='color: #666; margin: 0.5rem 0 0 0;'>Studios Worldwide</p>
+        <small style='color: #666;'>Global Presence</small>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col3:
+    st.markdown("""
+    <div style='background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;'>
+        <div style='font-size: 2rem; color: #0099FF; margin-bottom: 0.5rem;'>🎯</div>
+        <h3 style='color: #2C3E50; margin: 0; font-size: 2rem;'>87.3%</h3>
+        <p style='color: #666; margin: 0.5rem 0 0 0;'>Retention Rate</p>
+        <small style='color: #28A745;'>+5.2% YoY</small>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col4:
+    st.markdown("""
+    <div style='background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;'>
+        <div style='font-size: 2rem; color: #0099FF; margin-bottom: 0.5rem;'>🚀</div>
+        <h3 style='color: #2C3E50; margin: 0; font-size: 2rem;'>94/100</h3>
+        <p style='color: #666; margin: 0.5rem 0 0 0;'>Innovation Index</p>
+        <small style='color: #28A745;'>Industry Leading</small>
+    </div>
+    """, unsafe_allow_html=True)
+
+# SECTION STUDIOS AVEC INFO BOX INTÉGRÉE
+st.markdown(create_ubisoft_section_header("🌍 Global Studios Performance"), unsafe_allow_html=True)
+
+st.markdown(create_ubisoft_info_box(
+    "Ubisoft's Global Excellence",
+    "Les studios Ubisoft maintiennent des standards d'excellence mondiaux avec une performance moyenne de 87.3% across all locations. Our global footprint spans 6 continents with major development centers in Montreal, Paris, Milan, Shanghai, Toronto, San Francisco, Barcelona, and Kiev."
+), unsafe_allow_html=True)
 
 col1, col2 = st.columns([2, 1])
 
 with col1:
-    # Chart performance studios
     studios_data = {
         'Studio': ['Montreal', 'Paris', 'Milan', 'Shanghai', 'Toronto', 'San Francisco', 'Barcelona', 'Kiev'],
         'Employees': [3200, 2800, 1200, 980, 850, 650, 400, 320],
@@ -97,33 +196,25 @@ with col1:
         color_continuous_scale=['#0066CC', '#0099FF', '#00CCFF']
     )
     
-    fig_studios.update_layout(get_ubisoft_chart_config()['layout'])
+    fig_studios.update_layout(**get_ubisoft_chart_config()['layout'])
     st.plotly_chart(fig_studios, width='stretch')
 
 with col2:
-    st.markdown(
-        create_ubisoft_info_box(
-            "Ubisoft's Global Excellence",
-            "Les studios Ubisoft maintiennent des standards d'excellence mondiaux avec une performance moyenne de 87.3% across all locations."
-        ),
-        unsafe_allow_html=True
-    )
-    
-    # Top performers
     st.markdown("### 🏆 Top Performing Studios")
     for i, row in df_studios.nlargest(3, 'Performance').iterrows():
         st.markdown(f"""
-        **{row['Studio']}** - {row['Performance']}%  
-        👥 {row['Employees']:,} talents • 🎮 {row['Projects']} projets
-        """)
+        <div style='background: white; padding: 1rem; margin: 0.5rem 0; border-radius: 5px; border-left: 4px solid #0099FF;'>
+            <strong style='color: #2C3E50;'>{row['Studio']}</strong> - <span style='color: #0099FF;'>{row['Performance']}%</span><br>
+            <span style='color: #666; font-size: 0.9rem;'>👥 {row['Employees']:,} talents • 🎮 {row['Projects']} projets</span>
+        </div>
+        """, unsafe_allow_html=True)
 
-# 📈 Section Trends et Predictive Analytics
-st.markdown("## 📈 Ubisoft Workforce Trends & Predictions")
+# SECTION TRENDS
+st.markdown(create_ubisoft_section_header("📈 Workforce Trends & Predictions"), unsafe_allow_html=True)
 
 col1, col2 = st.columns(2)
 
 with col1:
-    # Trend analysis
     months = pd.date_range(start='2024-01-01', end='2024-12-31', freq='M')
     trend_data = {
         'Month': months,
@@ -151,7 +242,6 @@ with col1:
     st.plotly_chart(fig_trends, width='stretch')
 
 with col2:
-    # Satisfaction & Productivity
     fig_satisfaction = go.Figure()
     
     fig_satisfaction.add_trace(go.Scatter(
@@ -171,14 +261,14 @@ with col2:
     ))
     
     fig_satisfaction.update_layout(
-        title="🎯 Ubisoft Employee Satisfaction & Productivity",
+        title="🎯 Employee Satisfaction & Productivity",
         **get_ubisoft_chart_config()['layout']
     )
     
     st.plotly_chart(fig_satisfaction, width='stretch')
 
-# 🎮 Section Gaming Industry Benchmarks
-st.markdown("## 🎮 Ubisoft vs Gaming Industry Benchmarks")
+# BENCHMARKS
+st.markdown(create_ubisoft_section_header("🎮 Industry Benchmarks"), unsafe_allow_html=True)
 
 benchmark_data = {
     'Metric': ['Retention Rate', 'Sprint Velocity', 'Bug Fix Rate', 'Employee NPS', 'Innovation Index'],
@@ -221,17 +311,18 @@ fig_benchmark.update_layout(
 
 st.plotly_chart(fig_benchmark, width='stretch')
 
-# 🚀 AI Predictions Section
-st.markdown("## 🤖 Ubisoft AI-Powered Workforce Predictions")
+# AI PREDICTIONS AVEC STYLE AMÉLIORÉ
+st.markdown(create_ubisoft_section_header("🤖 AI-Powered Workforce Predictions"), unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns(3)
 
 with col1:
     st.markdown("""
-    <div class="ubisoft-ultra-card">
-        <h4 style="color: #0099FF;">🔮 Turnover Risk</h4>
-        <div style="font-size: 2.5rem; color: #E60012; font-weight: 700;">3.2%</div>
-        <p style="color: #F5F5F5; margin: 15px 0 0 0;">
+    <div style='background: linear-gradient(135deg, #0099FF, #00CCFF); padding: 2rem; border-radius: 10px; text-align: center; color: white;'>
+        <div style='font-size: 3rem; margin-bottom: 1rem;'>🔮</div>
+        <h3 style='color: white; margin: 0;'>Turnover Risk</h3>
+        <div style='font-size: 3rem; font-weight: bold; margin: 1rem 0;'>3.2%</div>
+        <p style='color: rgba(255,255,255,0.9); margin: 0; font-size: 0.9rem;'>
             Low risk identified across Ubisoft studios. ML model accuracy: 89%
         </p>
     </div>
@@ -239,10 +330,11 @@ with col1:
 
 with col2:
     st.markdown("""
-    <div class="ubisoft-ultra-card">
-        <h4 style="color: #0099FF;">⚡ Burnout Prevention</h4>
-        <div style="font-size: 2.5rem; color: #28A745; font-weight: 700;">92%</div>
-        <p style="color: #F5F5F5; margin: 15px 0 0 0;">
+    <div style='background: linear-gradient(135deg, #28A745, #34CE57); padding: 2rem; border-radius: 10px; text-align: center; color: white;'>
+        <div style='font-size: 3rem; margin-bottom: 1rem;'>⚡</div>
+        <h3 style='color: white; margin: 0;'>Burnout Prevention</h3>
+        <div style='font-size: 3rem; font-weight: bold; margin: 1rem 0;'>92%</div>
+        <p style='color: rgba(255,255,255,0.9); margin: 0; font-size: 0.9rem;'>
             Proactive intervention success rate in Ubisoft development teams
         </p>
     </div>
@@ -250,44 +342,23 @@ with col2:
 
 with col3:
     st.markdown("""
-    <div class="ubisoft-ultra-card">
-        <h4 style="color: #0099FF;">🎯 Hiring Forecast</h4>
-        <div style="font-size: 2.5rem; color: #0099FF; font-weight: 700;">+340</div>
-        <p style="color: #F5F5F5; margin: 15px 0 0 0;">
+    <div style='background: linear-gradient(135deg, #E60012, #FF1744); padding: 2rem; border-radius: 10px; text-align: center; color: white;'>
+        <div style='font-size: 3rem; margin-bottom: 1rem;'>🎯</div>
+        <h3 style='color: white; margin: 0;'>Hiring Forecast</h3>
+        <div style='font-size: 3rem; font-weight: bold; margin: 1rem 0;'>+340</div>
+        <p style='color: rgba(255,255,255,0.9); margin: 0; font-size: 0.9rem;'>
             Projected new hires Q1 2025 across Ubisoft worldwide studios
         </p>
     </div>
     """, unsafe_allow_html=True)
 
-# Footer Ubisoft
-st.markdown(display_ubisoft_logo_section(), unsafe_allow_html=True)
-
-# Sidebar avec informations Ubisoft - CORRIGÉ
-last = datetime.now().strftime('%Y-%m-%d %H:%M')
-
-with st.sidebar:
-    st.markdown(f"""
-    ## 🎮 Ubisoft Gaming Workforce Observatory
-    
-    **Executive Dashboard**
-    
-    📊 **Real-time KPIs** pour dirigeants
-    
-    🌍 **Global Studios** performance tracking
-    
-    🤖 **AI-Powered** predictions et insights
-    
-    ---
-    
-    ### 🏢 Ubisoft Worldwide
-    - 🇨🇦 Montreal (HQ)
-    - 🇫🇷 Paris
-    - 🇮🇹 Milan  
-    - 🇨🇳 Shanghai
-    - 🇺🇸 San Francisco
-    - 🇪🇸 Barcelona
-    
-    ---
-    
-    **🔄 Last Updated:** {last}
-    """)
+# FOOTER PROFESSIONNEL
+st.markdown("---")
+st.markdown("""
+<div style='text-align: center; padding: 2rem; background: #f8f9fa; border-radius: 5px; margin-top: 2rem;'>
+    <p style='color: #666; margin: 0; font-size: 0.9rem;'>
+        © 2024 Ubisoft Entertainment - Gaming Workforce Observatory<br>
+        Confidential and Proprietary Information
+    </p>
+</div>
+""", unsafe_allow_html=True)
