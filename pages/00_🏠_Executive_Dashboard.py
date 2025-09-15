@@ -18,9 +18,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Application du thème Ubisoft
-apply_ubisoft_theme()
-
 # Header principal Ubisoft
 st.markdown(
     create_ubisoft_header(
