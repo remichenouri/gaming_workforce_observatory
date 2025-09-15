@@ -15,7 +15,6 @@ from pathlib import Path
 # Ajout du chemin pour imports
 sys.path.append(str(Path(__file__).parent.parent))
 
-from src.themes.ubisoft_premium import GamingThemes
 from src.visualizations.geographic_maps import GamingGeographicMaps
 
 def initialize_global_studios_dashboard():
