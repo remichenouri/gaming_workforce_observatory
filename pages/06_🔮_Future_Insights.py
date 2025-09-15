@@ -10,12 +10,6 @@ import plotly.graph_objects as go
 import numpy as np
 from datetime import datetime, timedelta
 
-from src.themes.ubisoft_premium import apply_ubisoft_theme, UBISOFT_COLORS
-from src.utils.ubisoft_components import (
-    create_ubisoft_header, create_ubisoft_breadcrumb,
-    create_ubisoft_section_header, create_ubisoft_info_box,
-    create_ubisoft_accent_box, get_ubisoft_chart_config
-)
 
 st.set_page_config(
     page_title="Ubisoft Future Insights - Innovation Lab",
