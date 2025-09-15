@@ -53,6 +53,8 @@ def display_ubisoft_logo_section():
     return "<p>© 2024 Ubisoft</p>"
 # ─────────────────────────────────────────────
 
+apply_ubisoft_theme()
+
 # Ajout du chemin pour imports
 sys.path.append(str(Path(__file__).parent.parent))
 
