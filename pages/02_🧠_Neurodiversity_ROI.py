@@ -50,6 +50,7 @@ def display_ubisoft_logo_section():
     return "<p>© 2024 Ubisoft</p>"
 # ─────────────────────────────────────────────
 
+apply_ubisoft_theme()
 
 st.set_page_config(
     page_title="Ubisoft Neurodiversity ROI - Inclusion Excellence",
