@@ -2,7 +2,6 @@
 🎮 Ubisoft Gaming Workforce Observatory
 Executive Dashboard - C-Suite Strategic Workforce Intelligence
 """
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -12,7 +11,6 @@ import numpy as np
 
 # ─────────────────────────────────────────────
 # STUBS POUR THEME & COMPOSANTS UBISOFT
-# Appliquer ABSOLUMENT dans chaque page à remplacer
 def apply_ubisoft_theme():
     pass
 
@@ -72,7 +70,6 @@ ubisoft_metrics = [
     {"title": "Innovation Index", "value": "94/100", "delta": "Industry Leading", "icon": "🚀"}
 ]
 
-
 # 🌍 Section Studios Ubisoft Worldwide
 st.markdown("## 🌍 Ubisoft Global Studios Performance")
 
@@ -101,7 +98,7 @@ with col1:
     )
     
     fig_studios.update_layout(get_ubisoft_chart_config()['layout'])
-    st.plotly_chart(fig_studios, use_container_width=True)
+    st.plotly_chart(fig_studios, width='stretch')
 
 with col2:
     st.markdown(
@@ -151,7 +148,7 @@ with col1:
         **get_ubisoft_chart_config()['layout']
     )
     
-    st.plotly_chart(fig_trends, use_container_width=True)
+    st.plotly_chart(fig_trends, width='stretch')
 
 with col2:
     # Satisfaction & Productivity
@@ -178,7 +175,7 @@ with col2:
         **get_ubisoft_chart_config()['layout']
     )
     
-    st.plotly_chart(fig_satisfaction, use_container_width=True)
+    st.plotly_chart(fig_satisfaction, width='stretch')
 
 # 🎮 Section Gaming Industry Benchmarks
 st.markdown("## 🎮 Ubisoft vs Gaming Industry Benchmarks")
@@ -222,7 +219,7 @@ fig_benchmark.update_layout(
     **get_ubisoft_chart_config()['layout']
 )
 
-st.plotly_chart(fig_benchmark, use_container_width=True)
+st.plotly_chart(fig_benchmark, width='stretch')
 
 # 🚀 AI Predictions Section
 st.markdown("## 🤖 Ubisoft AI-Powered Workforce Predictions")
@@ -265,14 +262,16 @@ with col3:
 # Footer Ubisoft
 st.markdown(display_ubisoft_logo_section(), unsafe_allow_html=True)
 
-# Sidebar avec informations Ubisoft
+# Sidebar avec informations Ubisoft - CORRIGÉ
+last = datetime.now().strftime('%Y-%m-%d %H:%M')
+
 with st.sidebar:
-    st.markdown("""
+    st.markdown(f"""
     ## 🎮 Ubisoft Gaming Workforce Observatory
     
     **Executive Dashboard**
     
-    📊 **Real-time KPIs** pour les dirigeants Ubisoft
+    📊 **Real-time KPIs** pour dirigeants
     
     🌍 **Global Studios** performance tracking
     
@@ -290,22 +289,5 @@ with st.sidebar:
     
     ---
     
-    last = datetime.now().strftime('%Y-%m-%d %H:%M')
-    
-    with st.sidebar:
-        st.markdown(f"""
-        ## Ubisoft Gaming Workforce Observatory
-    
-        **Executive Dashboard**
-        
-        📊 **Real-time KPIs** pour dirigeants
-    
-        🌍 **Global Studios**
-    
-        🤖 **AI-driven Insights**
-    
-        ---
-    
-        **Dernière mise à jour :** {last}
-        """)
-
+    **🔄 Last Updated:** {last}
+    """)
