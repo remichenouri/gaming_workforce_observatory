@@ -211,7 +211,7 @@ with col2:
         **get_ubisoft_chart_config()['layout']
     )
     
-    st.plotly_chart(fig_status, use_container_width=True)
+    st.plotly_chart(fig_status, width='stretch')
 
 # User Management
 st.markdown(create_ubisoft_section_header("👥 Ubisoft User Access Management"))
@@ -239,7 +239,7 @@ with col1:
     )
     
     fig_users.update_layout(get_ubisoft_chart_config()['layout'])
-    st.plotly_chart(fig_users, use_container_width=True)
+    st.plotly_chart(fig_users, width='stretch')
 
 with col2:
     # User activity
@@ -335,7 +335,7 @@ st.dataframe(
                   else 'background-color: rgba(230, 0, 18, 0.1)' for v in x], 
         subset=['Status']
     ),
-    use_container_width=True
+    width='stretch'
 )
 
 # Admin Actions
