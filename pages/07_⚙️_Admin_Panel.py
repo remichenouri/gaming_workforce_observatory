@@ -23,30 +23,41 @@ UBISOFT_COLORS = {
 }
 
 def create_ubisoft_header(title, subtitle=None):
-    subtitle_html = f"<p>{subtitle}</p>" if subtitle else ""
-    return f"<h1>{title}</h1>{subtitle_html}"
-
-def create_ubisoft_breadcrumb(page):
-    return f"<p>🎮 Ubisoft Observatory → {page}</p>"
+    subtitle_html = f"<p style='font-size:1.2rem; color:#555; margin-top:0.5rem;'>{subtitle}</p>" if subtitle else ""
+    return f"""
+    <div style='background: linear-gradient(90deg, #E60012, #FF4444); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;'>
+        <h1 style='font-family: Arial, sans-serif; font-weight: bold; font-size: 3.5rem; color: white; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);'>{title}</h1>
+        {subtitle_html}
+    </div>
+    """
 
 def create_ubisoft_section_header(title):
-    return f"<h3>{title}</h3>"
+    return f"<h2 style='color: #2C3E50; font-family: Arial, sans-serif; font-weight: bold; border-left: 4px solid #E60012; padding-left: 1rem; margin: 2rem 0 1rem 0;'>{title}</h2>"
 
 def create_ubisoft_info_box(title, content):
-    return f"<div><strong>{title}</strong><p>{content}</p></div>"
+    return f"""
+    <div style='background: #f8f9fa; border-left: 4px solid #E60012; padding: 1.5rem; margin: 1rem 0; border-radius: 5px;'>
+        <h4 style='color: #2C3E50; margin: 0 0 0.5rem 0;'>{title}</h4>
+        <p style='color: #555; margin: 0; font-size: 1rem; line-height: 1.5;'>{content}</p>
+    </div>
+    """
 
 def create_ubisoft_accent_box(title, content):
-    return f"<div style='border-left:4px solid #E60012'><strong>{title}</strong><p>{content}</p></div>"
+    return f"""
+    <div style='background: linear-gradient(135deg, #E6001215, #fff); border-left: 4px solid #E60012; padding: 1.5rem; margin: 1rem 0; border-radius: 5px;'>
+        <h4 style='color: #E60012; margin: 0 0 0.5rem 0;'>{title}</h4>
+        <p style='color: #555; margin: 0; font-size: 1rem; line-height: 1.5;'>{content}</p>
+    </div>
+    """
 
 def get_ubisoft_chart_config():
-    return {'layout': {}}
-
-def create_ubisoft_metric_cols(metrics, cols=4):
-    for metric in metrics:
-        st.markdown(f"**{metric['title']}**: {metric['value']}")
-
-def display_ubisoft_logo_section():
-    return "<p>© 2024 Ubisoft</p>"
+    return {
+        'layout': {
+            'font': {'family': 'Arial, sans-serif', 'size': 12, 'color': '#2C3E50'},
+            'paper_bgcolor': 'white',
+            'plot_bgcolor': '#fafafa'
+        }
+    }
 
 # ─────────────────────────────────────────────
 
@@ -56,107 +67,156 @@ st.set_page_config(
     layout="wide"
 )
 
-apply_ubisoft_theme()
-
-st.markdown(
-    create_ubisoft_header(
-        "UBISOFT Admin Panel",
-        "System Management & Configuration Controls"
-    ),
-    unsafe_allow_html=True
-)
-
-st.markdown(create_ubisoft_breadcrumb("Admin Panel"), unsafe_allow_html=True)
+# SIDEBAR ÉPURÉE - MENU SEULEMENT
+with st.sidebar:
+    st.markdown("""
+    <div style='text-align: center; padding: 1rem 0;'>
+        <h2 style='color: #E60012; font-family: Arial, sans-serif; margin: 0;'>⚙️ Ubisoft</h2>
+        <p style='color: #666; font-size: 0.9rem; margin: 0.5rem 0;'>Workforce Observatory</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    # Menu de navigation épuré
+    menu_items = [
+        ("🏠", "Executive Dashboard"),
+        ("⚔️", "Talent Wars"), 
+        ("🧠", "Neurodiversity ROI"),
+        ("🎯", "Predictive Analytics"),
+        ("🌍", "Global Studios"),
+        ("💰", "Compensation Intel"),
+        ("🚀", "Future Insights"),
+        ("⚙️", "Admin Panel")
+    ]
+    
+    st.markdown("<h4 style='color: #2C3E50; margin-bottom: 1rem;'>Navigation</h4>", unsafe_allow_html=True)
+    
+    for icon, name in menu_items:
+        if name == "Admin Panel":
+            st.markdown(f"""
+            <div style='background: #E60012; color: white; padding: 0.75rem; border-radius: 5px; margin: 0.25rem 0;'>
+                <strong>{icon} {name}</strong>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown(f"""
+            <div style='padding: 0.75rem; border-radius: 5px; margin: 0.25rem 0; color: #555;'>
+                {icon} {name}
+            </div>
+            """, unsafe_allow_html=True)
 
 # Check for admin access (in real implementation, this would be proper authentication)
 if 'admin_authenticated' not in st.session_state:
     st.session_state.admin_authenticated = False
 
 if not st.session_state.admin_authenticated:
-    st.markdown(
-        create_ubisoft_accent_box(
-            "🔐 Ubisoft Admin Access Required",
-            "Please authenticate to access the Ubisoft Gaming Workforce Observatory administrative controls."
-        ),
-        unsafe_allow_html=True
-    )
+    # HEADER D'AUTHENTIFICATION
+    st.markdown(create_ubisoft_header("Admin Panel", "System Management & Configuration Controls"), unsafe_allow_html=True)
+    
+    st.markdown(create_ubisoft_accent_box(
+        "🔐 Ubisoft Admin Access Required",
+        "Please authenticate to access the Ubisoft Gaming Workforce Observatory administrative controls. This secure area is restricted to authorized IT and HR administrators only."
+    ), unsafe_allow_html=True)
     
     with st.form("admin_login"):
-        st.markdown("### 🎮 Ubisoft Admin Authentication")
-        username = st.text_input("Username", placeholder="ubisoft.admin")
-        password = st.text_input("Password", type="password", placeholder="Enter admin password")
+        col1, col2, col3 = st.columns([1, 2, 1])
         
-        if st.form_submit_button("🔓 Access Admin Panel", type="primary"):
-            # Simple demo authentication (in reality, use proper auth)
-            if username == "ubisoft.admin" and password == "demo123":
-                st.session_state.admin_authenticated = True
-                st.success("✅ Authentication successful! Welcome to Ubisoft Admin Panel.")
-                st.rerun()
-            else:
-                st.error("❌ Invalid credentials. Please contact Ubisoft IT support.")
+        with col2:
+            st.markdown("""
+            <div style='background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);'>
+                <h3 style='text-align: center; color: #E60012; margin-bottom: 2rem;'>🎮 Ubisoft Admin Authentication</h3>
+            """, unsafe_allow_html=True)
+            
+            username = st.text_input("Username", placeholder="ubisoft.admin")
+            password = st.text_input("Password", type="password", placeholder="Enter admin password")
+            
+            st.markdown("</div>", unsafe_allow_html=True)
+            
+            if st.form_submit_button("🔓 Access Admin Panel", type="primary", use_container_width=True):
+                # Simple demo authentication (in reality, use proper auth)
+                if username == "ubisoft.admin" and password == "demo123":
+                    st.session_state.admin_authenticated = True
+                    st.success("✅ Authentication successful! Welcome to Ubisoft Admin Panel.")
+                    st.rerun()
+                else:
+                    st.error("❌ Invalid credentials. Please contact Ubisoft IT support.")
     
     st.stop()
 
-# Admin dashboard content
-st.markdown(
-    create_ubisoft_info_box(
-        "⚙️ Ubisoft Gaming Workforce Observatory",
-        "Administrative controls for Ubisoft HR and IT teams. Monitor system health, manage data sources, configure dashboards, and oversee user access across all Ubisoft studios worldwide."
-    ),
-    unsafe_allow_html=True
-)
+# HEADER PRINCIPAL PROFESSIONNEL (après authentification)
+last_updated = datetime.now().strftime('%Y-%m-%d %H:%M')
+st.markdown(f"""
+<div style='background: #f8f9fa; padding: 1rem; border-radius: 5px; margin-bottom: 1rem; border-left: 4px solid #E60012;'>
+    <div style='display: flex; justify-content: space-between; align-items: center;'>
+        <div>
+            <strong style='color: #2C3E50;'>⚙️ Admin Panel - System Management</strong>
+            <p style='margin: 0; color: #666; font-size: 0.9rem;'>System Health • Data Sources • User Management • Security Controls</p>
+        </div>
+        <div style='text-align: right;'>
+            <p style='margin: 0; color: #666; font-size: 0.9rem;'>Last Updated</p>
+            <strong style='color: #E60012;'>{last_updated}</strong>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-# System Health Dashboard
-st.markdown(create_ubisoft_section_header("🔧 Ubisoft System Health Monitor"))
+# TITRE PRINCIPAL AVEC MISE EN VALEUR
+st.markdown(create_ubisoft_header("Admin Panel", "System Management & Configuration Controls"), unsafe_allow_html=True)
+
+# INTRODUCTION ADMIN
+st.markdown(create_ubisoft_info_box(
+    "⚙️ Ubisoft Gaming Workforce Observatory",
+    "Administrative controls for Ubisoft HR and IT teams. Monitor system health (99.8% uptime), manage data sources (8 connected), configure dashboards, and oversee user access (847 active users) across all Ubisoft studios worldwide with enterprise-grade security."
+), unsafe_allow_html=True)
+
+# SYSTEM HEALTH DASHBOARD
+st.markdown(create_ubisoft_section_header("🔧 System Health Monitor"), unsafe_allow_html=True)
 
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
     st.markdown("""
-    <div class="ubisoft-ultra-card">
-        <div style="text-align: center;">
-            <div style="font-size: 3rem; color: #28A745;">✅</div>
-            <div style="font-size: 2rem; font-weight: 700; color: #28A745;">99.8%</div>
-            <div style="color: #F5F5F5; font-weight: 500;">System Uptime</div>
-        </div>
+    <div style='background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;'>
+        <div style='font-size: 2rem; color: #28A745; margin-bottom: 0.5rem;'>✅</div>
+        <h3 style='color: #2C3E50; margin: 0; font-size: 2rem;'>99.8%</h3>
+        <p style='color: #666; margin: 0.5rem 0 0 0;'>System Uptime</p>
+        <small style='color: #28A745;'>Excellent</small>
     </div>
     """, unsafe_allow_html=True)
 
 with col2:
     st.markdown("""
-    <div class="ubisoft-ultra-card">
-        <div style="text-align: center;">
-            <div style="font-size: 3rem; color: #0099FF;">⚡</div>
-            <div style="font-size: 2rem; font-weight: 700; color: #0099FF;">1.2s</div>
-            <div style="color: #F5F5F5; font-weight: 500;">Avg Response</div>
-        </div>
+    <div style='background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;'>
+        <div style='font-size: 2rem; color: #0099FF; margin-bottom: 0.5rem;'>⚡</div>
+        <h3 style='color: #2C3E50; margin: 0; font-size: 2rem;'>1.2s</h3>
+        <p style='color: #666; margin: 0.5rem 0 0 0;'>Avg Response</p>
+        <small style='color: #28A745;'>Fast</small>
     </div>
     """, unsafe_allow_html=True)
 
 with col3:
     st.markdown("""
-    <div class="ubisoft-ultra-card">
-        <div style="text-align: center;">
-            <div style="font-size: 3rem; color: #FFD700;">👥</div>
-            <div style="font-size: 2rem; font-weight: 700; color: #FFD700;">847</div>
-            <div style="color: #F5F5F5; font-weight: 500;">Active Users</div>
-        </div>
+    <div style='background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;'>
+        <div style='font-size: 2rem; color: #FFD700; margin-bottom: 0.5rem;'>👥</div>
+        <h3 style='color: #2C3E50; margin: 0; font-size: 2rem;'>847</h3>
+        <p style='color: #666; margin: 0.5rem 0 0 0;'>Active Users</p>
+        <small style='color: #666;'>Online now</small>
     </div>
     """, unsafe_allow_html=True)
 
 with col4:
     st.markdown("""
-    <div class="ubisoft-ultra-card">
-        <div style="text-align: center;">
-            <div style="font-size: 3rem; color: #E60012;">🔄</div>
-            <div style="font-size: 2rem; font-weight: 700; color: #E60012;">15min</div>
-            <div style="color: #F5F5F5; font-weight: 500;">Data Refresh</div>
-        </div>
+    <div style='background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;'>
+        <div style='font-size: 2rem; color: #E60012; margin-bottom: 0.5rem;'>🔄</div>
+        <h3 style='color: #2C3E50; margin: 0; font-size: 2rem;'>15min</h3>
+        <p style='color: #666; margin: 0.5rem 0 0 0;'>Data Refresh</p>
+        <small style='color: #666;'>Auto sync</small>
     </div>
     """, unsafe_allow_html=True)
 
-# Data Sources Management
-st.markdown(create_ubisoft_section_header("📊 Ubisoft Data Sources Management"))
+# DATA SOURCES MANAGEMENT
+st.markdown(create_ubisoft_section_header("📊 Data Sources Management"), unsafe_allow_html=True)
 
 data_sources = {
     'Source': ['Workday HRIS', 'Active Directory', 'Jira Tickets', 'Confluence', 
@@ -172,24 +232,23 @@ sources_df = pd.DataFrame(data_sources)
 col1, col2 = st.columns([2, 1])
 
 with col1:
-    # Create status indicators
+    # Create status indicators with improved styling
     status_colors = {'Active': '#28A745', 'Warning': '#FFD700', 'Maintenance': '#E60012'}
     
     for _, source in sources_df.iterrows():
         status_color = status_colors.get(source['Status'], '#CCCCCC')
         st.markdown(f"""
-        <div style="background: rgba(26, 26, 26, 0.95); border-left: 4px solid {status_color}; 
-                    padding: 15px; margin: 10px 0; border-radius: 8px;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div style='background: white; border-left: 4px solid {status_color}; padding: 1.5rem; margin: 1rem 0; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>
+            <div style='display: flex; justify-content: space-between; align-items: center;'>
                 <div>
-                    <strong style="color: #F5F5F5;">{source['Source']}</strong>
-                    <div style="color: #CCCCCC; font-size: 0.9rem;">
+                    <strong style='color: #2C3E50;'>{source['Source']}</strong>
+                    <div style='color: #666; font-size: 0.9rem; margin-top: 0.5rem;'>
                         📊 {source['Records']:,} records • Last sync: {source['Last_Sync']}
                     </div>
                 </div>
-                <div style="text-align: right;">
-                    <span style="color: {status_color}; font-weight: bold;">{source['Status']}</span>
-                    <div style="color: #0099FF; font-size: 0.9rem;">Health: {source['Health_Score']}%</div>
+                <div style='text-align: right;'>
+                    <span style='color: {status_color}; font-weight: bold;'>{source['Status']}</span>
+                    <div style='color: #0099FF; font-size: 0.9rem; margin-top: 0.5rem;'>Health: {source['Health_Score']}%</div>
                 </div>
             </div>
         </div>
@@ -207,14 +266,14 @@ with col2:
     )])
     
     fig_status.update_layout(
-        title="🔍 Ubisoft Data Sources Status",
+        title="🔍 Data Sources Status",
         **get_ubisoft_chart_config()['layout']
     )
     
     st.plotly_chart(fig_status, width='stretch')
 
-# User Management
-st.markdown(create_ubisoft_section_header("👥 Ubisoft User Access Management"))
+# USER MANAGEMENT
+st.markdown(create_ubisoft_section_header("👥 User Access Management"), unsafe_allow_html=True)
 
 user_data = {
     'Role': ['HR Directors', 'Studio Managers', 'Team Leads', 'Analysts', 'Executives', 'IT Admins'],
@@ -234,29 +293,31 @@ with col1:
         x='Role',
         y='Active_Users',
         color='Active_Users',
-        title='👥 Ubisoft Active Users by Role',
+        title='👥 Active Users by Role',
         color_continuous_scale=['#0066CC', '#0099FF', '#E60012']
     )
     
-    fig_users.update_layout(get_ubisoft_chart_config()['layout'])
+    fig_users.update_layout(**get_ubisoft_chart_config()['layout'])
     st.plotly_chart(fig_users, width='stretch')
 
 with col2:
-    # User activity
+    # User activity with improved styling
     st.markdown("### 📊 User Activity Summary")
     for _, user in users_df.iterrows():
         activity_rate = (user['Last_7_Days'] / user['Active_Users'] * 100) if user['Active_Users'] > 0 else 0
         activity_color = '#28A745' if activity_rate > 80 else '#FFD700' if activity_rate > 60 else '#E60012'
         
         st.markdown(f"""
-        **{user['Role']}**  
-        👥 {user['Active_Users']} active • 🔄 {user['Last_7_Days']} weekly  
-        <span style="color: {activity_color};">📈 {activity_rate:.1f}% engagement</span>  
-        ⏱️ Avg session: {user['Avg_Session']}
+        <div style='background: white; padding: 1rem; margin: 0.5rem 0; border-radius: 5px; border-left: 4px solid {activity_color};'>
+            <strong style='color: #2C3E50;'>{user['Role']}</strong><br>
+            <span style='color: #666; font-size: 0.9rem;'>👥 {user['Active_Users']} active • 🔄 {user['Last_7_Days']} weekly</span><br>
+            <span style='color: {activity_color}; font-weight: bold;'>📈 {activity_rate:.1f}% engagement</span><br>
+            <span style='color: #666; font-size: 0.9rem;'>⏱️ Avg session: {user['Avg_Session']}</span>
+        </div>
         """, unsafe_allow_html=True)
 
-# System Configuration
-st.markdown(create_ubisoft_section_header("⚙️ Ubisoft System Configuration"))
+# SYSTEM CONFIGURATION
+st.markdown(create_ubisoft_section_header("⚙️ System Configuration"), unsafe_allow_html=True)
 
 col1, col2 = st.columns(2)
 
@@ -310,8 +371,8 @@ with col2:
         if st.form_submit_button("🚀 Apply Performance Settings"):
             st.success("✅ Performance settings applied!")
 
-# Audit Logs
-st.markdown(create_ubisoft_section_header("📋 Ubisoft System Audit Logs"))
+# AUDIT LOGS
+st.markdown(create_ubisoft_section_header("📋 System Audit Logs"), unsafe_allow_html=True)
 
 # Generate sample audit data
 audit_data = {
@@ -338,80 +399,71 @@ st.dataframe(
     width='stretch'
 )
 
-# Admin Actions
-st.markdown(create_ubisoft_section_header("🛠️ Ubisoft Administrative Actions"))
+# ADMIN ACTIONS AVEC STYLE AMÉLIORÉ
+st.markdown(create_ubisoft_section_header("🛠️ Administrative Actions"), unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    if st.button("🔄 Force Data Sync"):
+    st.markdown("""
+    <div style='background: linear-gradient(135deg, #0099FF, #00CCFF); padding: 2rem; border-radius: 10px; text-align: center; color: white; margin-bottom: 1rem;'>
+        <div style='font-size: 3rem; margin-bottom: 1rem;'>🔄</div>
+        <h4 style='color: white; margin: 0;'>Data Management</h4>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    if st.button("🔄 Force Data Sync", use_container_width=True):
         st.success("✅ Data sync initiated!")
-    if st.button("🗑️ Clear Cache"):
+    if st.button("🗑️ Clear Cache", use_container_width=True):
         st.success("✅ Cache cleared!")
-    if st.button("📤 Export Logs"):
+    if st.button("📤 Export Logs", use_container_width=True):
         st.success("✅ Logs exported!")
 
 with col2:
-    if st.button("👥 Add User"):
+    st.markdown("""
+    <div style='background: linear-gradient(135deg, #FFB020, #FFC533); padding: 2rem; border-radius: 10px; text-align: center; color: white; margin-bottom: 1rem;'>
+        <div style='font-size: 3rem; margin-bottom: 1rem;'>👥</div>
+        <h4 style='color: white; margin: 0;'>User Actions</h4>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    if st.button("👥 Add User", use_container_width=True):
         st.info("🔹 User creation form would open here")
-    if st.button("🔑 Reset Password"):
+    if st.button("🔑 Reset Password", use_container_width=True):
         st.info("🔹 Password reset interface would appear")
-    if st.button("🚫 Revoke Access"):
+    if st.button("🚫 Revoke Access", use_container_width=True):
         st.warning("⚠️ Access revocation requires confirmation")
 
 with col3:
-    if st.button("🔄 Restart Services"):
+    st.markdown("""
+    <div style='background: linear-gradient(135deg, #E60012, #FF1744); padding: 2rem; border-radius: 10px; text-align: center; color: white; margin-bottom: 1rem;'>
+        <div style='font-size: 3rem; margin-bottom: 1rem;'>⚙️</div>
+        <h4 style='color: white; margin: 0;'>System Control</h4>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    if st.button("🔄 Restart Services", use_container_width=True):
         st.success("✅ Services restart initiated!")
-    if st.button("🔧 Maintenance Mode"):
+    if st.button("🔧 Maintenance Mode", use_container_width=True):
         st.warning("⚠️ Maintenance mode activated")
-    if st.button("🛑 Emergency Stop"):
+    if st.button("🛑 Emergency Stop", use_container_width=True):
         st.error("❌ Emergency procedures activated")
 
-# Logout option
+# LOGOUT OPTION
 st.markdown("---")
-if st.button("🔐 Logout from Admin Panel"):
+if st.button("🔐 Logout from Admin Panel", type="secondary", use_container_width=True):
     st.session_state.admin_authenticated = False
     st.success("✅ Successfully logged out from Ubisoft Admin Panel")
     st.rerun()
 
-# Footer
+# FOOTER PROFESSIONNEL
 st.markdown("---")
-st.markdown(display_ubisoft_logo_section(), unsafe_allow_html=True)
+st.markdown("""
+<div style='text-align: center; padding: 2rem; background: #f8f9fa; border-radius: 5px; margin-top: 2rem;'>
+    <p style='color: #666; margin: 0; font-size: 0.9rem;'>
+        © 2024 Ubisoft Entertainment - Gaming Workforce Observatory<br>
+        Admin Panel • System Management & Configuration • Confidential and Proprietary Information
+    </p>
+</div>
+""", unsafe_allow_html=True)
 
-# Sidebar CORRIGÉ avec datetime
-last = datetime.now().strftime('%Y-%m-%d %H:%M')
-
-with st.sidebar:
-    st.markdown(f"""
-    ## ⚙️ Admin Panel
-    
-    **System Management**
-    
-    🔧 **System Health** monitoring real-time
-    
-    📊 **Data Sources** configuration
-    
-    👥 **User Management** access control
-    
-    📋 **Audit Logs** security tracking
-    
-    ---
-    
-    ### 🎮 Ubisoft Infrastructure
-    - **99.8%** System uptime
-    - **847** Active users
-    - **8** Data sources connected
-    - **15min** Refresh intervals
-    
-    ---
-    
-    ### 🔐 Security Status
-    - SSL/HTTPS: ✅ Enabled
-    - Authentication: ✅ Active
-    - Audit Logging: ✅ Running
-    - Data Encryption: ✅ AES-256
-    
-    ---
-    
-    **🔄 Last Updated:** {last}
-    """)
