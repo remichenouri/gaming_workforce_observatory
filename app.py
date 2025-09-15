@@ -31,24 +31,17 @@ st.set_page_config(
     }
 )
 
-# Imports locaux avec fallback
-try:
-    from src.config.settings import GAMING_THEME, APP_CONFIG
-    from src.utils.data_loader import GamingDataLoader
-    from src.visualizations.advanced_charts import GamingChartFactory
-    from src.analytics.kpi_calculator import GamingKPICalculator
-except ImportError:
-    # Configuration par défaut si modules absents
-    GAMING_THEME = {
-        'primary': '#0066CC',
-        'accent': '#FF6B35', 
-        'success': '#28A745',
-        'warning': '#FFB020',
-        'danger': '#DC3545',
-        'background': '#F8F9FA',
-        'text': '#2C3E50'
-    }
-    APP_CONFIG = {'app_name': 'Gaming Workforce Observatory Enterprise'}
+# Configuration intégrée directement dans app.py
+GAMING_THEME = {
+    'primary': '#0066CC',
+    'accent': '#FF6B35', 
+    'success': '#28A745',
+    'warning': '#FFB020',
+    'danger': '#DC3545',
+    'background': '#F8F9FA',
+    'text': '#2C3E50'
+}
+APP_CONFIG = {'app_name': 'Gaming Workforce Observatory Enterprise'}
 
 class GamingWorkforceApp:
     """Application principale Gaming Workforce Observatory Enterprise"""
