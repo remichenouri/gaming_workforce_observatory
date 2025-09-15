@@ -1,9 +1,7 @@
 """
 🎮 CORRECTIONS PAGES STREAMLIT - SANS ERREURS
-
 Corrections pour pages/01_⚔️_Talent_Wars.py
 """
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -13,20 +11,43 @@ from datetime import datetime
 
 # ─────────────────────────────────────────────
 # STUBS POUR ÉVITER IMPORT ERRORS
-def apply_ubisoft_theme(): pass
-UBISOFT_COLORS = {'primary': '#0099FF', 'accent': '#E60012', 'success': '#28A745', 'warning': '#FFB020', 'text': '#2C3E50'}
+def apply_ubisoft_theme(): 
+    pass
+
+UBISOFT_COLORS = {
+    'primary': '#0099FF', 
+    'accent': '#E60012', 
+    'success': '#28A745', 
+    'warning': '#FFB020', 
+    'text': '#2C3E50'
+}
+
 def create_ubisoft_header(title, subtitle=None): 
     subtitle_html = f"<p>{subtitle}</p>" if subtitle else ""
     return f"<h1>{title}</h1>{subtitle_html}"
-def create_ubisoft_breadcrumb(page): return f"<p>🎮 Ubisoft Observatory → {page}</p>"
-def create_ubisoft_section_header(title): return f"<h3>{title}</h3>"
-def create_ubisoft_info_box(title, content): return f"<div><strong>{title}</strong><p>{content}</p></div>"
-def create_ubisoft_accent_box(title, content): return f"<div style='border-left:4px solid #E60012'><strong>{title}</strong><p>{content}</p></div>"
-def get_ubisoft_chart_config(): return {'layout': {}}
+
+def create_ubisoft_breadcrumb(page): 
+    return f"<p>🎮 Ubisoft Observatory → {page}</p>"
+
+def create_ubisoft_section_header(title): 
+    return f"<h3>{title}</h3>"
+
+def create_ubisoft_info_box(title, content): 
+    return f"<div><strong>{title}</strong><p>{content}</p></div>"
+
+def create_ubisoft_accent_box(title, content): 
+    return f"<div style='border-left:4px solid #E60012'><strong>{title}</strong><p>{content}</p></div>"
+
+def get_ubisoft_chart_config(): 
+    return {'layout': {}}
+
 def create_ubisoft_metric_cols(metrics, cols=4):
     for metric in metrics:
         st.markdown(f"**{metric['title']}**: {metric['value']}")
-def display_ubisoft_logo_section(): return "<p>© 2024 Ubisoft</p>"
+
+def display_ubisoft_logo_section(): 
+    return "<p>© 2024 Ubisoft</p>"
+
 # ─────────────────────────────────────────────
 
 st.set_page_config(
@@ -78,7 +99,7 @@ with col1:
         color_continuous_scale=['#FF6B6B', '#FFD700', '#0099FF']
     )
     
-    st.plotly_chart(fig_competitive, use_container_width=True)
+    st.plotly_chart(fig_competitive, width='stretch')
 
 with col2:
     st.markdown(create_ubisoft_accent_box(
@@ -115,7 +136,7 @@ with col1:
     ))
     
     fig_funnel.update_layout(title="🎮 Gaming Talent Acquisition Funnel")
-    st.plotly_chart(fig_funnel, use_container_width=True)
+    st.plotly_chart(fig_funnel, width='stretch')
 
 with col2:
     conversion_data = {
@@ -147,7 +168,7 @@ with col2:
         barmode='group'
     )
     
-    st.plotly_chart(fig_conversion, use_container_width=True)
+    st.plotly_chart(fig_conversion, width='stretch')
 
 # Actionable Insights CORRIGÉES
 st.markdown(create_ubisoft_section_header("💡 Strategic Gaming Recommendations"))
@@ -193,9 +214,11 @@ with col3:
     </div>
     """, unsafe_allow_html=True)
 
-# Sidebar CORRIGÉ
+# Sidebar CORRIGÉ avec datetime
+last = datetime.now().strftime('%Y-%m-%d %H:%M')
+
 with st.sidebar:
-    st.markdown("""
+    st.markdown(f"""
     ## ⚔️ Talent Wars Dashboard
     
     **Competitive Intelligence**
@@ -225,6 +248,10 @@ with st.sidebar:
     - LinkedIn talent insights  
     - Gaming industry reports
     - Internal gaming metrics
+    
+    ---
+    
+    **🔄 Last Updated:** {last}
     """)
 
 # Footer
