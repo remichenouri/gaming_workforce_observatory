@@ -10,15 +10,6 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import numpy as np
 
-# Import des modules Ubisoft
-from src.themes.ubisoft_premium import apply_ubisoft_theme, UBISOFT_COLORS
-from src.utils.ubisoft_components import (
-    create_ubisoft_header, create_ubisoft_breadcrumb, 
-    create_ubisoft_kpi_card, create_ubisoft_metric_cols,
-    create_ubisoft_info_box, get_ubisoft_chart_config,
-    display_ubisoft_logo_section
-)
-
 # Configuration de la page
 st.set_page_config(
     page_title="Ubisoft Gaming Workforce Observatory - Executive Dashboard",
