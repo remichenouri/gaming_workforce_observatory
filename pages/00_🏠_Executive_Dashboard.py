@@ -29,7 +29,6 @@ ubisoft_metrics = [
     {"title": "Innovation Index", "value": "94/100", "delta": "Industry Leading", "icon": "🚀"}
 ]
 
-create_ubisoft_metric_cols(ubisoft_metrics)
 
 # 🌍 Section Studios Ubisoft Worldwide
 st.markdown("## 🌍 Ubisoft Global Studios Performance")
