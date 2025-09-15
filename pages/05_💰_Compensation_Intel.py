@@ -23,30 +23,33 @@ UBISOFT_COLORS = {
 }
 
 def create_ubisoft_header(title, subtitle=None):
-    subtitle_html = f"<p>{subtitle}</p>" if subtitle else ""
-    return f"<h1>{title}</h1>{subtitle_html}"
-
-def create_ubisoft_breadcrumb(page):
-    return f"<p>🎮 Ubisoft Observatory → {page}</p>"
+    subtitle_html = f"<p style='font-size:1.2rem; color:#555; margin-top:0.5rem;'>{subtitle}</p>" if subtitle else ""
+    return f"""
+    <div style='background: linear-gradient(90deg, #FFB020, #FFC533); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;'>
+        <h1 style='font-family: Arial, sans-serif; font-weight: bold; font-size: 3.5rem; color: white; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);'>{title}</h1>
+        {subtitle_html}
+    </div>
+    """
 
 def create_ubisoft_section_header(title):
-    return f"<h3>{title}</h3>"
+    return f"<h2 style='color: #2C3E50; font-family: Arial, sans-serif; font-weight: bold; border-left: 4px solid #FFB020; padding-left: 1rem; margin: 2rem 0 1rem 0;'>{title}</h2>"
 
 def create_ubisoft_info_box(title, content):
-    return f"<div><strong>{title}</strong><p>{content}</p></div>"
-
-def create_ubisoft_accent_box(title, content):
-    return f"<div style='border-left:4px solid #E60012'><strong>{title}</strong><p>{content}</p></div>"
+    return f"""
+    <div style='background: #f8f9fa; border-left: 4px solid #FFB020; padding: 1.5rem; margin: 1rem 0; border-radius: 5px;'>
+        <h4 style='color: #2C3E50; margin: 0 0 0.5rem 0;'>{title}</h4>
+        <p style='color: #555; margin: 0; font-size: 1rem; line-height: 1.5;'>{content}</p>
+    </div>
+    """
 
 def get_ubisoft_chart_config():
-    return {'layout': {}}
-
-def create_ubisoft_metric_cols(metrics, cols=4):
-    for metric in metrics:
-        st.markdown(f"**{metric['title']}**: {metric['value']}")
-
-def display_ubisoft_logo_section():
-    return "<p>© 2024 Ubisoft</p>"
+    return {
+        'layout': {
+            'font': {'family': 'Arial, sans-serif', 'size': 12, 'color': '#2C3E50'},
+            'paper_bgcolor': 'white',
+            'plot_bgcolor': '#fafafa'
+        }
+    }
 
 # ─────────────────────────────────────────────
 
@@ -56,38 +59,118 @@ st.set_page_config(
     layout="wide"
 )
 
-apply_ubisoft_theme()
+# SIDEBAR ÉPURÉE - MENU SEULEMENT
+with st.sidebar:
+    st.markdown("""
+    <div style='text-align: center; padding: 1rem 0;'>
+        <h2 style='color: #FFB020; font-family: Arial, sans-serif; margin: 0;'>💰 Ubisoft</h2>
+        <p style='color: #666; font-size: 0.9rem; margin: 0.5rem 0;'>Workforce Observatory</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    # Menu de navigation épuré
+    menu_items = [
+        ("🏠", "Executive Dashboard"),
+        ("⚔️", "Talent Wars"), 
+        ("🧠", "Neurodiversity ROI"),
+        ("🎯", "Predictive Analytics"),
+        ("🌍", "Global Studios"),
+        ("💰", "Compensation Intel"),
+        ("🚀", "Future Insights"),
+        ("⚙️", "Admin Panel")
+    ]
+    
+    st.markdown("<h4 style='color: #2C3E50; margin-bottom: 1rem;'>Navigation</h4>", unsafe_allow_html=True)
+    
+    for icon, name in menu_items:
+        if name == "Compensation Intel":
+            st.markdown(f"""
+            <div style='background: #FFB020; color: white; padding: 0.75rem; border-radius: 5px; margin: 0.25rem 0;'>
+                <strong>{icon} {name}</strong>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown(f"""
+            <div style='padding: 0.75rem; border-radius: 5px; margin: 0.25rem 0; color: #555;'>
+                {icon} {name}
+            </div>
+            """, unsafe_allow_html=True)
 
-st.markdown(
-    create_ubisoft_header(
-        "UBISOFT Compensation Intelligence",
-        "Strategic Salary Analytics & Market Positioning"
-    ),
-    unsafe_allow_html=True
-)
+# HEADER PRINCIPAL PROFESSIONNEL
+last_updated = datetime.now().strftime('%Y-%m-%d %H:%M')
+st.markdown(f"""
+<div style='background: #f8f9fa; padding: 1rem; border-radius: 5px; margin-bottom: 1rem; border-left: 4px solid #FFB020;'>
+    <div style='display: flex; justify-content: space-between; align-items: center;'>
+        <div>
+            <strong style='color: #2C3E50;'>💰 Compensation Intelligence - Strategic Salary Analytics</strong>
+            <p style='margin: 0; color: #666; font-size: 0.9rem;'>Market Benchmarking • Global Compensation • Pay Equity • $847M Global Payroll</p>
+        </div>
+        <div style='text-align: right;'>
+            <p style='margin: 0; color: #666; font-size: 0.9rem;'>Last Updated</p>
+            <strong style='color: #FFB020;'>{last_updated}</strong>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-st.markdown(create_ubisoft_breadcrumb("Compensation Intelligence"), unsafe_allow_html=True)
+# TITRE PRINCIPAL AVEC MISE EN VALEUR
+st.markdown(create_ubisoft_header("Compensation Intelligence", "Strategic Salary Analytics & Market Positioning"), unsafe_allow_html=True)
 
-st.markdown(
-    create_ubisoft_info_box(
-        "💰 Ubisoft Compensation Philosophy",
-        "Competitive salaries aligned with Ubisoft's commitment to attracting and retaining top gaming industry talent worldwide. Our data-driven approach ensures fair, market-competitive compensation across all studios and roles."
-    ),
-    unsafe_allow_html=True
-)
+# INTRODUCTION AVEC CONTEXTE BUSINESS
+st.markdown(create_ubisoft_info_box(
+    "💰 Ubisoft Compensation Philosophy",
+    "Competitive salaries aligned with Ubisoft's commitment to attracting and retaining top gaming industry talent worldwide. Our data-driven approach ensures fair, market-competitive compensation across all studios and roles with a +12% premium above gaming market average and industry-leading 96.7% pay equity score."
+), unsafe_allow_html=True)
 
-# Compensation Overview
-comp_metrics = [
-    {"title": "Global Payroll", "value": "$847M", "delta": "+8.2% vs 2023", "icon": "💰"},
-    {"title": "Avg Gaming Salary", "value": "$95,400", "delta": "Above market +12%", "icon": "📊"},
-    {"title": "Pay Equity Score", "value": "96.7%", "delta": "Industry leading", "icon": "⚖️"},
-    {"title": "Bonus Pool", "value": "$89M", "delta": "15% of base salaries", "icon": "🎯"}
-]
+# MÉTRIQUES CLÉS AVEC STYLE PROFESSIONNEL
+st.markdown(create_ubisoft_section_header("🎯 Key Compensation Metrics"), unsafe_allow_html=True)
 
-create_ubisoft_metric_cols(comp_metrics)
+col1, col2, col3, col4 = st.columns(4)
 
-# Salary by Role Analysis
-st.markdown(create_ubisoft_section_header("🎮 Ubisoft Salary Analysis by Gaming Roles"))
+with col1:
+    st.markdown("""
+    <div style='background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;'>
+        <div style='font-size: 2rem; color: #FFB020; margin-bottom: 0.5rem;'>💰</div>
+        <h3 style='color: #2C3E50; margin: 0; font-size: 2rem;'>$847M</h3>
+        <p style='color: #666; margin: 0.5rem 0 0 0;'>Global Payroll</p>
+        <small style='color: #28A745;'>+8.2% vs 2023</small>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    st.markdown("""
+    <div style='background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;'>
+        <div style='font-size: 2rem; color: #FFB020; margin-bottom: 0.5rem;'>📊</div>
+        <h3 style='color: #2C3E50; margin: 0; font-size: 2rem;'>$95,400</h3>
+        <p style='color: #666; margin: 0.5rem 0 0 0;'>Avg Gaming Salary</p>
+        <small style='color: #28A745;'>Above market +12%</small>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col3:
+    st.markdown("""
+    <div style='background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;'>
+        <div style='font-size: 2rem; color: #FFB020; margin-bottom: 0.5rem;'>⚖️</div>
+        <h3 style='color: #2C3E50; margin: 0; font-size: 2rem;'>96.7%</h3>
+        <p style='color: #666; margin: 0.5rem 0 0 0;'>Pay Equity Score</p>
+        <small style='color: #28A745;'>Industry leading</small>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col4:
+    st.markdown("""
+    <div style='background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;'>
+        <div style='font-size: 2rem; color: #FFB020; margin-bottom: 0.5rem;'>🎯</div>
+        <h3 style='color: #2C3E50; margin: 0; font-size: 2rem;'>$89M</h3>
+        <p style='color: #666; margin: 0.5rem 0 0 0;'>Bonus Pool</p>
+        <small style='color: #666;'>15% of base salaries</small>
+    </div>
+    """, unsafe_allow_html=True)
+
+# SALARY BY ROLE ANALYSIS
+st.markdown(create_ubisoft_section_header("🎮 Salary Analysis by Gaming Roles"), unsafe_allow_html=True)
 
 # Gaming roles salary data
 salary_data = {
@@ -149,13 +232,15 @@ with col2:
     for _, row in top_premium.iterrows():
         premium_color = UBISOFT_COLORS['primary'] if row['Ubisoft_Premium'] > 0 else UBISOFT_COLORS['accent']
         st.markdown(f"""
-        **{row['Role']}**  
-        <span style="color: {premium_color}; font-weight: bold;">+{row['Ubisoft_Premium']}% vs market</span>  
-        👥 {row['Employees']} employees
+        <div style='background: white; padding: 1rem; margin: 0.5rem 0; border-radius: 5px; border-left: 4px solid {premium_color};'>
+            <strong style='color: #2C3E50;'>{row['Role']}</strong><br>
+            <span style='color: {premium_color}; font-weight: bold;'>+{row['Ubisoft_Premium']}% vs market</span><br>
+            <span style='color: #666; font-size: 0.9rem;'>👥 {row['Employees']} employees</span>
+        </div>
         """, unsafe_allow_html=True)
 
-# Geographic Compensation Analysis
-st.markdown(create_ubisoft_section_header("🌍 Ubisoft Global Compensation Analysis"))
+# GEOGRAPHIC COMPENSATION ANALYSIS
+st.markdown(create_ubisoft_section_header("🌍 Global Compensation Analysis"), unsafe_allow_html=True)
 
 # Geographic salary data
 geo_salary_data = {
@@ -191,7 +276,7 @@ with col1:
         color_continuous_scale=['#E60012', '#FFD700', '#0099FF']
     )
     
-    fig_geo_salary.update_layout(get_ubisoft_chart_config()['layout'])
+    fig_geo_salary.update_layout(**get_ubisoft_chart_config()['layout'])
     st.plotly_chart(fig_geo_salary, width='stretch')
 
 with col2:
@@ -202,13 +287,15 @@ with col2:
     st.markdown("### 💡 Best Value Ubisoft Studios")
     for _, studio in best_value.iterrows():
         st.markdown(f"""
-        **{studio['Studio']}** ({studio['Country']})  
-        💰 ${studio['Avg_Salary_USD']:,} • 📈 Value: {studio['Value_Score']}%  
-        👥 {studio['Employees']:,} employees
-        """)
+        <div style='background: white; padding: 1rem; margin: 0.5rem 0; border-radius: 5px; border-left: 4px solid #28A745;'>
+            <strong style='color: #2C3E50;'>{studio['Studio']}</strong> ({studio['Country']})<br>
+            <span style='color: #666; font-size: 0.9rem;'>💰 ${studio['Avg_Salary_USD']:,} • 📈 Value: {studio['Value_Score']}%</span><br>
+            <span style='color: #666; font-size: 0.9rem;'>👥 {studio['Employees']:,} employees</span>
+        </div>
+        """, unsafe_allow_html=True)
 
-# Compensation Trends
-st.markdown(create_ubisoft_section_header("📈 Ubisoft Compensation Trends & Predictions"))
+# COMPENSATION TRENDS
+st.markdown(create_ubisoft_section_header("📈 Compensation Trends & Predictions"), unsafe_allow_html=True)
 
 # Generate trend data
 years = list(range(2020, 2026))
@@ -268,11 +355,11 @@ with col2:
         color_continuous_scale=['#0066CC', '#0099FF', '#E60012']
     )
     
-    fig_bonus.update_layout(get_ubisoft_chart_config()['layout'])
+    fig_bonus.update_layout(**get_ubisoft_chart_config()['layout'])
     st.plotly_chart(fig_bonus, width='stretch')
 
-# Pay Equity Analysis
-st.markdown(create_ubisoft_section_header("⚖️ Ubisoft Pay Equity & Fairness Analysis"))
+# PAY EQUITY ANALYSIS
+st.markdown(create_ubisoft_section_header("⚖️ Pay Equity & Fairness Analysis"), unsafe_allow_html=True)
 
 # Pay equity data
 equity_data = {
@@ -316,89 +403,60 @@ fig_equity.update_layout(
 
 st.plotly_chart(fig_equity, width='stretch')
 
-# Recommendations
-st.markdown(create_ubisoft_section_header("💡 Ubisoft Compensation Strategy Recommendations"))
+# RECOMMENDATIONS AVEC STYLE AMÉLIORÉ
+st.markdown(create_ubisoft_section_header("💡 Compensation Strategy Recommendations"), unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns(3)
 
 with col1:
     st.markdown("""
-    <div class="ubisoft-ultra-card">
-        <h4 style="color: #0099FF;">🎯 Market Positioning</h4>
-        <ul style="color: #F5F5F5; text-align: left;">
-            <li>Maintain +12% premium for key roles</li>
-            <li>Expand equity compensation program</li>
-            <li>Review SF & Toronto salary bands</li>
-            <li>Benchmark emerging markets quarterly</li>
-        </ul>
+    <div style='background: linear-gradient(135deg, #0099FF, #00CCFF); padding: 2rem; border-radius: 10px; text-align: center; color: white;'>
+        <div style='font-size: 3rem; margin-bottom: 1rem;'>🎯</div>
+        <h4 style='color: white; margin: 0;'>Market Positioning</h4>
+        <div style='margin: 1rem 0; text-align: left;'>
+            <strong>• Maintain +12%</strong> premium for key roles<br>
+            <strong>• Expand equity</strong> compensation program<br>
+            <strong>• Review SF & Toronto</strong> salary bands<br>
+            <strong>• Benchmark emerging</strong> markets quarterly
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
 with col2:
     st.markdown("""
-    <div class="ubisoft-ultra-card">
-        <h4 style="color: #0099FF;">⚖️ Pay Equity</h4>
-        <ul style="color: #F5F5F5; text-align: left;">
-            <li>Close geographic disparity gaps</li>
-            <li>Enhance transparency programs</li>
-            <li>Implement bias-free salary tools</li>
-            <li>Quarterly equity audits</li>
-        </ul>
+    <div style='background: linear-gradient(135deg, #28A745, #34CE57); padding: 2rem; border-radius: 10px; text-align: center; color: white;'>
+        <div style='font-size: 3rem; margin-bottom: 1rem;'>⚖️</div>
+        <h4 style='color: white; margin: 0;'>Pay Equity</h4>
+        <div style='margin: 1rem 0; text-align: left;'>
+            <strong>• Close geographic</strong> disparity gaps<br>
+            <strong>• Enhance transparency</strong> programs<br>
+            <strong>• Implement bias-free</strong> salary tools<br>
+            <strong>• Quarterly equity</strong> audits
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
 with col3:
     st.markdown("""
-    <div class="ubisoft-ultra-card">
-        <h4 style="color: #0099FF;">🚀 Future Strategy</h4>
-        <ul style="color: #F5F5F5; text-align: left;">
-            <li>Skills-based compensation model</li>
-            <li>Performance bonus optimization</li>
-            <li>Global mobility salary framework</li>
-            <li>AI-powered salary recommendations</li>
-        </ul>
+    <div style='background: linear-gradient(135deg, #E60012, #FF1744); padding: 2rem; border-radius: 10px; text-align: center; color: white;'>
+        <div style='font-size: 3rem; margin-bottom: 1rem;'>🚀</div>
+        <h4 style='color: white; margin: 0;'>Future Strategy</h4>
+        <div style='margin: 1rem 0; text-align: left;'>
+            <strong>• Skills-based</strong> compensation model<br>
+            <strong>• Performance bonus</strong> optimization<br>
+            <strong>• Global mobility</strong> salary framework<br>
+            <strong>• AI-powered salary</strong> recommendations
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-# Footer
+# FOOTER PROFESSIONNEL
 st.markdown("---")
-st.markdown(display_ubisoft_logo_section(), unsafe_allow_html=True)
-
-# Sidebar CORRIGÉ avec datetime
-last = datetime.now().strftime('%Y-%m-%d %H:%M')
-
-with st.sidebar:
-    st.markdown(f"""
-    ## 💰 Compensation Intel
-    
-    **Strategic Salary Analytics**
-    
-    📊 **Market Benchmarking** analysis temps réel
-    
-    🌍 **Global** compensation insights
-    
-    ⚖️ **Pay Equity** monitoring system
-    
-    🎯 **Strategic** recommendations
-    
-    ---
-    
-    ### 💡 Key Insights
-    - **+12%** above gaming market average  
-    - **96.7%** pay equity score
-    - **$95,400** global average salary
-    - **15%** bonus as % of base
-    
-    ---
-    
-    ### 🎮 Top Paying Roles
-    1. Technical Director - $150K
-    2. Lead Programmer - $125K  
-    3. Art Director - $115K
-    4. Data Scientist - $115K
-    5. Game Producer - $110K
-    
-    ---
-    
-    **🔄 Last Updated:** {last}
-    """)
+st.markdown("""
+<div style='text-align: center; padding: 2rem; background: #f8f9fa; border-radius: 5px; margin-top: 2rem;'>
+    <p style='color: #666; margin: 0; font-size: 0.9rem;'>
+        © 2024 Ubisoft Entertainment - Gaming Workforce Observatory<br>
+        Compensation Intelligence Dashboard • Strategic Salary Analytics • Confidential and Proprietary Information
+    </p>
+</div>
+""", unsafe_allow_html=True)
