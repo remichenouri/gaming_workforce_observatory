@@ -2,7 +2,6 @@
 🎮 Ubisoft Gaming Workforce Observatory
 Admin Panel - System Management & Configuration
 """
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -12,7 +11,6 @@ import numpy as np
 
 # ─────────────────────────────────────────────
 # STUBS POUR THEME & COMPOSANTS UBISOFT
-# Appliquer ABSOLUMENT dans chaque page à remplacer
 def apply_ubisoft_theme():
     pass
 
@@ -49,6 +47,8 @@ def create_ubisoft_metric_cols(metrics, cols=4):
 
 def display_ubisoft_logo_section():
     return "<p>© 2024 Ubisoft</p>"
+
+# ─────────────────────────────────────────────
 
 st.set_page_config(
     page_title="Ubisoft Admin Panel - System Management",
@@ -344,43 +344,28 @@ st.markdown(create_ubisoft_section_header("🛠️ Ubisoft Administrative Action
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.markdown("""
-    <div class="ubisoft-ultra-card">
-        <h4 style="color: #0099FF;">🔄 Data Management</h4>
-        <button style="background: #0099FF; color: white; border: none; padding: 10px 20px; 
-                       border-radius: 5px; margin: 5px; cursor: pointer;">Force Data Sync</button><br/>
-        <button style="background: #FFD700; color: black; border: none; padding: 10px 20px; 
-                       border-radius: 5px; margin: 5px; cursor: pointer;">Clear Cache</button><br/>
-        <button style="background: #28A745; color: white; border: none; padding: 10px 20px; 
-                       border-radius: 5px; margin: 5px; cursor: pointer;">Export Logs</button>
-    </div>
-    """, unsafe_allow_html=True)
+    if st.button("🔄 Force Data Sync"):
+        st.success("✅ Data sync initiated!")
+    if st.button("🗑️ Clear Cache"):
+        st.success("✅ Cache cleared!")
+    if st.button("📤 Export Logs"):
+        st.success("✅ Logs exported!")
 
 with col2:
-    st.markdown("""
-    <div class="ubisoft-ultra-card">
-        <h4 style="color: #0099FF;">👥 User Actions</h4>
-        <button style="background: #0099FF; color: white; border: none; padding: 10px 20px; 
-                       border-radius: 5px; margin: 5px; cursor: pointer;">Add User</button><br/>
-        <button style="background: #FFD700; color: black; border: none; padding: 10px 20px; 
-                       border-radius: 5px; margin: 5px; cursor: pointer;">Reset Password</button><br/>
-        <button style="background: #E60012; color: white; border: none; padding: 10px 20px; 
-                       border-radius: 5px; margin: 5px; cursor: pointer;">Revoke Access</button>
-    </div>
-    """, unsafe_allow_html=True)
+    if st.button("👥 Add User"):
+        st.info("🔹 User creation form would open here")
+    if st.button("🔑 Reset Password"):
+        st.info("🔹 Password reset interface would appear")
+    if st.button("🚫 Revoke Access"):
+        st.warning("⚠️ Access revocation requires confirmation")
 
 with col3:
-    st.markdown("""
-    <div class="ubisoft-ultra-card">
-        <h4 style="color: #0099FF;">⚙️ System Control</h4>
-        <button style="background: #28A745; color: white; border: none; padding: 10px 20px; 
-                       border-radius: 5px; margin: 5px; cursor: pointer;">Restart Services</button><br/>
-        <button style="background: #FFD700; color: black; border: none; padding: 10px 20px; 
-                       border-radius: 5px; margin: 5px; cursor: pointer;">Maintenance Mode</button><br/>
-        <button style="background: #E60012; color: white; border: none; padding: 10px 20px; 
-                       border-radius: 5px; margin: 5px; cursor: pointer;">Emergency Stop</button>
-    </div>
-    """, unsafe_allow_html=True)
+    if st.button("🔄 Restart Services"):
+        st.success("✅ Services restart initiated!")
+    if st.button("🔧 Maintenance Mode"):
+        st.warning("⚠️ Maintenance mode activated")
+    if st.button("🛑 Emergency Stop"):
+        st.error("❌ Emergency procedures activated")
 
 # Logout option
 st.markdown("---")
@@ -389,8 +374,15 @@ if st.button("🔐 Logout from Admin Panel"):
     st.success("✅ Successfully logged out from Ubisoft Admin Panel")
     st.rerun()
 
+# Footer
+st.markdown("---")
+st.markdown(display_ubisoft_logo_section(), unsafe_allow_html=True)
+
+# Sidebar CORRIGÉ avec datetime
+last = datetime.now().strftime('%Y-%m-%d %H:%M')
+
 with st.sidebar:
-    st.markdown("""
+    st.markdown(f"""
     ## ⚙️ Admin Panel
     
     **System Management**
@@ -418,4 +410,8 @@ with st.sidebar:
     - Authentication: ✅ Active
     - Audit Logging: ✅ Running
     - Data Encryption: ✅ AES-256
+    
+    ---
+    
+    **🔄 Last Updated:** {last}
     """)
