@@ -1,5 +1,5 @@
 """
-🎮 Gaming Workforce Observatory - Predictive Analytics CORRIGÉ
+🎮 Gaming Workforce Observatory - Predictive Analytics
 Page Predictive Analytics sans erreurs d'import
 """
 import streamlit as st
@@ -23,34 +23,35 @@ UBISOFT_COLORS = {
 }
 
 def create_ubisoft_header(title, subtitle=None):
-    subtitle_html = f"<p>{subtitle}</p>" if subtitle else ""
-    return f"<h1>{title}</h1>{subtitle_html}"
-
-def create_ubisoft_breadcrumb(page):
-    return f"<p>🎮 Ubisoft Observatory → {page}</p>"
+    subtitle_html = f"<p style='font-size:1.2rem; color:#555; margin-top:0.5rem;'>{subtitle}</p>" if subtitle else ""
+    return f"""
+    <div style='background: linear-gradient(90deg, #FFB020, #FFC533); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;'>
+        <h1 style='font-family: Arial, sans-serif; font-weight: bold; font-size: 3.5rem; color: white; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);'>{title}</h1>
+        {subtitle_html}
+    </div>
+    """
 
 def create_ubisoft_section_header(title):
-    return f"<h3>{title}</h3>"
+    return f"<h2 style='color: #2C3E50; font-family: Arial, sans-serif; font-weight: bold; border-left: 4px solid #FFB020; padding-left: 1rem; margin: 2rem 0 1rem 0;'>{title}</h2>"
 
 def create_ubisoft_info_box(title, content):
-    return f"<div><strong>{title}</strong><p>{content}</p></div>"
-
-def create_ubisoft_accent_box(title, content):
-    return f"<div style='border-left:4px solid #E60012'><strong>{title}</strong><p>{content}</p></div>"
+    return f"""
+    <div style='background: #f8f9fa; border-left: 4px solid #FFB020; padding: 1.5rem; margin: 1rem 0; border-radius: 5px;'>
+        <h4 style='color: #2C3E50; margin: 0 0 0.5rem 0;'>{title}</h4>
+        <p style='color: #555; margin: 0; font-size: 1rem; line-height: 1.5;'>{content}</p>
+    </div>
+    """
 
 def get_ubisoft_chart_config():
-    return {'layout': {}}
-
-def create_ubisoft_metric_cols(metrics, cols=4):
-    for metric in metrics:
-        st.markdown(f"**{metric['title']}**: {metric['value']}")
-
-def display_ubisoft_logo_section():
-    return "<p>© 2024 Ubisoft</p>"
+    return {
+        'layout': {
+            'font': {'family': 'Arial, sans-serif', 'size': 12, 'color': '#2C3E50'},
+            'paper_bgcolor': 'white',
+            'plot_bgcolor': '#fafafa'
+        }
+    }
 
 # ─────────────────────────────────────────────
-
-apply_ubisoft_theme()
 
 # Configuration page
 st.set_page_config(
@@ -59,81 +60,70 @@ st.set_page_config(
     layout="wide"
 )
 
-# THEME INTÉGRÉ (sans imports externes)
-GAMING_COLORS = {
-    'primary': '#0099FF',
-    'accent': '#E60012',
-    'success': '#28A745',
-    'warning': '#FFB020',
-    'text': '#2C3E50'
-}
-
-def apply_gaming_theme():
-    """Application du thème gaming intégré"""
+# SIDEBAR ÉPURÉE - MENU SEULEMENT
+with st.sidebar:
     st.markdown("""
-    <style>
-    .main-header {
-        background: linear-gradient(135deg, #0099FF15, #E6001210);
-        padding: 2rem;
-        border-radius: 12px;
-        margin-bottom: 2rem;
-        border-left: 4px solid #0099FF;
-    }
-    .gaming-kpi-card {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        border-left: 4px solid #0099FF;
-        margin: 0.5rem 0;
-    }
-    .gaming-info-box {
-        background: linear-gradient(135deg, #28A74515, #0099FF10);
-        padding: 1.5rem;
-        border-radius: 8px;
-        margin: 1rem 0;
-        border: 1px solid #28A74530;
-    }
-    </style>
+    <div style='text-align: center; padding: 1rem 0;'>
+        <h2 style='color: #FFB020; font-family: Arial, sans-serif; margin: 0;'>🎯 Ubisoft</h2>
+        <p style='color: #666; font-size: 0.9rem; margin: 0.5rem 0;'>Workforce Observatory</p>
+    </div>
     """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    # Menu de navigation épuré
+    menu_items = [
+        ("🏠", "Executive Dashboard"),
+        ("⚔️", "Talent Wars"), 
+        ("🧠", "Neurodiversity ROI"),
+        ("🎯", "Predictive Analytics"),
+        ("🌍", "Global Studios"),
+        ("💰", "Compensation Intel"),
+        ("🚀", "Future Insights"),
+        ("⚙️", "Admin Panel")
+    ]
+    
+    st.markdown("<h4 style='color: #2C3E50; margin-bottom: 1rem;'>Navigation</h4>", unsafe_allow_html=True)
+    
+    for icon, name in menu_items:
+        if name == "Predictive Analytics":
+            st.markdown(f"""
+            <div style='background: #FFB020; color: white; padding: 0.75rem; border-radius: 5px; margin: 0.25rem 0;'>
+                <strong>{icon} {name}</strong>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown(f"""
+            <div style='padding: 0.75rem; border-radius: 5px; margin: 0.25rem 0; color: #555;'>
+                {icon} {name}
+            </div>
+            """, unsafe_allow_html=True)
 
-def get_gaming_chart_config():
-    """Configuration charts gaming"""
-    return {
-        'paper_bgcolor': 'rgba(0,0,0,0)',
-        'plot_bgcolor': '#FFFFFF',
-        'font': {'family': 'Inter, sans-serif', 'size': 12, 'color': '#2C3E50'},
-        'colorway': ['#0099FF', '#E60012', '#28A745', '#FFB020'],
-        'margin': {'t': 60, 'b': 40, 'l': 60, 'r': 40},
-        'xaxis': {'gridcolor': '#E9ECEF', 'showgrid': True},
-        'yaxis': {'gridcolor': '#E9ECEF', 'showgrid': True}
-    }
-
-# Application du thème
-apply_gaming_theme()
-
-# Header principal
-st.markdown("""
-<div class="main-header">
-    <h1 style="color: #0099FF; margin: 0;">🎯 Gaming Workforce Predictive Analytics</h1>
-    <p style="color: #6C757D; margin-top: 0.5rem;">AI-Powered Workforce Intelligence & Future Insights</p>
+# HEADER PRINCIPAL PROFESSIONNEL
+last_updated = datetime.now().strftime('%Y-%m-%d %H:%M')
+st.markdown(f"""
+<div style='background: #f8f9fa; padding: 1rem; border-radius: 5px; margin-bottom: 1rem; border-left: 4px solid #FFB020;'>
+    <div style='display: flex; justify-content: space-between; align-items: center;'>
+        <div>
+            <strong style='color: #2C3E50;'>🎯 Predictive Analytics - AI-Powered Intelligence</strong>
+            <p style='margin: 0; color: #666; font-size: 0.9rem;'>Machine Learning Models • Risk Detection • Future Workforce Planning</p>
+        </div>
+        <div style='text-align: right;'>
+            <p style='margin: 0; color: #666; font-size: 0.9rem;'>Last Updated</p>
+            <strong style='color: #FFB020;'>{last_updated}</strong>
+        </div>
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
-# Breadcrumb
-st.markdown("""
-<div style="background: #F8F9FA; padding: 0.75rem 1rem; border-radius: 6px; margin: 1rem 0; color: #6C757D;">
-    🎮 <strong>Gaming Workforce Observatory</strong> → Predictive Analytics
-</div>
-""", unsafe_allow_html=True)
+# TITRE PRINCIPAL AVEC MISE EN VALEUR
+st.markdown(create_ubisoft_header("Predictive Analytics", "AI-Powered Workforce Intelligence & Future Insights"), unsafe_allow_html=True)
 
-# Introduction
-st.markdown("""
-<div class="gaming-info-box">
-    <h4 style="color: #0099FF;">🤖 Gaming AI-Powered Workforce Intelligence</h4>
-    <p style="color: #2C3E50;">Machine learning models analysent en temps réel les données gaming workforce pour prédire les risques, optimiser les équipes et identifier les opportunités de croissance.</p>
-</div>
-""", unsafe_allow_html=True)
+# INTRODUCTION AVEC CONTEXTE
+st.markdown(create_ubisoft_info_box(
+    "🤖 Gaming AI-Powered Workforce Intelligence",
+    "Nos modèles de machine learning analysent en temps réel les données workforce gaming pour prédire les risques de turnover, optimiser les équipes et identifier les opportunités de croissance. Avec une précision moyenne de 87.8%, notre système génère $2.1M de valeur annuelle."
+), unsafe_allow_html=True)
 
 # Génération données de démonstration
 @st.cache_data(ttl=300)
@@ -202,57 +192,51 @@ models_df = generate_ml_model_data()
 prediction_df = generate_prediction_data()
 projection_df = generate_projection_data()
 
-# Section Performance des Modèles ML
-st.markdown("""
-<div style="background: linear-gradient(135deg, #0099FF15, transparent); padding: 1rem; border-radius: 8px; margin: 2rem 0 1rem 0; border-left: 4px solid #0099FF;">
-    <h3 style="margin: 0; color: #2C3E50;">🧠 Gaming AI Models Performance</h3>
-</div>
-""", unsafe_allow_html=True)
+# SECTION PERFORMANCE ML
+st.markdown(create_ubisoft_section_header("🧠 AI Models Performance"), unsafe_allow_html=True)
 
 col1, col2 = st.columns(2)
 
 with col1:
-    # Chart accuracy modèles
     fig_accuracy = go.Figure()
     
     fig_accuracy.add_trace(go.Bar(
         name='Accuracy',
         x=models_df['Model'],
         y=models_df['Accuracy'],
-        marker_color=GAMING_COLORS['primary']
+        marker_color=UBISOFT_COLORS['primary']
     ))
     
     fig_accuracy.add_trace(go.Bar(
         name='Precision',
         x=models_df['Model'],
         y=models_df['Precision'],
-        marker_color=GAMING_COLORS['accent']
+        marker_color=UBISOFT_COLORS['accent']
     ))
     
     fig_accuracy.update_layout(
-        title="🎯 Gaming AI Models: Accuracy & Precision",
+        title="🎯 AI Models: Accuracy & Precision",
         barmode='group',
-        **get_gaming_chart_config()
+        **get_ubisoft_chart_config()['layout']
     )
     
     st.plotly_chart(fig_accuracy, width='stretch')
 
 with col2:
-    # Impact business
     fig_impact = px.bar(
         models_df,
         x='Model',
         y='Business_Impact',
         color='Business_Impact',
-        title='💰 Gaming AI Models: Business Impact ($)',
+        title='💰 AI Models: Business Impact ($)',
         color_continuous_scale=['#0066CC', '#0099FF', '#E60012']
     )
     
-    fig_impact.update_layout(**get_gaming_chart_config())
+    fig_impact.update_layout(**get_ubisoft_chart_config()['layout'])
     st.plotly_chart(fig_impact, width='stretch')
 
-# Table performance modèles
-st.markdown("### 📊 Gaming ML Models Performance Table")
+# TABLE PERFORMANCE
+st.markdown("### 📊 ML Models Performance Summary")
 st.dataframe(
     models_df.style.background_gradient(subset=['Accuracy', 'Precision', 'Recall'], cmap='RdYlGn').format({
         'Accuracy': '{:.1f}%',
@@ -263,24 +247,19 @@ st.dataframe(
     width='stretch'
 )
 
-# Section Analyses Prédictives
-st.markdown("""
-<div style="background: linear-gradient(135deg, #0099FF15, transparent); padding: 1rem; border-radius: 8px; margin: 2rem 0 1rem 0; border-left: 4px solid #0099FF;">
-    <h3 style="margin: 0; color: #2C3E50;">🔮 Gaming Workforce Risk Predictions</h3>
-</div>
-""", unsafe_allow_html=True)
+# SECTION RISK PREDICTIONS
+st.markdown(create_ubisoft_section_header("🔮 Workforce Risk Predictions"), unsafe_allow_html=True)
 
 col1, col2 = st.columns(2)
 
 with col1:
-    # Scatter plot risques
     fig_risk_scatter = px.scatter(
         prediction_df,
         x='Turnover_Risk',
         y='Burnout_Risk',
         color='Risk_Category',
         size='Performance_Score',
-        title='🚨 Gaming Employee Risk Analysis',
+        title='🚨 Employee Risk Analysis',
         labels={
             'Turnover_Risk': 'Turnover Risk (%)',
             'Burnout_Risk': 'Burnout Risk (%)'
@@ -292,38 +271,32 @@ with col1:
         }
     )
     
-    fig_risk_scatter.update_layout(**get_gaming_chart_config())
+    fig_risk_scatter.update_layout(**get_ubisoft_chart_config()['layout'])
     st.plotly_chart(fig_risk_scatter, width='stretch')
 
 with col2:
-    # Distribution des risques
     risk_counts = prediction_df['Risk_Category'].value_counts()
     
     fig_risk_pie = go.Figure(data=[go.Pie(
         labels=risk_counts.index,
         values=risk_counts.values,
-        marker=dict(colors=[GAMING_COLORS['primary'], '#FFD700', GAMING_COLORS['accent']]),
+        marker=dict(colors=[UBISOFT_COLORS['primary'], '#FFD700', UBISOFT_COLORS['accent']]),
         hole=0.4
     )])
     
     fig_risk_pie.update_layout(
-        title="🎯 Gaming Risk Distribution",
-        **get_gaming_chart_config()
+        title="🎯 Risk Distribution",
+        **get_ubisoft_chart_config()['layout']
     )
     
     st.plotly_chart(fig_risk_pie, width='stretch')
 
-# Section Projections Futur
-st.markdown("""
-<div style="background: linear-gradient(135deg, #0099FF15, transparent); padding: 1rem; border-radius: 8px; margin: 2rem 0 1rem 0; border-left: 4px solid #0099FF;">
-    <h3 style="margin: 0; color: #2C3E50;">📈 Gaming Workforce Projections 2025</h3>
-</div>
-""", unsafe_allow_html=True)
+# SECTION PROJECTIONS
+st.markdown(create_ubisoft_section_header("📈 Workforce Projections 2025"), unsafe_allow_html=True)
 
 col1, col2 = st.columns(2)
 
 with col1:
-    # Prédictions headcount
     fig_headcount = go.Figure()
     
     # Intervalle de confiance
@@ -351,144 +324,132 @@ with col1:
         y=projection_df['Headcount_Predicted'],
         mode='lines+markers',
         name='Predicted Headcount',
-        line=dict(color=GAMING_COLORS['primary'], width=3)
+        line=dict(color=UBISOFT_COLORS['primary'], width=3)
     ))
     
     fig_headcount.update_layout(
-        title="📊 Gaming Headcount Projection 2025",
-        **get_gaming_chart_config()
+        title="📊 Headcount Projection 2025",
+        **get_ubisoft_chart_config()['layout']
     )
     
     st.plotly_chart(fig_headcount, width='stretch')
 
 with col2:
-    # Besoins recrutement
     fig_hiring = px.bar(
         projection_df,
         x='Month',
         y='Hiring_Need',
-        title='👥 Gaming Monthly Hiring Forecast 2025',
+        title='👥 Monthly Hiring Forecast 2025',
         color='Hiring_Need',
         color_continuous_scale=['#0066CC', '#0099FF', '#E60012']
     )
     
-    fig_hiring.update_layout(**get_gaming_chart_config())
+    fig_hiring.update_layout(**get_ubisoft_chart_config()['layout'])
     st.plotly_chart(fig_hiring, width='stretch')
 
-# Métriques clés prédictives
-st.markdown("### 🎯 Gaming Predictive Insights")
+# MÉTRIQUES PRÉDICTIVES
+st.markdown("### 🎯 Key Predictive Insights")
 
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
     high_risk_count = len(prediction_df[prediction_df['Risk_Category'] == 'High Risk'])
-    st.metric("🚨 High Risk Employees", high_risk_count, "-3 vs last month")
+    st.markdown(f"""
+    <div style='background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;'>
+        <div style='font-size: 2rem; color: #E60012; margin-bottom: 0.5rem;'>🚨</div>
+        <h3 style='color: #2C3E50; margin: 0; font-size: 2rem;'>{high_risk_count}</h3>
+        <p style='color: #666; margin: 0.5rem 0 0 0;'>High Risk Employees</p>
+        <small style='color: #28A745;'>-3 vs last month</small>
+    </div>
+    """, unsafe_allow_html=True)
 
 with col2:
     avg_turnover_risk = prediction_df['Turnover_Risk'].mean()
-    st.metric("📊 Avg Turnover Risk", f"{avg_turnover_risk:.1f}%", "-2.3%")
+    st.markdown(f"""
+    <div style='background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;'>
+        <div style='font-size: 2rem; color: #FFB020; margin-bottom: 0.5rem;'>📊</div>
+        <h3 style='color: #2C3E50; margin: 0; font-size: 2rem;'>{avg_turnover_risk:.1f}%</h3>
+        <p style='color: #666; margin: 0.5rem 0 0 0;'>Avg Turnover Risk</p>
+        <small style='color: #28A745;'>-2.3%</small>
+    </div>
+    """, unsafe_allow_html=True)
 
 with col3:
     total_hiring_2025 = projection_df['Hiring_Need'].sum()
-    st.metric("📈 Hiring Forecast 2025", total_hiring_2025, "+15% vs 2024")
+    st.markdown(f"""
+    <div style='background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;'>
+        <div style='font-size: 2rem; color: #0099FF; margin-bottom: 0.5rem;'>📈</div>
+        <h3 style='color: #2C3E50; margin: 0; font-size: 2rem;'>{total_hiring_2025}</h3>
+        <p style='color: #666; margin: 0.5rem 0 0 0;'>Hiring Forecast 2025</p>
+        <small style='color: #28A745;'>+15% vs 2024</small>
+    </div>
+    """, unsafe_allow_html=True)
 
 with col4:
     model_accuracy = models_df['Accuracy'].mean()
-    st.metric("🎯 Model Accuracy", f"{model_accuracy:.1f}%", "+1.2%")
+    st.markdown(f"""
+    <div style='background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;'>
+        <div style='font-size: 2rem; color: #28A745; margin-bottom: 0.5rem;'>🎯</div>
+        <h3 style='color: #2C3E50; margin: 0; font-size: 2rem;'>{model_accuracy:.1f}%</h3>
+        <p style='color: #666; margin: 0.5rem 0 0 0;'>Model Accuracy</p>
+        <small style='color: #28A745;'>+1.2%</small>
+    </div>
+    """, unsafe_allow_html=True)
 
-# Recommandations IA
-st.markdown("""
-<div style="background: linear-gradient(135deg, #0099FF15, transparent); padding: 1rem; border-radius: 8px; margin: 2rem 0 1rem 0; border-left: 4px solid #0099FF;">
-    <h3 style="margin: 0; color: #2C3E50;">💡 Gaming AI-Generated Recommendations</h3>
-</div>
-""", unsafe_allow_html=True)
+# AI RECOMMENDATIONS AVEC STYLE AMÉLIORÉ
+st.markdown(create_ubisoft_section_header("💡 AI-Generated Recommendations"), unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns(3)
 
 with col1:
     st.markdown("""
-    <div class="gaming-kpi-card">
-        <h4 style="color: #E60012;">🚨 Immediate Actions</h4>
-        <ul style="color: #2C3E50;">
-            <li><strong>8 employees</strong> at high turnover risk</li>
-            <li><strong>Schedule 1-on-1s</strong> with managers</li>
-            <li><strong>Review workload</strong> for 12 at-risk</li>
-            <li><strong>Offer flexibility</strong> options</li>
-        </ul>
+    <div style='background: linear-gradient(135deg, #E60012, #FF1744); padding: 2rem; border-radius: 10px; text-align: center; color: white;'>
+        <div style='font-size: 3rem; margin-bottom: 1rem;'>🚨</div>
+        <h4 style='color: white; margin: 0;'>Immediate Actions</h4>
+        <div style='margin: 1rem 0; text-align: left;'>
+            <strong>• 8 employees</strong> at high turnover risk<br>
+            <strong>• Schedule 1-on-1s</strong> with managers<br>
+            <strong>• Review workload</strong> for 12 at-risk<br>
+            <strong>• Offer flexibility</strong> options
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
 with col2:
     st.markdown("""
-    <div class="gaming-kpi-card">
-        <h4 style="color: #FFB020;">📅 30-Day Plan</h4>
-        <ul style="color: #2C3E50;">
-            <li><strong>Hire 67 people</strong> Q1 focus</li>
-            <li><strong>Skills training</strong> for 23 employees</li>
-            <li><strong>Team restructuring</strong> optimization</li>
-            <li><strong>Salary adjustments</strong> for 15 people</li>
-        </ul>
+    <div style='background: linear-gradient(135deg, #FFB020, #FFC533); padding: 2rem; border-radius: 10px; text-align: center; color: white;'>
+        <div style='font-size: 3rem; margin-bottom: 1rem;'>📅</div>
+        <h4 style='color: white; margin: 0;'>30-Day Plan</h4>
+        <div style='margin: 1rem 0; text-align: left;'>
+            <strong>• Hire 67 people</strong> Q1 focus<br>
+            <strong>• Skills training</strong> for 23 employees<br>
+            <strong>• Team restructuring</strong> optimization<br>
+            <strong>• Salary adjustments</strong> for 15 people
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
 with col3:
     st.markdown("""
-    <div class="gaming-kpi-card">
-        <h4 style="color: #28A745;">🚀 Strategic Initiatives</h4>
-        <ul style="color: #2C3E50;">
-            <li><strong>AI mentorship</strong> program launch</li>
-            <li><strong>Predictive recruiting</strong> platform</li>
-            <li><strong>Wellbeing tracking</strong> app rollout</li>
-            <li><strong>Skills matrix</strong> automation</li>
-        </ul>
+    <div style='background: linear-gradient(135deg, #28A745, #34CE57); padding: 2rem; border-radius: 10px; text-align: center; color: white;'>
+        <div style='font-size: 3rem; margin-bottom: 1rem;'>🚀</div>
+        <h4 style='color: white; margin: 0;'>Strategic Initiatives</h4>
+        <div style='margin: 1rem 0; text-align: left;'>
+            <strong>• AI mentorship</strong> program launch<br>
+            <strong>• Predictive recruiting</strong> platform<br>
+            <strong>• Wellbeing tracking</strong> app rollout<br>
+            <strong>• Skills matrix</strong> automation
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-# Footer
+# FOOTER PROFESSIONNEL
 st.markdown("---")
 st.markdown("""
-<div style="text-align: center; padding: 1rem; color: #6C757D;">
-    🎮 <strong>Gaming Workforce Observatory</strong> - Predictive Analytics • 
-    Powered by Advanced AI • © 2024 Gaming Industry Excellence
+<div style='text-align: center; padding: 2rem; background: #f8f9fa; border-radius: 5px; margin-top: 2rem;'>
+    <p style='color: #666; margin: 0; font-size: 0.9rem;'>
+        © 2024 Ubisoft Entertainment - Gaming Workforce Observatory<br>
+        Predictive Analytics Dashboard • Powered by Advanced AI • Confidential and Proprietary Information
+    </p>
 </div>
 """, unsafe_allow_html=True)
-
-# Sidebar informative CORRIGÉ
-last = datetime.now().strftime('%Y-%m-%d %H:%M')
-
-with st.sidebar:
-    st.markdown(f"""
-    ## 🔮 Predictive Analytics
-    
-    **AI-Powered Intelligence**
-    
-    🧠 **Machine Learning** models temps réel
-    
-    📊 **Predictive Insights** workforce planning
-    
-    🚨 **Risk Detection** early warning system
-    
-    💡 **Automated Recommendations** actionables
-    
-    ---
-    
-    ### 🤖 Active Models
-    - Turnover Risk Predictor
-    - Burnout Detection System
-    - Performance Forecasting 
-    - Team Optimization Engine
-    - Salary Benchmarking AI
-    - Skill Gap Analyzer
-    
-    ---
-    
-    ### 📈 Model Performance
-    - **87.8%** average accuracy
-    - **$2.1M** annual value generated
-    - **Real-time** processing
-    - **40+ variables** analyzed
-    
-    ---
-    
-    **🔄 Last Updated:** {last}
-    """)
