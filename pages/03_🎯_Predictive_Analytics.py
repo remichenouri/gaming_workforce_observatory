@@ -2,7 +2,6 @@
 🎮 Gaming Workforce Observatory - Predictive Analytics CORRIGÉ
 Page Predictive Analytics sans erreurs d'import
 """
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -12,7 +11,6 @@ from datetime import datetime, timedelta
 
 # ─────────────────────────────────────────────
 # STUBS POUR THEME & COMPOSANTS UBISOFT
-# Appliquer ABSOLUMENT dans chaque page à remplacer
 def apply_ubisoft_theme():
     pass
 
@@ -49,7 +47,9 @@ def create_ubisoft_metric_cols(metrics, cols=4):
 
 def display_ubisoft_logo_section():
     return "<p>© 2024 Ubisoft</p>"
+
 # ─────────────────────────────────────────────
+
 apply_ubisoft_theme()
 
 # Configuration page
@@ -235,7 +235,7 @@ with col1:
         **get_gaming_chart_config()
     )
     
-    st.plotly_chart(fig_accuracy, use_container_width=True)
+    st.plotly_chart(fig_accuracy, width='stretch')
 
 with col2:
     # Impact business
@@ -249,7 +249,7 @@ with col2:
     )
     
     fig_impact.update_layout(**get_gaming_chart_config())
-    st.plotly_chart(fig_impact, use_container_width=True)
+    st.plotly_chart(fig_impact, width='stretch')
 
 # Table performance modèles
 st.markdown("### 📊 Gaming ML Models Performance Table")
@@ -260,7 +260,7 @@ st.dataframe(
         'Recall': '{:.1f}%',
         'Business_Impact': '${:,.0f}'
     }),
-    use_container_width=True
+    width='stretch'
 )
 
 # Section Analyses Prédictives
@@ -293,7 +293,7 @@ with col1:
     )
     
     fig_risk_scatter.update_layout(**get_gaming_chart_config())
-    st.plotly_chart(fig_risk_scatter, use_container_width=True)
+    st.plotly_chart(fig_risk_scatter, width='stretch')
 
 with col2:
     # Distribution des risques
@@ -311,7 +311,7 @@ with col2:
         **get_gaming_chart_config()
     )
     
-    st.plotly_chart(fig_risk_pie, use_container_width=True)
+    st.plotly_chart(fig_risk_pie, width='stretch')
 
 # Section Projections Futur
 st.markdown("""
@@ -359,7 +359,7 @@ with col1:
         **get_gaming_chart_config()
     )
     
-    st.plotly_chart(fig_headcount, use_container_width=True)
+    st.plotly_chart(fig_headcount, width='stretch')
 
 with col2:
     # Besoins recrutement
@@ -373,7 +373,7 @@ with col2:
     )
     
     fig_hiring.update_layout(**get_gaming_chart_config())
-    st.plotly_chart(fig_hiring, use_container_width=True)
+    st.plotly_chart(fig_hiring, width='stretch')
 
 # Métriques clés prédictives
 st.markdown("### 🎯 Gaming Predictive Insights")
@@ -444,9 +444,20 @@ with col3:
     </div>
     """, unsafe_allow_html=True)
 
-# Sidebar informative
+# Footer
+st.markdown("---")
+st.markdown("""
+<div style="text-align: center; padding: 1rem; color: #6C757D;">
+    🎮 <strong>Gaming Workforce Observatory</strong> - Predictive Analytics • 
+    Powered by Advanced AI • © 2024 Gaming Industry Excellence
+</div>
+""", unsafe_allow_html=True)
+
+# Sidebar informative CORRIGÉ
+last = datetime.now().strftime('%Y-%m-%d %H:%M')
+
 with st.sidebar:
-    st.markdown("""
+    st.markdown(f"""
     ## 🔮 Predictive Analytics
     
     **AI-Powered Intelligence**
@@ -479,16 +490,5 @@ with st.sidebar:
     
     ---
     
-    last = datetime.now().strftime('%Y-%m-%d %H:%M')
-    st.markdown(f"""
-        … **🔄 Last Updated:** {last}
-    """, unsafe_allow_html=True)
-    
-# Footer
-st.markdown("---")
-st.markdown("""
-<div style="text-align: center; padding: 1rem; color: #6C757D;">
-    🎮 <strong>Gaming Workforce Observatory</strong> - Predictive Analytics • 
-    Powered by Advanced AI • © 2024 Gaming Industry Excellence
-</div>
-""", unsafe_allow_html=True)
+    **🔄 Last Updated:** {last}
+    """)
