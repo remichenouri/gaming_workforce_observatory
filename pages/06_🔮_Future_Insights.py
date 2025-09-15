@@ -2,7 +2,6 @@
 🎮 Ubisoft Gaming Workforce Observatory
 Future Insights - Innovation Lab Analytics & Emerging Trends
 """
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -12,7 +11,6 @@ from datetime import datetime, timedelta
 
 # ─────────────────────────────────────────────
 # STUBS POUR THEME & COMPOSANTS UBISOFT
-# Appliquer ABSOLUMENT dans chaque page à remplacer
 def apply_ubisoft_theme():
     pass
 
@@ -49,6 +47,8 @@ def create_ubisoft_metric_cols(metrics, cols=4):
 
 def display_ubisoft_logo_section():
     return "<p>© 2024 Ubisoft</p>"
+
+# ─────────────────────────────────────────────
 
 st.set_page_config(
     page_title="Ubisoft Future Insights - Innovation Lab",
@@ -219,19 +219,21 @@ scenarios_data = {
 scenarios_df = pd.DataFrame(scenarios_data)
 
 fig_scenarios = go.Figure()
+
 fig_scenarios.add_trace(go.Scatterpolar(
     r=scenarios_df['Innovation_Score'],
     theta=scenarios_df['Scenario'],
     fill='toself',
     name='Scenario Impact'
 ))
+
 fig_scenarios.update_layout(
     title="🔮 Future Workforce Scenarios",
     polar=dict(radialaxis=dict(visible=True)),
-    **self.create_advanced_chart_config()
+    **get_ubisoft_chart_config()['layout']
 )
-st.plotly_chart(fig_scenarios, width='stretch')
 
+st.plotly_chart(fig_scenarios, width='stretch')
 
 # Innovation Pipeline
 st.markdown(create_ubisoft_section_header("🧪 Ubisoft Innovation Pipeline"))
@@ -309,8 +311,15 @@ fig_challenges = px.scatter(
 fig_challenges.update_layout(get_ubisoft_chart_config()['layout'])
 st.plotly_chart(fig_challenges, width='stretch')
 
+# Footer
+st.markdown("---")
+st.markdown(display_ubisoft_logo_section(), unsafe_allow_html=True)
+
+# Sidebar CORRIGÉ avec datetime
+last = datetime.now().strftime('%Y-%m-%d %H:%M')
+
 with st.sidebar:
-    st.markdown("""
+    st.markdown(f"""
     ## 🚀 Future Insights
     
     **Innovation Lab Analytics**
@@ -339,4 +348,8 @@ with st.sidebar:
     - **$127M** R&D Investment
     - **47** Patents filed 2024
     - **12** Innovation labs globally
+    
+    ---
+    
+    **🔄 Last Updated:** {last}
     """)
