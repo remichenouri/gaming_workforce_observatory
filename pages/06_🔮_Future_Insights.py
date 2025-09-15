@@ -218,17 +218,20 @@ scenarios_data = {
 
 scenarios_df = pd.DataFrame(scenarios_data)
 
-fig_scenarios = px.radar(
-    scenarios_df,
-    r='Innovation_Score',
-    theta='Scenario',
-    color='Scenario',
-    title='🎯 Ubisoft Future Workforce Scenarios Analysis',
-    color_discrete_sequence=[UBISOFT_COLORS['primary'], UBISOFT_COLORS['accent'], '#FFD700', '#28A745']
+fig_scenarios = go.Figure()
+fig_scenarios.add_trace(go.Scatterpolar(
+    r=scenarios_df['Innovation_Score'],
+    theta=scenarios_df['Scenario'],
+    fill='toself',
+    name='Scenario Impact'
+))
+fig_scenarios.update_layout(
+    title="🔮 Future Workforce Scenarios",
+    polar=dict(radialaxis=dict(visible=True)),
+    **self.create_advanced_chart_config()
 )
+st.plotly_chart(fig_scenarios, width='stretch')
 
-fig_scenarios.update_layout(get_ubisoft_chart_config()['layout'])
-st.plotly_chart(fig_scenarios, use_container_width=True)
 
 # Innovation Pipeline
 st.markdown(create_ubisoft_section_header("🧪 Ubisoft Innovation Pipeline"))
