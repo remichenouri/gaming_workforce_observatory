@@ -2,16 +2,15 @@
 🎮 Ubisoft Gaming Workforce Observatory
 Compensation Intelligence - Strategic Salary Analytics
 """
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import numpy as np
+from datetime import datetime
 
 # ─────────────────────────────────────────────
 # STUBS POUR THEME & COMPOSANTS UBISOFT
-# Appliquer ABSOLUMENT dans chaque page à remplacer
 def apply_ubisoft_theme():
     pass
 
@@ -49,6 +48,7 @@ def create_ubisoft_metric_cols(metrics, cols=4):
 def display_ubisoft_logo_section():
     return "<p>© 2024 Ubisoft</p>"
 
+# ─────────────────────────────────────────────
 
 st.set_page_config(
     page_title="Ubisoft Compensation Intelligence",
@@ -360,8 +360,15 @@ with col3:
     </div>
     """, unsafe_allow_html=True)
 
+# Footer
+st.markdown("---")
+st.markdown(display_ubisoft_logo_section(), unsafe_allow_html=True)
+
+# Sidebar CORRIGÉ avec datetime
+last = datetime.now().strftime('%Y-%m-%d %H:%M')
+
 with st.sidebar:
-    st.markdown("""
+    st.markdown(f"""
     ## 💰 Compensation Intel
     
     **Strategic Salary Analytics**
@@ -390,4 +397,8 @@ with st.sidebar:
     3. Art Director - $115K
     4. Data Scientist - $115K
     5. Game Producer - $110K
+    
+    ---
+    
+    **🔄 Last Updated:** {last}
     """)
