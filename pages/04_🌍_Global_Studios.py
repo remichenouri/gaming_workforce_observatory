@@ -14,7 +14,6 @@ from pathlib import Path
 
 # ─────────────────────────────────────────────
 # STUBS POUR THEME & COMPOSANTS UBISOFT
-# Appliquer ABSOLUMENT dans chaque page à remplacer
 def apply_ubisoft_theme():
     pass
 
@@ -51,14 +50,35 @@ def create_ubisoft_metric_cols(metrics, cols=4):
 
 def display_ubisoft_logo_section():
     return "<p>© 2024 Ubisoft</p>"
+
+# STUBS POUR CLASSES MANQUANTES
+class GamingThemes:
+    def apply_gaming_theme(self):
+        pass
+    
+    def create_metric_card(self, title, value, subtitle, card_type, icon):
+        colors = {
+            'info': '#0099FF',
+            'success': '#28A745', 
+            'warning': '#FFB020',
+            'danger': '#E60012'
+        }
+        color = colors.get(card_type, '#0099FF')
+        return f"""
+        <div style="background: white; padding: 1rem; border-radius: 8px; border-left: 4px solid {color}; margin: 0.5rem 0;">
+            <h4 style="margin: 0; color: {color};">{icon} {title}</h4>
+            <h2 style="margin: 0.5rem 0; color: #2C3E50;">{value}</h2>
+            <p style="margin: 0; color: #6C757D; font-size: 0.9rem;">{subtitle}</p>
+        </div>
+        """
+
+class GamingGeographicMaps:
+    def __init__(self):
+        pass
+
 # ─────────────────────────────────────────────
 
 apply_ubisoft_theme()
-
-# Ajout du chemin pour imports
-sys.path.append(str(Path(__file__).parent.parent))
-
-from src.visualizations.geographic_maps import GamingGeographicMaps
 
 def initialize_global_studios_dashboard():
     """Initialise le dashboard studios mondiaux"""
@@ -235,9 +255,6 @@ def render_world_map(studios_data):
     """Carte mondiale interactive"""
     
     st.markdown("### 🗺️ Interactive World Map")
-    
-    # Utilisation du module geographic_maps
-    geo_maps = GamingGeographicMaps()
     
     # Préparation des données pour la carte
     map_data = studios_data.copy()
@@ -720,6 +737,8 @@ def main():
     studios_data, talent_migration, regional_costs, city_competition = generate_global_studios_data()
     
     # Sidebar
+    last = datetime.now().strftime('%Y-%m-%d %H:%M')
+    
     with st.sidebar:
         st.markdown("## 🌍 Global Intelligence")
         
@@ -770,6 +789,9 @@ def main():
         
         if st.button("📧 Share with Leadership"):
             st.success("Global insights shared!")
+        
+        st.markdown("---")
+        st.markdown(f"**🔄 Last Updated:** {last}")
     
     # Contenu principal
     if selected_section == "🌏 Global Overview":
@@ -790,11 +812,11 @@ def main():
     # Footer global
     st.markdown("---")
     st.markdown(
-        "<div style='text-align: center; color: #3498db; font-weight: bold;'>"
-        "🌍 GLOBAL GAMING WORKFORCE INTELLIGENCE | "
+        f"<div style='text-align: center; color: #3498db; font-weight: bold;'>"
+        f"🌍 GLOBAL GAMING WORKFORCE INTELLIGENCE | "
         f"Covering {studios_data['country'].nunique()} Countries | "
         f"Data Updated: {datetime.now().strftime('%Y-%m-%d %H:%M')}"
-        "</div>",
+        f"</div>",
         unsafe_allow_html=True
     )
 
