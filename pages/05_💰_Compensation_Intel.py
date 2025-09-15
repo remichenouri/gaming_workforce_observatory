@@ -139,7 +139,7 @@ with col1:
         **get_ubisoft_chart_config()['layout']
     )
     
-    st.plotly_chart(fig_salary, use_container_width=True)
+    st.plotly_chart(fig_salary, width='stretch')
 
 with col2:
     # Top premium roles
@@ -192,7 +192,7 @@ with col1:
     )
     
     fig_geo_salary.update_layout(get_ubisoft_chart_config()['layout'])
-    st.plotly_chart(fig_geo_salary, use_container_width=True)
+    st.plotly_chart(fig_geo_salary, width='stretch')
 
 with col2:
     # Best value studios
@@ -256,7 +256,7 @@ with col1:
         **get_ubisoft_chart_config()['layout']
     )
     
-    st.plotly_chart(fig_trends, use_container_width=True)
+    st.plotly_chart(fig_trends, width='stretch')
 
 with col2:
     fig_bonus = px.bar(
@@ -269,7 +269,7 @@ with col2:
     )
     
     fig_bonus.update_layout(get_ubisoft_chart_config()['layout'])
-    st.plotly_chart(fig_bonus, use_container_width=True)
+    st.plotly_chart(fig_bonus, width='stretch')
 
 # Pay Equity Analysis
 st.markdown(create_ubisoft_section_header("⚖️ Ubisoft Pay Equity & Fairness Analysis"))
@@ -314,7 +314,7 @@ fig_equity.update_layout(
     **get_ubisoft_chart_config()['layout']
 )
 
-st.plotly_chart(fig_equity, use_container_width=True)
+st.plotly_chart(fig_equity, width='stretch')
 
 # Recommendations
 st.markdown(create_ubisoft_section_header("💡 Ubisoft Compensation Strategy Recommendations"))
