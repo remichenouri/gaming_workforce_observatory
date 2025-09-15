@@ -291,6 +291,21 @@ with st.sidebar:
     ---
     
     last = datetime.now().strftime('%Y-%m-%d %H:%M')
-    st.markdown(f"""
-        … **🔄 Last Updated:** {last}
-    """, unsafe_allow_html=True)
+    
+    with st.sidebar:
+        st.markdown(f"""
+        ## Ubisoft Gaming Workforce Observatory
+    
+        **Executive Dashboard**
+        
+        📊 **Real-time KPIs** pour dirigeants
+    
+        🌍 **Global Studios**
+    
+        🤖 **AI-driven Insights**
+    
+        ---
+    
+        **Dernière mise à jour :** {last}
+        """)
+
