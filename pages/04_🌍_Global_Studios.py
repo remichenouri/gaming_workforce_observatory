@@ -489,213 +489,408 @@ elif selected_section == "🔄 Talent Migration":
         
         fig_skills.update_layout(height=400, **get_ubisoft_chart_config()['layout'])
         st.plotly_chart(fig_skills, width='stretch')
+
+
 elif selected_section == "🗺️ World Map":
     st.markdown(create_ubisoft_section_header("🗺️ Interactive World Map"), unsafe_allow_html=True)
     
-    # Création des données géospatiales avec GeoPandas
-    @st.cache_data
-    def create_geospatial_data():
-        # Créer un GeoDataFrame à partir des données studios
-        geometry = [Point(xy) for xy in zip(studios_data['longitude'], studios_data['latitude'])]
-        gdf_studios = gpd.GeoDataFrame(studios_data, geometry=geometry, crs='EPSG:4326')
+    # Info box explicatif
+    st.markdown(create_ubisoft_info_box(
+        "🌍 Global Gaming Studios Mapping",
+        "Cartographie interactive des studios gaming mondiaux avec visualisation en temps réel de la distribution géographique, densité de workforce et patterns régionaux. Navigation fluide et données actualisées."
+    ), unsafe_allow_html=True)
+    
+    try:
+        # Import avec gestion d'erreurs robuste
+        import folium
+        import streamlit_folium as st_folium
+        from folium.plugins import MarkerCluster, HeatMap
+        import pandas as pd
         
-        # Agrégation par pays pour la carte choroplèthe
-        country_stats = studios_data.groupby('country').agg({
-            'employees': 'sum',
-            'studio_name': 'count',
-            'annual_revenue_usd': 'sum',
-            'glassdoor_rating': 'mean',
-            'diversity_index': 'mean'
-        }).reset_index()
+        # Validation complète des données
+        if not isinstance(studios_data, pd.DataFrame) or studios_data.empty:
+            st.error("❌ Dataset studios_data non disponible")
+            st.stop()
+            
+        required_columns = ['latitude', 'longitude', 'studio_name', 'city', 'employees']
+        missing_cols = [col for col in required_columns if col not in studios_data.columns]
         
-        country_stats.columns = [
-            'country', 'total_workforce', 'studio_count', 
-            'total_revenue', 'avg_rating', 'avg_diversity'
+        if missing_cols:
+            st.error(f"❌ Colonnes manquantes : {missing_cols}")
+            st.stop()
+        
+        # Nettoyage des données géographiques
+        valid_data = studios_data.dropna(subset=['latitude', 'longitude']).copy()
+        valid_data = valid_data[
+            (valid_data['latitude'].between(-90, 90)) & 
+            (valid_data['longitude'].between(-180, 180))
         ]
         
-        return gdf_studios, country_stats
-    
-    gdf_studios, country_stats = create_geospatial_data()
-    
-    # Options de visualisation
-    col1, col2, col3 = st.columns([2, 2, 1])
-    
-    with col1:
-        map_type = st.selectbox(
-            "Type de carte",
-            ["Studios Distribution", "Workforce Density", "Revenue Heatmap", "Quality Index"],
-            index=0
-        )
-    
-    with col2:
-        color_scheme = st.selectbox(
-            "Palette de couleurs",
-            ["Ubisoft", "Viridis", "Plasma", "Blues", "Reds"],
-            index=0
-        )
-    
-    with col3:
-        show_clusters = st.checkbox("Clustering", value=True)
-    
-    # Création de la carte Folium
-    def create_folium_map(gdf_studios, country_stats, map_type, color_scheme, show_clusters):
-        # Centre de la carte (centré sur l'Europe pour une vue globale équilibrée)
-        m = folium.Map(
-            location=[48.8566, 2.3522],
-            zoom_start=2,
-            tiles='CartoDB positron'
-        )
+        if valid_data.empty:
+            st.warning("⚠️ Aucune coordonnée géographique valide trouvée")
+            st.stop()
         
-        # Définition des couleurs Ubisoft
-        if color_scheme == "Ubisoft":
-            colors = ['#28A745', '#0099FF', '#FFB020', '#E60012', '#2C3E50']
+        st.success(f"✅ {len(valid_data)} studios avec coordonnées valides chargés")
+        
+        # Interface utilisateur enrichie
+        col1, col2, col3 = st.columns([2, 1, 1])
+        
+        with col1:
+            map_type = st.selectbox(
+                "🎨 Type de visualisation",
+                ["Studios Distribution", "Workforce Density", "Revenue Heatmap", "Regional Clusters"],
+                index=0,
+                key="map_type_select",
+                help="Choisissez le mode d'affichage de vos données"
+            )
+        
+        with col2:
+            show_clusters = st.checkbox(
+                "🔗 Clustering", 
+                value=True, 
+                key="cluster_check",
+                help="Groupe automatiquement les studios proches"
+            )
+        
+        with col3:
+            data_limit = st.selectbox(
+                "📊 Données à afficher",
+                [30, 50, 100, "Toutes"],
+                index=1,
+                key="data_limit",
+                help="Limite pour optimiser les performances"
+            )
+        
+        # Gestion de la limite de données
+        if data_limit == "Toutes":
+            display_data = valid_data
         else:
-            colors = None
+            display_data = valid_data.head(int(data_limit))
         
-        # Ajout des markers selon le type de carte
+        # Configuration de la carte avec centre intelligent
+        if len(display_data) > 0:
+            center_lat = display_data['latitude'].median()  # Médiane plus robuste que moyenne
+            center_lon = display_data['longitude'].median()
+            
+            # Calcul du zoom automatique basé sur la dispersion des données
+            lat_range = display_data['latitude'].max() - display_data['latitude'].min()
+            lon_range = display_data['longitude'].max() - display_data['longitude'].min()
+            zoom_level = max(1, min(10, int(8 - max(lat_range, lon_range) / 20)))
+        else:
+            center_lat, center_lon, zoom_level = 20, 0, 2
+        
+        # Création de la carte avec configuration optimisée
+        m = folium.Map(
+            location=[center_lat, center_lon],
+            zoom_start=zoom_level,
+            tiles='CartoDB positron',  # Plus propre que OpenStreetMap
+            prefer_canvas=True,
+            control_scale=True
+        )
+        
+        # Ajout de tuiles alternatives
+        folium.TileLayer('OpenStreetMap').add_to(m)
+        folium.TileLayer('CartoDB dark_matter').add_to(m)
+        
+        # Logique de visualisation par type
         if map_type == "Studios Distribution":
-            # Groupement par clusters si demandé
             if show_clusters:
-                marker_cluster = plugins.MarkerCluster(
-                    name="Gaming Studios",
+                # Clustering avancé avec customisation Ubisoft
+                marker_cluster = MarkerCluster(
+                    name="Gaming Studios Clusters",
                     overlay=True,
-                    control=True
+                    control=True,
+                    icon_create_function="""
+                    function(cluster) {
+                        var childCount = cluster.getChildCount();
+                        var c = ' marker-cluster-';
+                        if (childCount < 10) {
+                            c += 'small';
+                        } else if (childCount < 100) {
+                            c += 'medium';
+                        } else {
+                            c += 'large';
+                        }
+                        return new L.DivIcon({ 
+                            html: '<div><span>' + childCount + '</span></div>', 
+                            className: 'marker-cluster' + c, 
+                            iconSize: new L.Point(40, 40) 
+                        });
+                    }"""
                 ).add_to(m)
                 
-                for idx, studio in gdf_studios.iterrows():
-                    # Taille du marker basée sur le nombre d'employés
-                    size = max(5, min(25, studio['employees'] / 20))
+                for idx, row in display_data.iterrows():
+                    # Taille dynamique basée sur les employés
+                    size = max(8, min(25, int(row['employees'] / 30)))
                     
-                    # Couleur basée sur la région
+                    # Couleur par région
                     region_colors = {
                         'North America': '#0099FF',
                         'Europe': '#28A745',
                         'Asia-Pacific': '#FFB020',
                         'Latin America': '#E60012'
                     }
+                    color = region_colors.get(row.get('region', ''), '#666666')
+                    
+                    # Popup enrichi avec style Ubisoft
+                    popup_html = f"""
+                    <div style="width: 280px; font-family: Arial, sans-serif;">
+                        <div style="background: {color}; color: white; padding: 10px; margin: -10px -10px 10px -10px; border-radius: 5px 5px 0 0;">
+                            <h4 style="margin: 0; font-size: 16px;">{row['studio_name']}</h4>
+                        </div>
+                        <div style="padding: 5px;">
+                            <p style="margin: 5px 0;"><strong>📍 Ville:</strong> {row['city']}</p>
+                            <p style="margin: 5px 0;"><strong>👥 Employés:</strong> {row['employees']:,}</p>
+                            <p style="margin: 5px 0;"><strong>🎮 Genre:</strong> {row.get('genre_focus', 'N/A')}</p>
+                            <p style="margin: 5px 0;"><strong>💰 Revenus:</strong> ${row.get('annual_revenue_usd', 0):,.0f}</p>
+                            <p style="margin: 5px 0;"><strong>⭐ Rating:</strong> {row.get('glassdoor_rating', 0):.1f}/5.0</p>
+                        </div>
+                    </div>
+                    """
                     
                     folium.CircleMarker(
-                        location=[studio['latitude'], studio['longitude']],
+                        location=[row['latitude'], row['longitude']],
                         radius=size,
-                        popup=folium.Popup(f"""
-                        <div style="width:200px">
-                            <h4>{studio['studio_name']}</h4>
-                            <p><strong>City:</strong> {studio['city']}</p>
-                            <p><strong>Employees:</strong> {studio['employees']:,}</p>
-                            <p><strong>Revenue:</strong> ${studio['annual_revenue_usd']:,.0f}</p>
-                            <p><strong>Rating:</strong> {studio['glassdoor_rating']:.1f}/5</p>
-                            <p><strong>Genre:</strong> {studio['genre_focus']}</p>
-                        </div>
-                        """, max_width=300),
-                        tooltip=f"{studio['studio_name']} - {studio['employees']} employees",
+                        popup=folium.Popup(popup_html, max_width=300),
+                        tooltip=f"{row['studio_name']} - {row['employees']} employés",
                         color='white',
                         weight=2,
-                        fillColor=region_colors.get(studio['region'], '#666'),
-                        fillOpacity=0.7
+                        fillColor=color,
+                        fillOpacity=0.8
                     ).add_to(marker_cluster)
-            
             else:
-                # Markers individuels sans clustering
-                for idx, studio in gdf_studios.iterrows():
-                    size = max(8, min(30, studio['employees'] / 15))
-                    
+                # Markers individuels optimisés
+                for idx, row in display_data.iterrows():
                     folium.CircleMarker(
-                        location=[studio['latitude'], studio['longitude']],
-                        radius=size,
-                        popup=f"{studio['studio_name']}<br>{studio['employees']} employees",
+                        location=[row['latitude'], row['longitude']],
+                        radius=10,
+                        popup=f"<b>{row['studio_name']}</b><br>📍 {row['city']}<br>👥 {row['employees']} employés",
+                        tooltip=f"{row['studio_name']}",
                         color='#28A745',
                         fillColor='#28A745',
-                        fillOpacity=0.6
+                        fillOpacity=0.7,
+                        weight=2
                     ).add_to(m)
         
         elif map_type == "Workforce Density":
-            # Heatmap de la densité de workforce
-            heat_data = [[row['latitude'], row['longitude'], row['employees']] 
-                        for idx, row in gdf_studios.iterrows()]
+            # Heatmap de la densité workforce
+            heat_data = []
+            for idx, row in display_data.iterrows():
+                if pd.notna(row['latitude']) and pd.notna(row['longitude']) and row['employees'] > 0:
+                    heat_data.append([row['latitude'], row['longitude'], row['employees']])
             
-            plugins.HeatMap(
-                heat_data,
-                name="Workforce Density",
-                min_opacity=0.2,
-                max_zoom=18,
-                radius=25,
-                blur=15,
-                gradient={0.2: 'blue', 0.4: 'lime', 0.6: 'orange', 1: 'red'}
-            ).add_to(m)
+            if heat_data:
+                HeatMap(
+                    heat_data,
+                    name="Workforce Density",
+                    min_opacity=0.2,
+                    max_zoom=18,
+                    radius=20,
+                    blur=15,
+                    gradient={0.2: '#28A745', 0.4: '#0099FF', 0.6: '#FFB020', 1.0: '#E60012'}
+                ).add_to(m)
+            else:
+                st.warning("⚠️ Pas assez de données pour la heatmap workforce")
         
         elif map_type == "Revenue Heatmap":
-            # Heatmap des revenus
-            revenue_data = [[row['latitude'], row['longitude'], row['annual_revenue_usd']] 
-                           for idx, row in gdf_studios.iterrows()]
-            
-            plugins.HeatMap(
-                revenue_data,
-                name="Revenue Heatmap",
-                min_opacity=0.3,
-                radius=20,
-                gradient={0.2: '#28A745', 0.5: '#FFB020', 0.8: '#0099FF', 1: '#E60012'}
-            ).add_to(m)
+            # Heatmap des revenus si disponible
+            if 'annual_revenue_usd' in display_data.columns:
+                revenue_data = []
+                for idx, row in display_data.iterrows():
+                    if (pd.notna(row['latitude']) and pd.notna(row['longitude']) and 
+                        pd.notna(row['annual_revenue_usd']) and row['annual_revenue_usd'] > 0):
+                        revenue_data.append([row['latitude'], row['longitude'], row['annual_revenue_usd']])
+                
+                if revenue_data:
+                    HeatMap(
+                        revenue_data,
+                        name="Revenue Heatmap",
+                        min_opacity=0.3,
+                        radius=25,
+                        blur=20,
+                        gradient={0.2: '#E8F5E8', 0.4: '#28A745', 0.6: '#FFB020', 1.0: '#E60012'}
+                    ).add_to(m)
+                else:
+                    st.warning("⚠️ Pas de données de revenus disponibles pour la heatmap")
+            else:
+                st.warning("⚠️ Colonne 'annual_revenue_usd' manquante")
         
-        # Ajout d'un contrôle des layers
+        elif map_type == "Regional Clusters":
+            # Clustering par région avec couleurs distinctes
+            if 'region' in display_data.columns:
+                regions = display_data['region'].unique()
+                region_colors = ['#28A745', '#0099FF', '#FFB020', '#E60012', '#6C757D']
+                
+                for i, region in enumerate(regions):
+                    region_data = display_data[display_data['region'] == region]
+                    color = region_colors[i % len(region_colors)]
+                    
+                    for idx, row in region_data.iterrows():
+                        folium.CircleMarker(
+                            location=[row['latitude'], row['longitude']],
+                            radius=8,
+                            popup=f"<b>{region}</b><br>{row['studio_name']}<br>{row['city']}",
+                            color=color,
+                            fillColor=color,
+                            fillOpacity=0.7,
+                            weight=2
+                        ).add_to(m)
+        
+        # Ajout des contrôles et features
         folium.LayerControl().add_to(m)
         
-        # Ajout d'une mini-carte
-        minimap = plugins.MiniMap(toggle_display=True)
-        m.add_child(minimap)
+        # Affichage avec loading et feedback
+        with st.spinner('🗺️ Génération de la carte interactive...'):
+            map_data = st_folium.st_folium(
+                m, 
+                width=1200, 
+                height=650,
+                returned_data=["last_clicked", "last_object_clicked"],
+                debug=False,
+                key="ubisoft_world_map"
+            )
         
-        # Ajout d'une échelle
-        plugins.MeasureControl().add_to(m)
+        # Feedback interactif
+        if map_data:
+            if map_data.get('last_clicked'):
+                clicked_coords = map_data['last_clicked']
+                st.info(f"🎯 Coordonnées cliquées: {clicked_coords['lat']:.4f}, {clicked_coords['lng']:.4f}")
+            
+            if map_data.get('last_object_clicked'):
+                st.success(f"🏢 Studio sélectionné: {map_data['last_object_clicked']}")
         
-        return m
-    
-    # Génération et affichage de la carte
-    folium_map = create_folium_map(gdf_studios, country_stats, map_type, color_scheme, show_clusters)
-    
-    # Affichage dans Streamlit
-    map_data = st_folium.st_folium(
-        folium_map, 
-        width=1200, 
-        height=600,
-        returned_data=["last_object_clicked_popup"]
-    )
-    
-    # Statistiques en temps réel basées sur les interactions de la carte
-    if map_data['last_object_clicked_popup']:
-        st.info(f"🎯 Studio sélectionné: {map_data['last_object_clicked_popup']}")
-    
-    # Statistiques complémentaires sous la carte
-    st.markdown("### 📊 Geographic Distribution Analytics")
-    
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        # Top 5 des villes par workforce
-        top_cities = gdf_studios.groupby('city')['employees'].sum().nlargest(5)
+        # Analytics et métriques sous la carte
+        st.markdown("---")
+        st.markdown("### 📊 Analytics Géographiques en Temps Réel")
         
-        st.markdown("**🏙️ Top Cities by Workforce**")
-        for city, workforce in top_cities.items():
-            st.write(f"• {city}: {workforce:,} employees")
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            metric_html = create_metric_card(
+                "Studios Affichés", 
+                f"{len(display_data):,}",
+                f"Sur {len(valid_data)} total",
+                "info",
+                "🏢"
+            )
+            st.markdown(metric_html, unsafe_allow_html=True)
+        
+        with col2:
+            metric_html = create_metric_card(
+                "Villes Couvertes", 
+                f"{display_data['city'].nunique()}",
+                "Hubs gaming mondiaux",
+                "success",
+                "🏙️"
+            )
+            st.markdown(metric_html, unsafe_allow_html=True)
+        
+        with col3:
+            metric_html = create_metric_card(
+                "Pays Représentés", 
+                f"{display_data['country'].nunique()}",
+                "Marchés globaux",
+                "warning",
+                "🌍"
+            )
+            st.markdown(metric_html, unsafe_allow_html=True)
+        
+        with col4:
+            avg_workforce = display_data['employees'].mean()
+            metric_html = create_metric_card(
+                "Workforce Moyenne", 
+                f"{avg_workforce:.0f}",
+                "Employés par studio",
+                "info",
+                "👥"
+            )
+            st.markdown(metric_html, unsafe_allow_html=True)
+        
+        # Top insights géographiques
+        st.markdown("### 🔍 Insights Géographiques Clés")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("**🏆 Top 5 Villes par Workforce**")
+            top_cities = display_data.groupby('city')['employees'].sum().nlargest(5)
+            for i, (city, workforce) in enumerate(top_cities.items(), 1):
+                st.write(f"{i}. **{city}**: {workforce:,} employés")
+        
+        with col2:
+            st.markdown("**🌎 Distribution Régionale**")
+            if 'region' in display_data.columns:
+                regional_dist = display_data.groupby('region')['employees'].sum()
+                total_workforce = regional_dist.sum()
+                for region, workforce in regional_dist.items():
+                    percentage = (workforce / total_workforce) * 100
+                    st.write(f"• **{region}**: {percentage:.1f}% ({workforce:,} employés)")
     
-    with col2:
-        # Distribution par région
-        regional_dist = gdf_studios.groupby('region')['employees'].sum()
+    except ImportError as e:
+        st.error(f"❌ Erreur d'import : {str(e)}")
+        st.markdown("""
+        ### 🔧 Solutions:
+        1. **Installer streamlit-folium**: `pip install streamlit-folium`
+        2. **Vérifier les versions**: `pip list | grep folium`
+        3. **Redémarrer l'application**: `streamlit run app.py`
+        """)
         
-        st.markdown("**🌍 Regional Distribution**")
-        for region, workforce in regional_dist.items():
-            percentage = (workforce / regional_dist.sum()) * 100
-            st.write(f"• {region}: {percentage:.1f}%")
+        # Fallback avec Plotly
+        st.info("💡 Basculement vers Plotly en cas d'échec Folium...")
+        
+        try:
+            import plotly.express as px
+            
+            fig_world = px.scatter_geo(
+                display_data,
+                lat='latitude',
+                lon='longitude',
+                size='employees',
+                color='region' if 'region' in display_data.columns else None,
+                hover_name='studio_name',
+                hover_data={
+                    'city': True,
+                    'employees': True,
+                },
+                title='🌍 Gaming Studios - Vue Globale (Fallback)',
+                projection='natural earth',
+                size_max=30
+            )
+            
+            fig_world.update_layout(
+                height=600,
+                geo=dict(
+                    showland=True,
+                    landcolor='rgb(243, 243, 243)',
+                    coastlinecolor='rgb(204, 204, 204)',
+                    showocean=True,
+                    oceancolor='rgb(230, 245, 255)'
+                )
+            )
+            
+            st.plotly_chart(fig_world, use_container_width=True)
+            
+        except Exception as plotly_error:
+            st.error(f"❌ Échec du fallback Plotly : {str(plotly_error)}")
     
-    with col3:
-        # Métriques de concentration géographique
-        st.markdown("**📍 Geographic Metrics**")
+    except Exception as e:
+        st.error(f"❌ Erreur générale : {str(e)}")
         
-        total_cities = gdf_studios['city'].nunique()
-        total_countries = gdf_studios['country'].nunique()
-        avg_studios_per_city = len(gdf_studios) / total_cities
+        # Debug info pour développement
+        with st.expander("🔍 Informations de Debug"):
+            st.write("**Type d'erreur:**", type(e).__name__)
+            st.write("**Message:**", str(e))
+            if hasattr(e, '__traceback__'):
+                import traceback
+                st.code(traceback.format_exc())
         
-        st.write(f"• Cities covered: {total_cities}")
-        st.write(f"• Countries: {total_countries}")
-        st.write(f"• Avg studios/city: {avg_studios_per_city:.1f}")
+        st.markdown("""
+        ### 🔄 Actions recommandées:
+        - Rafraîchir la page (F5)
+        - Vider le cache Streamlit
+        - Redémarrer l'application
+        - Vérifier les logs serveur
+        """)
 
 
 # FOOTER PROFESSIONNEL
