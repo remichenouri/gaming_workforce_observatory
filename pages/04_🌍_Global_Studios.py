@@ -11,6 +11,13 @@ from plotly.subplots import make_subplots
 from datetime import datetime, timedelta
 import sys
 from pathlib import Path
+import geopandas as gpd
+import folium
+from folium import plugins
+import streamlit_folium as st_folium
+from shapely.geometry import Point
+
+# Ajoutez ces imports au début de votre fichier
 
 # ─────────────────────────────────────────────
 # STUBS POUR THEME & COMPOSANTS UBISOFT
@@ -482,6 +489,214 @@ elif selected_section == "🔄 Talent Migration":
         
         fig_skills.update_layout(height=400, **get_ubisoft_chart_config()['layout'])
         st.plotly_chart(fig_skills, width='stretch')
+elif selected_section == "🗺️ World Map":
+    st.markdown(create_ubisoft_section_header("🗺️ Interactive World Map"), unsafe_allow_html=True)
+    
+    # Création des données géospatiales avec GeoPandas
+    @st.cache_data
+    def create_geospatial_data():
+        # Créer un GeoDataFrame à partir des données studios
+        geometry = [Point(xy) for xy in zip(studios_data['longitude'], studios_data['latitude'])]
+        gdf_studios = gpd.GeoDataFrame(studios_data, geometry=geometry, crs='EPSG:4326')
+        
+        # Agrégation par pays pour la carte choroplèthe
+        country_stats = studios_data.groupby('country').agg({
+            'employees': 'sum',
+            'studio_name': 'count',
+            'annual_revenue_usd': 'sum',
+            'glassdoor_rating': 'mean',
+            'diversity_index': 'mean'
+        }).reset_index()
+        
+        country_stats.columns = [
+            'country', 'total_workforce', 'studio_count', 
+            'total_revenue', 'avg_rating', 'avg_diversity'
+        ]
+        
+        return gdf_studios, country_stats
+    
+    gdf_studios, country_stats = create_geospatial_data()
+    
+    # Options de visualisation
+    col1, col2, col3 = st.columns([2, 2, 1])
+    
+    with col1:
+        map_type = st.selectbox(
+            "Type de carte",
+            ["Studios Distribution", "Workforce Density", "Revenue Heatmap", "Quality Index"],
+            index=0
+        )
+    
+    with col2:
+        color_scheme = st.selectbox(
+            "Palette de couleurs",
+            ["Ubisoft", "Viridis", "Plasma", "Blues", "Reds"],
+            index=0
+        )
+    
+    with col3:
+        show_clusters = st.checkbox("Clustering", value=True)
+    
+    # Création de la carte Folium
+    def create_folium_map(gdf_studios, country_stats, map_type, color_scheme, show_clusters):
+        # Centre de la carte (centré sur l'Europe pour une vue globale équilibrée)
+        m = folium.Map(
+            location=[48.8566, 2.3522],
+            zoom_start=2,
+            tiles='CartoDB positron'
+        )
+        
+        # Définition des couleurs Ubisoft
+        if color_scheme == "Ubisoft":
+            colors = ['#28A745', '#0099FF', '#FFB020', '#E60012', '#2C3E50']
+        else:
+            colors = None
+        
+        # Ajout des markers selon le type de carte
+        if map_type == "Studios Distribution":
+            # Groupement par clusters si demandé
+            if show_clusters:
+                marker_cluster = plugins.MarkerCluster(
+                    name="Gaming Studios",
+                    overlay=True,
+                    control=True
+                ).add_to(m)
+                
+                for idx, studio in gdf_studios.iterrows():
+                    # Taille du marker basée sur le nombre d'employés
+                    size = max(5, min(25, studio['employees'] / 20))
+                    
+                    # Couleur basée sur la région
+                    region_colors = {
+                        'North America': '#0099FF',
+                        'Europe': '#28A745',
+                        'Asia-Pacific': '#FFB020',
+                        'Latin America': '#E60012'
+                    }
+                    
+                    folium.CircleMarker(
+                        location=[studio['latitude'], studio['longitude']],
+                        radius=size,
+                        popup=folium.Popup(f"""
+                        <div style="width:200px">
+                            <h4>{studio['studio_name']}</h4>
+                            <p><strong>City:</strong> {studio['city']}</p>
+                            <p><strong>Employees:</strong> {studio['employees']:,}</p>
+                            <p><strong>Revenue:</strong> ${studio['annual_revenue_usd']:,.0f}</p>
+                            <p><strong>Rating:</strong> {studio['glassdoor_rating']:.1f}/5</p>
+                            <p><strong>Genre:</strong> {studio['genre_focus']}</p>
+                        </div>
+                        """, max_width=300),
+                        tooltip=f"{studio['studio_name']} - {studio['employees']} employees",
+                        color='white',
+                        weight=2,
+                        fillColor=region_colors.get(studio['region'], '#666'),
+                        fillOpacity=0.7
+                    ).add_to(marker_cluster)
+            
+            else:
+                # Markers individuels sans clustering
+                for idx, studio in gdf_studios.iterrows():
+                    size = max(8, min(30, studio['employees'] / 15))
+                    
+                    folium.CircleMarker(
+                        location=[studio['latitude'], studio['longitude']],
+                        radius=size,
+                        popup=f"{studio['studio_name']}<br>{studio['employees']} employees",
+                        color='#28A745',
+                        fillColor='#28A745',
+                        fillOpacity=0.6
+                    ).add_to(m)
+        
+        elif map_type == "Workforce Density":
+            # Heatmap de la densité de workforce
+            heat_data = [[row['latitude'], row['longitude'], row['employees']] 
+                        for idx, row in gdf_studios.iterrows()]
+            
+            plugins.HeatMap(
+                heat_data,
+                name="Workforce Density",
+                min_opacity=0.2,
+                max_zoom=18,
+                radius=25,
+                blur=15,
+                gradient={0.2: 'blue', 0.4: 'lime', 0.6: 'orange', 1: 'red'}
+            ).add_to(m)
+        
+        elif map_type == "Revenue Heatmap":
+            # Heatmap des revenus
+            revenue_data = [[row['latitude'], row['longitude'], row['annual_revenue_usd']] 
+                           for idx, row in gdf_studios.iterrows()]
+            
+            plugins.HeatMap(
+                revenue_data,
+                name="Revenue Heatmap",
+                min_opacity=0.3,
+                radius=20,
+                gradient={0.2: '#28A745', 0.5: '#FFB020', 0.8: '#0099FF', 1: '#E60012'}
+            ).add_to(m)
+        
+        # Ajout d'un contrôle des layers
+        folium.LayerControl().add_to(m)
+        
+        # Ajout d'une mini-carte
+        minimap = plugins.MiniMap(toggle_display=True)
+        m.add_child(minimap)
+        
+        # Ajout d'une échelle
+        plugins.MeasureControl().add_to(m)
+        
+        return m
+    
+    # Génération et affichage de la carte
+    folium_map = create_folium_map(gdf_studios, country_stats, map_type, color_scheme, show_clusters)
+    
+    # Affichage dans Streamlit
+    map_data = st_folium.st_folium(
+        folium_map, 
+        width=1200, 
+        height=600,
+        returned_data=["last_object_clicked_popup"]
+    )
+    
+    # Statistiques en temps réel basées sur les interactions de la carte
+    if map_data['last_object_clicked_popup']:
+        st.info(f"🎯 Studio sélectionné: {map_data['last_object_clicked_popup']}")
+    
+    # Statistiques complémentaires sous la carte
+    st.markdown("### 📊 Geographic Distribution Analytics")
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        # Top 5 des villes par workforce
+        top_cities = gdf_studios.groupby('city')['employees'].sum().nlargest(5)
+        
+        st.markdown("**🏙️ Top Cities by Workforce**")
+        for city, workforce in top_cities.items():
+            st.write(f"• {city}: {workforce:,} employees")
+    
+    with col2:
+        # Distribution par région
+        regional_dist = gdf_studios.groupby('region')['employees'].sum()
+        
+        st.markdown("**🌍 Regional Distribution**")
+        for region, workforce in regional_dist.items():
+            percentage = (workforce / regional_dist.sum()) * 100
+            st.write(f"• {region}: {percentage:.1f}%")
+    
+    with col3:
+        # Métriques de concentration géographique
+        st.markdown("**📍 Geographic Metrics**")
+        
+        total_cities = gdf_studios['city'].nunique()
+        total_countries = gdf_studios['country'].nunique()
+        avg_studios_per_city = len(gdf_studios) / total_cities
+        
+        st.write(f"• Cities covered: {total_cities}")
+        st.write(f"• Countries: {total_countries}")
+        st.write(f"• Avg studios/city: {avg_studios_per_city:.1f}")
+
 
 # FOOTER PROFESSIONNEL
 st.markdown("---")
