@@ -4,6 +4,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime
 import numpy as np
+import os
 
 # ─────────────────────────────────────────────
 # STUBS POUR THÈME & COMPOSANTS UBISOFT
@@ -79,8 +80,34 @@ st.set_page_config(
 # CHARGEMENT DES DONNÉES
 @st.cache_data
 def load_data():
-    df_basic    = pd.read_csv('generated_employee_data.csv')
-    df_enriched = pd.read_csv('enriched_employee_data.csv')
+    # Détecter le répertoire du script
+    base_dir = os.path.dirname(__file__)
+    # Essayer sous-répertoire data/ sinon racine
+    candidates = [
+        os.path.join(base_dir, 'data', 'generated_employee_data.csv'),
+        os.path.join(base_dir, 'generated_employee_data.csv')
+    ]
+    for path in candidates:
+        if os.path.exists(path):
+            df_basic = pd.read_csv(path)
+            break
+    else:
+        st.error(f"Impossible de trouver 'generated_employee_data.csv' dans {candidates}")
+        st.stop()
+
+    # Même logique pour enriched
+    candidates = [
+        os.path.join(base_dir, 'data', 'enriched_employee_data.csv'),
+        os.path.join(base_dir, 'enriched_employee_data.csv')
+    ]
+    for path in candidates:
+        if os.path.exists(path):
+            df_enriched = pd.read_csv(path)
+            break
+    else:
+        st.error(f"Impossible de trouver 'enriched_employee_data.csv' dans {candidates}")
+        st.stop()
+
     # Convertir scores en pourcentage
     for df in (df_basic, df_enriched):
         df['SatisfactionPct'] = df['SatisfactionScore'] / df['SatisfactionScore'].max() * 100
@@ -114,10 +141,8 @@ with st.sidebar:
         ("⚙️", "Admin Panel")
     ]
     for icon, name in menu_items:
-        if name == "Executive Dashboard":
-            st.markdown(f"<div style='background: #0099FF; color: white; padding: 0.75rem; border-radius:5px;'><strong>{icon} {name}</strong></div>", unsafe_allow_html=True)
-        else:
-            st.markdown(f"<div style='padding: 0.75rem; color: #555;'>{icon} {name}</div>", unsafe_allow_html=True)
+        style = "background:#0099FF; color:white;" if name=="Executive Dashboard" else "color:#555;"
+        st.markdown(f"<div style='padding:0.75rem; border-radius:5px; {style}'>{icon} {name}</div>", unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
 # HEADER PRINCIPAL
