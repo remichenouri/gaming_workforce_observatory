@@ -71,7 +71,7 @@ class GamingWorkforceApp:
     
     @st.cache_data(ttl=300)
     def generate_fallback_employee_data(_self):
-        """Génération données employés par défaut"""
+        """Génération données employés par défaut - CORRIGÉE"""
         np.random.seed(42)
         departments = ['Programming', 'Art & Animation', 'Game Design', 'Quality Assurance', 'Production', 'Audio']
         levels = ['Junior', 'Mid', 'Senior', 'Lead']
@@ -82,12 +82,16 @@ class GamingWorkforceApp:
             dept = np.random.choice(departments)
             level = np.random.choice(levels, p=[0.3, 0.4, 0.2, 0.1])
             
+            # Salaire réaliste selon niveau
+            salary_base = {'Junior': 55000, 'Mid': 75000, 'Senior': 95000, 'Lead': 125000}
+            salary_variation = np.random.normal(0, 10000)
+            
             data.append({
                 'employee_id': i+1,
                 'department': dept,
                 'level': level,
                 'location': np.random.choice(locations),
-                'salary': np.random.randint(45000, 150000),
+                'salary': max(35000, int(salary_base[level] + salary_variation)),
                 'satisfaction_score': np.random.uniform(6.0, 9.5),
                 'performance_score': np.random.uniform(3.0, 5.0),
                 'retention_risk': np.random.uniform(0.1, 0.8),
@@ -241,7 +245,7 @@ class GamingWorkforceApp:
             margin: 0;
             opacity: 0.8;
         }}
-        
+
         /* Boutons navigation gaming */
         .stButton > button {{
             background: linear-gradient(135deg, var(--gaming-primary), #0052A3);
@@ -592,18 +596,33 @@ class GamingWorkforceApp:
             '#34495E'   # Gris corporate
         ]
 
-    def create_advanced_chart_config(self):
-        """Configuration charts gaming avancée - CORRIGÉ"""
-        return {
+    def create_advanced_chart_config(self, custom_layout=None):
+        """Configuration charts gaming avancée - CORRIGÉE"""
+        base_config = {
             'paper_bgcolor': 'rgba(0,0,0,0)',
             'plot_bgcolor': 'white',
             'font': {'family': 'Inter, sans-serif', 'size': 12, 'color': '#2C3E50'},
             'colorway': self.get_gaming_color_palette(),
             'margin': {'t': 50, 'b': 40, 'l': 60, 'r': 40},
-            'xaxis': {'gridcolor': '#E9ECEF', 'showgrid': True},
-            'yaxis': {'gridcolor': '#E9ECEF', 'showgrid': True},
             'legend': {'orientation': 'h', 'yanchor': 'bottom', 'y': -0.2}
         }
+        
+        # Ajouter xaxis et yaxis seulement si pas de configuration personnalisée
+        if not custom_layout or ('xaxis' not in custom_layout and 'yaxis' not in custom_layout):
+            base_config.update({
+                'xaxis': {'gridcolor': '#E9ECEF', 'showgrid': True},
+                'yaxis': {'gridcolor': '#E9ECEF', 'showgrid': True}
+            })
+        
+        return base_config
+
+    def safe_chart_render(self, chart_func, fallback_message="Graphique indisponible"):
+        """Rendu sécurisé des graphiques avec gestion d'erreurs"""
+        try:
+            return chart_func()
+        except Exception as e:
+            st.error(f"⚠️ {fallback_message}: {str(e)}")
+            return None
 
     def render_executive_dashboard(self):
         """Dashboard exécutif sophistiqué"""
@@ -688,43 +707,56 @@ class GamingWorkforceApp:
             self.render_ai_insights()
 
     def render_performance_matrix(self):
-        """Matrice performance sophistiquée"""
+        """Matrice performance sophistiquée - CORRIGÉE"""
         col1, col2 = st.columns(2)
         
         with col1:
             # Scatter plot satisfaction vs performance par département
-            fig = px.scatter(
-                self.employees_df,
-                x='performance_score',
-                y='satisfaction_score', 
-                color='department',
-                size='salary',
-                hover_data=['level', 'location'],
-                title="🎯 Performance vs Satisfaction Matrix",
-                labels={'performance_score': 'Performance Score', 'satisfaction_score': 'Satisfaction Score'}
-            )
-            fig.update_layout(self.create_advanced_chart_config())
-            st.plotly_chart(fig, use_container_width=True)
+            try:
+                fig = px.scatter(
+                    self.employees_df,
+                    x='performance_score',
+                    y='satisfaction_score', 
+                    color='department',
+                    size='salary',
+                    hover_data=['level', 'location'] if 'location' in self.employees_df.columns else ['level'],
+                    title="🎯 Performance vs Satisfaction Matrix",
+                    labels={'performance_score': 'Performance Score', 'satisfaction_score': 'Satisfaction Score'}
+                )
+                fig.update_layout(**self.create_advanced_chart_config())
+                st.plotly_chart(fig, use_container_width=True)
+            except Exception as e:
+                st.error(f"⚠️ Erreur scatter plot: {str(e)}")
         
         with col2:
-            # Heatmap corrélation KPIs
-            numeric_cols = ['satisfaction_score', 'performance_score', 'salary']
-            if 'sprint_velocity' in self.employees_df.columns:
-                numeric_cols.extend(['sprint_velocity', 'innovation_index', 'team_synergy_score'])
-            
-            corr_data = self.employees_df[numeric_cols].corr()
-            
-            fig = px.imshow(
-                corr_data,
-                title="🔥 Gaming KPIs Correlation Heatmap",
-                color_continuous_scale="RdBu_r",
-                aspect="auto"
-            )
-            fig.update_layout(self.create_advanced_chart_config())
-            st.plotly_chart(fig, use_container_width=True)
+            # Heatmap corrélation KPIs - CORRIGÉE
+            try:
+                numeric_cols = ['satisfaction_score', 'performance_score', 'salary']
+                
+                # Vérifier colonnes disponibles
+                available_cols = [col for col in numeric_cols if col in self.employees_df.columns]
+                optional_cols = ['sprint_velocity', 'innovation_index', 'team_synergy_score']
+                available_cols.extend([col for col in optional_cols if col in self.employees_df.columns])
+                
+                if len(available_cols) >= 2:
+                    corr_data = self.employees_df[available_cols].corr()
+                    
+                    fig = px.imshow(
+                        corr_data,
+                        title="🔥 Gaming KPIs Correlation Heatmap",
+                        color_continuous_scale="RdBu_r",
+                        aspect="auto",
+                        text_auto=True
+                    )
+                    fig.update_layout(**self.create_advanced_chart_config())
+                    st.plotly_chart(fig, use_container_width=True)
+                else:
+                    st.warning("Pas assez de colonnes numériques pour la corrélation")
+            except Exception as e:
+                st.error(f"⚠️ Erreur heatmap: {str(e)}")
 
     def render_department_analysis(self):
-        """Analyse départementale avancée"""
+        """Analyse départementale avancée - CORRIGÉE"""
         # Performance par département
         dept_stats = self.employees_df.groupby('department').agg({
             'satisfaction_score': 'mean',
@@ -738,53 +770,64 @@ class GamingWorkforceApp:
         col1, col2 = st.columns(2)
         
         with col1:
-            # Radar chart départements
-            if len(dept_stats) > 0:
-                fig = go.Figure()
-                
-                for i, dept in enumerate(dept_stats.index[:4]):  # Top 4 départements
-                    values = [
-                        dept_stats.loc[dept, 'Satisfaction'],
-                        dept_stats.loc[dept, 'Performance'],
-                        dept_stats.loc[dept, 'Avg Salary'] / 1000,  # En K
-                        (1 - dept_stats.loc[dept, 'Retention Risk']) * 10  # Conversion
-                    ]
+            # Radar chart départements - CORRIGÉ
+            try:
+                if len(dept_stats) > 0:
+                    fig = go.Figure()
                     
-                    fig.add_trace(go.Scatterpolar(
-                        r=values,
-                        theta=['Satisfaction', 'Performance', 'Salary (K)', 'Retention'],
-                        fill='toself',
-                        name=dept,
-                        line_color=self.get_gaming_color_palette()[i]
-                    ))
-                
-                fig.update_layout(
-                    polar=dict(
-                        radialaxis=dict(visible=True, range=[0, 10])
-                    ),
-                    title="🎯 Department Performance Radar",
-                    **self.create_advanced_chart_config()
-                )
-                
-                st.plotly_chart(fig, use_container_width=True)
+                    for i, dept in enumerate(dept_stats.index[:4]):  # Top 4 départements
+                        values = [
+                            dept_stats.loc[dept, 'Satisfaction'],
+                            dept_stats.loc[dept, 'Performance'] * 2,  # Normalisation à /10
+                            dept_stats.loc[dept, 'Avg Salary'] / 10000,  # En 10K pour échelle
+                            (1 - dept_stats.loc[dept, 'Retention Risk']) * 10  # Conversion
+                        ]
+                        
+                        fig.add_trace(go.Scatterpolar(
+                            r=values,
+                            theta=['Satisfaction', 'Performance', 'Salary (10K)', 'Retention'],
+                            fill='toself',
+                            name=dept,
+                            line_color=self.get_gaming_color_palette()[i]
+                        ))
+                    
+                    # Configuration radar chart spécifique
+                    custom_radar = {'polar': dict(radialaxis=dict(visible=True, range=[0, 10]))}
+                    fig.update_layout(
+                        title="🎯 Department Performance Radar",
+                        **self.create_advanced_chart_config(custom_radar),
+                        **custom_radar
+                    )
+                    
+                    st.plotly_chart(fig, use_container_width=True)
+            except Exception as e:
+                st.error(f"⚠️ Erreur radar chart: {str(e)}")
         
         with col2:
-            # Sunburst organisation 
-            fig = px.sunburst(
-                self.employees_df,
-                path=['department', 'level'],
-                values='salary',
-                title="🌟 Gaming Organization Sunburst",
-                color='department',
-                color_discrete_sequence=self.get_gaming_color_palette()
-            )
-            fig.update_layout(self.create_advanced_chart_config())
-            st.plotly_chart(fig, use_container_width=True)
+            # Sunburst organisation - CORRIGÉ
+            try:
+                fig = px.sunburst(
+                    self.employees_df,
+                    path=['department', 'level'],
+                    values='salary',
+                    title="🌟 Gaming Organization Sunburst",
+                    color='department',
+                    color_discrete_sequence=self.get_gaming_color_palette()
+                )
+                fig.update_layout(**self.create_advanced_chart_config())
+                st.plotly_chart(fig, use_container_width=True)
+            except Exception as e:
+                st.error(f"⚠️ Erreur sunburst: {str(e)}")
+                # Fallback: graphique en barres
+                dept_counts = self.employees_df.groupby(['department', 'level']).size().reset_index(name='count')
+                fig = px.bar(dept_counts, x='department', y='count', color='level',
+                            title="🌟 Gaming Organization by Department & Level")
+                fig.update_layout(**self.create_advanced_chart_config())
+                st.plotly_chart(fig, use_container_width=True)
         
-        # Tableau département détaillé
+        # Tableau département détaillé - CORRIGÉ
         st.markdown("### 📊 Department Analytics Table")
         
-        # Formatage simple sans matplotlib
         dept_display = dept_stats.copy()
         dept_display['Satisfaction'] = dept_display['Satisfaction'].apply(lambda x: f"{x:.1f}")
         dept_display['Performance'] = dept_display['Performance'].apply(lambda x: f"{x:.1f}")
@@ -795,7 +838,7 @@ class GamingWorkforceApp:
         st.dataframe(dept_display, use_container_width=True)
 
     def render_trend_analysis(self):
-        """Analyse tendances gaming"""
+        """Analyse tendances gaming - CORRIGÉE"""
         st.markdown("### 📈 Gaming Industry Evolution Trends")
         
         # Simulation données temporelles
@@ -804,62 +847,75 @@ class GamingWorkforceApp:
         col1, col2 = st.columns(2)
         
         with col1:
-            # Évolution satisfaction
-            np.random.seed(42)  # Pour reproductibilité
-            satisfaction_trend = 7.2 + np.cumsum(np.random.normal(0.02, 0.1, len(dates)))
-            performance_trend = 3.8 + np.cumsum(np.random.normal(0.01, 0.05, len(dates)))
-            
-            fig = go.Figure()
-            fig.add_trace(go.Scatter(
-                x=dates, y=satisfaction_trend,
-                mode='lines+markers',
-                name='Satisfaction Score',
-                line=dict(color=self.theme['success'], width=3)
-            ))
-            fig.add_trace(go.Scatter(
-                x=dates, y=performance_trend,
-                mode='lines+markers', 
-                name='Performance Score',
-                line=dict(color=self.theme['primary'], width=3),
-                yaxis='y2'
-            ))
-            
-            fig.update_layout(
-                title="📈 Gaming Workforce Satisfaction & Performance Evolution",
-                yaxis=dict(title="Satisfaction Score", side="left"),
-                yaxis2=dict(title="Performance Score", side="right", overlaying="y"),
-                **self.create_advanced_chart_config()
-            )
-            
-            st.plotly_chart(fig, use_container_width=True)
+            # Évolution satisfaction - CORRIGÉE
+            try:
+                np.random.seed(42)
+                satisfaction_trend = 7.2 + np.cumsum(np.random.normal(0.02, 0.1, len(dates)))
+                performance_trend = 3.8 + np.cumsum(np.random.normal(0.01, 0.05, len(dates)))
+                
+                fig = go.Figure()
+                fig.add_trace(go.Scatter(
+                    x=dates, y=satisfaction_trend,
+                    mode='lines+markers',
+                    name='Satisfaction Score',
+                    line=dict(color=self.theme['success'], width=3)
+                ))
+                fig.add_trace(go.Scatter(
+                    x=dates, y=performance_trend,
+                    mode='lines+markers', 
+                    name='Performance Score',
+                    line=dict(color=self.theme['primary'], width=3),
+                    yaxis='y2'
+                ))
+                
+                # Configuration layout personnalisée pour double axe Y
+                custom_layout = {
+                    'yaxis': dict(title="Satisfaction Score", side="left"),
+                    'yaxis2': dict(title="Performance Score", side="right", overlaying="y")
+                }
+                
+                # Application configuration SANS conflit
+                base_config = self.create_advanced_chart_config(custom_layout)
+                fig.update_layout(
+                    title="📈 Gaming Workforce Satisfaction & Performance Evolution",
+                    **base_config,
+                    **custom_layout
+                )
+                
+                st.plotly_chart(fig, use_container_width=True)
+            except Exception as e:
+                st.error(f"⚠️ Erreur graphique tendances: {str(e)}")
         
         with col2:
             # Distribution salaires gaming vs industrie
-            np.random.seed(42)
-            gaming_salaries = np.random.normal(87000, 25000, 1000)
-            tech_salaries = np.random.normal(120000, 30000, 1000)
-            
-            fig = go.Figure()
-            fig.add_trace(go.Histogram(
-                x=gaming_salaries, name='Gaming Industry',
-                opacity=0.7, nbinsx=30,
-                marker_color=self.theme['primary']
-            ))
-            fig.add_trace(go.Histogram(
-                x=tech_salaries, name='Tech Industry', 
-                opacity=0.7, nbinsx=30,
-                marker_color=self.theme['accent']
-            ))
-            
-            fig.update_layout(
-                title="💰 Salary Distribution: Gaming vs Tech",
-                xaxis_title="Annual Salary ($)",
-                yaxis_title="Frequency",
-                barmode='overlay',
-                **self.create_advanced_chart_config()
-            )
-            
-            st.plotly_chart(fig, use_container_width=True)
+            try:
+                np.random.seed(42)
+                gaming_salaries = np.random.normal(87000, 25000, 1000)
+                tech_salaries = np.random.normal(120000, 30000, 1000)
+                
+                fig = go.Figure()
+                fig.add_trace(go.Histogram(
+                    x=gaming_salaries, name='Gaming Industry',
+                    opacity=0.7, nbinsx=30,
+                    marker_color=self.theme['primary']
+                ))
+                fig.add_trace(go.Histogram(
+                    x=tech_salaries, name='Tech Industry', 
+                    opacity=0.7, nbinsx=30,
+                    marker_color=self.theme['accent']
+                ))
+                
+                fig.update_layout(
+                    title="💰 Salary Distribution: Gaming vs Tech",
+                    xaxis_title="Annual Salary ($)",
+                    yaxis_title="Frequency",
+                    barmode='overlay',
+                    **self.create_advanced_chart_config()
+                )
+                
+                st.plotly_chart(fig, use_container_width=True)
+            except Exception as e:
+                st.error(f"⚠️ Erreur histogramme salaires: {str(e)}")
 
     def render_ai_insights(self):
         """Insights IA gaming sophistiqués"""
@@ -895,38 +951,41 @@ class GamingWorkforceApp:
         
         with col2:
             # Gaming KPIs prédictifs
-            prediction_data = {
-                'Metric': ['Retention Rate', 'Team Productivity', 'Innovation Index', 'Bug Fix Rate', 'Player Satisfaction'],
-                'Current': [87.3, 8.2, 74.5, 89.1, 7.8],
-                'Predicted': [89.7, 8.7, 78.2, 91.3, 8.2],
-                'Change': ['+2.4%', '+6.1%', '+5.0%', '+2.5%', '+5.1%']
-            }
-            
-            pred_df = pd.DataFrame(prediction_data)
-            
-            fig = go.Figure()
-            fig.add_trace(go.Bar(
-                name='Current',
-                x=pred_df['Metric'],
-                y=pred_df['Current'],
-                marker_color=self.theme['primary'],
-                opacity=0.7
-            ))
-            fig.add_trace(go.Bar(
-                name='Predicted',
-                x=pred_df['Metric'], 
-                y=pred_df['Predicted'],
-                marker_color=self.theme['success'],
-                opacity=0.7
-            ))
-            
-            fig.update_layout(
-                title="🔮 AI Predictions: Current vs Future State",
-                barmode='group',
-                **self.create_advanced_chart_config()
-            )
-            
-            st.plotly_chart(fig, use_container_width=True)
+            try:
+                prediction_data = {
+                    'Metric': ['Retention Rate', 'Team Productivity', 'Innovation Index', 'Bug Fix Rate', 'Player Satisfaction'],
+                    'Current': [87.3, 8.2, 74.5, 89.1, 7.8],
+                    'Predicted': [89.7, 8.7, 78.2, 91.3, 8.2],
+                    'Change': ['+2.4%', '+6.1%', '+5.0%', '+2.5%', '+5.1%']
+                }
+                
+                pred_df = pd.DataFrame(prediction_data)
+                
+                fig = go.Figure()
+                fig.add_trace(go.Bar(
+                    name='Current',
+                    x=pred_df['Metric'],
+                    y=pred_df['Current'],
+                    marker_color=self.theme['primary'],
+                    opacity=0.7
+                ))
+                fig.add_trace(go.Bar(
+                    name='Predicted',
+                    x=pred_df['Metric'], 
+                    y=pred_df['Predicted'],
+                    marker_color=self.theme['success'],
+                    opacity=0.7
+                ))
+                
+                fig.update_layout(
+                    title="🔮 AI Predictions: Current vs Future State",
+                    barmode='group',
+                    **self.create_advanced_chart_config()
+                )
+                
+                st.plotly_chart(fig, use_container_width=True)
+            except Exception as e:
+                st.error(f"⚠️ Erreur graphique prédictions: {str(e)}")
         
         # Alertes critiques
         st.markdown("### 🚨 Critical Gaming Workforce Alerts")
@@ -963,7 +1022,7 @@ class GamingWorkforceApp:
             </div>
             """, unsafe_allow_html=True)
 
-    # Ajout des autres méthodes render_ simplifiées pour éviter les erreurs
+    # Pages simplifiées pour éviter les erreurs
     
     def render_talent_wars(self):
         """Page Talent Wars simple"""
@@ -1029,17 +1088,20 @@ class GamingWorkforceApp:
         st.success("📊 **Global Average:** $95,400 gaming salary")
         
         # Analyse salaires par département
-        dept_salaries = self.employees_df.groupby('department')['salary'].mean().sort_values(ascending=False)
-        
-        fig = px.bar(
-            x=dept_salaries.index,
-            y=dept_salaries.values,
-            title="💰 Average Salary by Department",
-            color=dept_salaries.values,
-            color_continuous_scale='Blues'
-        )
-        fig.update_layout(self.create_advanced_chart_config())
-        st.plotly_chart(fig, use_container_width=True)
+        try:
+            dept_salaries = self.employees_df.groupby('department')['salary'].mean().sort_values(ascending=False)
+            
+            fig = px.bar(
+                x=dept_salaries.index,
+                y=dept_salaries.values,
+                title="💰 Average Salary by Department",
+                color=dept_salaries.values,
+                color_continuous_scale='Blues'
+            )
+            fig.update_layout(**self.create_advanced_chart_config())
+            st.plotly_chart(fig, use_container_width=True)
+        except Exception as e:
+            st.error(f"⚠️ Erreur graphique salaires: {str(e)}")
 
     def render_future_insights(self):
         """Page Insights Futur simple"""
