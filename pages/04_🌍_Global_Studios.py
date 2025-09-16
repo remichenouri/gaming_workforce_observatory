@@ -12,9 +12,6 @@ from datetime import datetime, timedelta
 import sys
 from pathlib import Path
 import geopandas as gpd
-import folium
-from folium import plugins
-import streamlit_folium as st_folium
 from shapely.geometry import Point
 
 # Ajoutez ces imports au début de votre fichier
