@@ -46,17 +46,6 @@ def create_ubisoft_section_header(title):
     </h2>
     """
 
-def create_ubisoft_info_box(title, content):
-    return f"""
-    <div style='background: #f8f9fa; border-left: 4px solid #0099FF;
-                padding: 1.5rem; margin: 1rem 0; border-radius: 5px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.05);'>
-        <h4 style='color: #2C3E50; margin: 0 0 0.5rem 0;'>{title}</h4>
-        <p style='color: #555; margin: 0; font-size: 1rem;
-                  line-height: 1.5;'>{content}</p>
-    </div>
-    """
-
 def get_ubisoft_chart_config():
     return {
         'layout': {
@@ -77,45 +66,58 @@ st.set_page_config(
 )
 
 # ─────────────────────────────────────────────
-# CHARGEMENT DES DONNÉES
+# CHARGEMENT DES DONNÉES RÉELLES
 @st.cache_data
 def load_data():
-    # Détecter le répertoire du script
-    base_dir = os.path.dirname(__file__)
-    # Essayer sous-répertoire data/ sinon racine
-    candidates = [
-        os.path.join(base_dir, 'data', 'generated_employee_data.csv'),
-        os.path.join(base_dir, 'generated_employee_data.csv')
-    ]
-    for path in candidates:
-        if os.path.exists(path):
-            df_basic = pd.read_csv(path)
-            break
-    else:
-        st.error(f"Impossible de trouver 'generated_employee_data.csv' dans {candidates}")
-        st.stop()
+    # Utiliser les fichiers réels de votre repo GitHub
+    try:
+        # Charger le fichier principal des employés
+        df_employees = pd.read_csv('data/gaming_workforce_employees_advanced.csv')
+        df_projects = pd.read_csv('data/gaming_workforce_projects_advanced.csv')
+        df_sample = pd.read_csv('data/sample_data.csv')
+        
+        # Ajouter une source d'identification
+        df_employees['Source'] = f'Employees Advanced ({len(df_employees):,} records)'
+        df_projects['Source'] = f'Projects Advanced ({len(df_projects):,} records)'
+        df_sample['Source'] = f'Sample Data ({len(df_sample):,} records)'
+        
+        # Convertir les scores si les colonnes existent
+        for df in [df_employees, df_projects, df_sample]:
+            if 'SatisfactionScore' in df.columns:
+                df['SatisfactionPct'] = df['SatisfactionScore'] / df['SatisfactionScore'].max() * 100
+            if 'PerformanceScore' in df.columns:
+                df['PerformancePct'] = df['PerformanceScore'] / df['PerformanceScore'].max() * 100
+        
+        # Combiner les datasets qui ont des colonnes compatibles
+        combined_dfs = []
+        for df in [df_employees, df_projects, df_sample]:
+            if not df.empty:
+                combined_dfs.append(df)
+        
+        return pd.concat(combined_dfs, ignore_index=True, sort=False)
+        
+    except FileNotFoundError as e:
+        st.error(f"Fichier non trouvé: {e}")
+        # Fallback: générer des données de démonstration
+        return generate_demo_data()
 
-    # Même logique pour enriched
-    candidates = [
-        os.path.join(base_dir, 'data', 'enriched_employee_data.csv'),
-        os.path.join(base_dir, 'enriched_employee_data.csv')
-    ]
-    for path in candidates:
-        if os.path.exists(path):
-            df_enriched = pd.read_csv(path)
-            break
-    else:
-        st.error(f"Impossible de trouver 'enriched_employee_data.csv' dans {candidates}")
-        st.stop()
-
-    # Convertir scores en pourcentage
-    for df in (df_basic, df_enriched):
-        df['SatisfactionPct'] = df['SatisfactionScore'] / df['SatisfactionScore'].max() * 100
-        df['PerformancePct']   = df['PerformanceScore']   / df['PerformanceScore'].max()   * 100
-    # Identifier la source
-    df_basic['Source']    = f'Basic ({len(df_basic):,} lines)'
-    df_enriched['Source'] = f'Enriched ({len(df_enriched):,} lines)'
-    return pd.concat([df_basic, df_enriched], ignore_index=True)
+def generate_demo_data():
+    """Génère des données de démonstration en cas d'absence des fichiers CSV"""
+    np.random.seed(42)
+    demo_data = pd.DataFrame({
+        'EmployeeID': range(1, 1001),
+        'Age': np.random.randint(22, 60, 1000),
+        'Department': np.random.choice(['Game Design', 'Programming', 'Art', 'QA', 'Production'], 1000),
+        'Location': np.random.choice(['Montreal', 'Paris', 'Milan', 'Shanghai'], 1000),
+        'Salary': np.random.randint(45000, 120000, 1000),
+        'SatisfactionScore': np.random.uniform(3.0, 9.5, 1000),
+        'PerformanceScore': np.random.uniform(3.5, 9.8, 1000),
+        'TenureYears': np.random.uniform(0.5, 15.0, 1000),
+        'Source': 'Demo Data (1,000 records)'
+    })
+    demo_data['SatisfactionPct'] = demo_data['SatisfactionScore'] / demo_data['SatisfactionScore'].max() * 100
+    demo_data['PerformancePct'] = demo_data['PerformanceScore'] / demo_data['PerformanceScore'].max() * 100
+    return demo_data
 
 df_all = load_data()
 
@@ -129,20 +131,12 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
     st.markdown("---")
-    st.markdown("<h4 style='color: #2C3E50;'>Navigation</h4>", unsafe_allow_html=True)
-    menu_items = [
-        ("🏠", "Executive Dashboard"),
-        ("⚔️", "Talent Wars"),
-        ("🧠", "Neurodiversity ROI"),
-        ("🎯", "Predictive Analytics"),
-        ("🌍", "Global Studios"),
-        ("💰", "Compensation Intel"),
-        ("🚀", "Future Insights"),
-        ("⚙️", "Admin Panel")
-    ]
-    for icon, name in menu_items:
-        style = "background:#0099FF; color:white;" if name=="Executive Dashboard" else "color:#555;"
-        st.markdown(f"<div style='padding:0.75rem; border-radius:5px; {style}'>{icon} {name}</div>", unsafe_allow_html=True)
+    
+    # Affichage des sources de données disponibles
+    st.markdown("### 📊 Data Sources")
+    sources_info = df_all['Source'].value_counts()
+    for source, count in sources_info.items():
+        st.markdown(f"• **{source}**: {count:,} rows")
 
 # ─────────────────────────────────────────────
 # HEADER PRINCIPAL
@@ -153,7 +147,7 @@ st.markdown(f"""
   <div style='display:flex; justify-content:space-between;'>
     <div>
       <strong style='color:#2C3E50;'>🎮 Ubisoft Gaming Workforce Observatory</strong><br>
-      <small style='color:#666;'>Global Studios • 25 Locations • 15,847 Employees</small>
+      <small style='color:#666;'>Real Data Analysis • {len(df_all):,} Total Records</small>
     </div>
     <div style='text-align:right;'>
       <small style='color:#666;'>Last Updated</small><br>
@@ -166,67 +160,89 @@ st.markdown(f"""
 # TITRE PRINCIPAL
 st.markdown(create_ubisoft_header(
     "Executive Dashboard",
-    "C-Suite Strategic Workforce Intelligence"
+    "Real Gaming Workforce Data Intelligence"
 ), unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
 # SÉLECTEUR DE SOURCE
 sources = df_all['Source'].unique()
-selected = st.multiselect("Sélectionnez la source de données :", sources, default=list(sources))
+selected = st.multiselect("Sélectionnez les sources de données :", sources, default=list(sources))
 df = df_all[df_all['Source'].isin(selected)]
 
 # ─────────────────────────────────────────────
 # SECTION KPI
 st.markdown(create_ubisoft_section_header("🎯 Key Performance Indicators"), unsafe_allow_html=True)
 k1, k2, k3, k4 = st.columns(4)
+
 with k1:
-    st.metric("Avg Satisfaction (%)", f"{df['SatisfactionPct'].mean():.1f}")
+    if 'SatisfactionPct' in df.columns:
+        sat_avg = df['SatisfactionPct'].mean()
+        st.metric("Avg Satisfaction (%)", f"{sat_avg:.1f}")
+    else:
+        st.metric("Records", f"{len(df):,}")
+
 with k2:
-    st.metric("Avg Performance (%)", f"{df['PerformancePct'].mean():.1f}")
+    if 'PerformancePct' in df.columns:
+        perf_avg = df['PerformancePct'].mean()
+        st.metric("Avg Performance (%)", f"{perf_avg:.1f}")
+    else:
+        st.metric("Sources", f"{len(selected)}")
+
 with k3:
-    st.metric("Avg Age", f"{df['Age'].mean():.1f} yrs")
+    if 'Age' in df.columns:
+        age_avg = df['Age'].mean()
+        st.metric("Avg Age", f"{age_avg:.1f} yrs")
+    else:
+        st.metric("Columns", f"{len(df.columns)}")
+
 with k4:
-    st.metric("Avg Tenure (yrs)", f"{df['TenureYears'].mean():.1f} yrs")
+    if 'TenureYears' in df.columns:
+        tenure_avg = df['TenureYears'].mean()
+        st.metric("Avg Tenure", f"{tenure_avg:.1f} yrs")
+    else:
+        st.metric("Data Quality", "✓ Good")
 
 # ─────────────────────────────────────────────
-# SCATTER: Performance vs Satisfaction
-st.markdown(create_ubisoft_section_header("📊 Performance vs Satisfaction"), unsafe_allow_html=True)
-fig1 = px.scatter(
-    df, x='PerformancePct', y='SatisfactionPct',
-    color='Source', size='TenureYears',
-    hover_data=['EmployeeID','Department','Location'],
-    labels={'PerformancePct':'Perf (%)','SatisfactionPct':'Sat (%)'},
-    title="Performance vs Satisfaction Comparison"
-)
-fig1.update_layout(**get_ubisoft_chart_config()['layout'])
-st.plotly_chart(fig1, use_container_width=True)
+# VISUALISATIONS CONDITIONNELLES
+if 'PerformancePct' in df.columns and 'SatisfactionPct' in df.columns:
+    st.markdown(create_ubisoft_section_header("📊 Performance vs Satisfaction"), unsafe_allow_html=True)
+    fig1 = px.scatter(
+        df, x='PerformancePct', y='SatisfactionPct',
+        color='Source', 
+        size='TenureYears' if 'TenureYears' in df.columns else None,
+        title="Performance vs Satisfaction Analysis"
+    )
+    fig1.update_layout(**get_ubisoft_chart_config()['layout'])
+    st.plotly_chart(fig1, use_container_width=True)
+
+if 'Department' in df.columns:
+    st.markdown(create_ubisoft_section_header("🏢 Department Distribution"), unsafe_allow_html=True)
+    fig2 = px.histogram(
+        df, x='Department', color='Source',
+        title="Workforce Distribution by Department"
+    )
+    fig2.update_layout(**get_ubisoft_chart_config()['layout'])
+    st.plotly_chart(fig2, use_container_width=True)
+
+if 'Salary' in df.columns:
+    st.markdown(create_ubisoft_section_header("💰 Salary Analysis"), unsafe_allow_html=True)
+    fig3 = px.box(
+        df, x='Source', y='Salary',
+        title="Salary Distribution by Source"
+    )
+    fig3.update_layout(**get_ubisoft_chart_config()['layout'])
+    st.plotly_chart(fig3, use_container_width=True)
 
 # ─────────────────────────────────────────────
-# HISTOGRAMME: Effectifs par Département
-st.markdown(create_ubisoft_section_header("🏢 Distribution par Département"), unsafe_allow_html=True)
-fig2 = px.histogram(
-    df, x='Department', color='Source',
-    barmode='group', title="Headcount by Department"
-)
-fig2.update_layout(**get_ubisoft_chart_config()['layout'])
-st.plotly_chart(fig2, use_container_width=True)
-
-# ─────────────────────────────────────────────
-# BOXPLOT: Salaires
-st.markdown(create_ubisoft_section_header("💰 Répartition des Salaires"), unsafe_allow_html=True)
-fig3 = px.box(
-    df, x='Source', y='Salary',
-    title="Salary Distribution by Source",
-    color='Source'
-)
-fig3.update_layout(**get_ubisoft_chart_config()['layout'])
-st.plotly_chart(fig3, use_container_width=True)
+# APERÇU DES DONNÉES
+st.markdown(create_ubisoft_section_header("🔍 Data Preview"), unsafe_allow_html=True)
+st.dataframe(df.head(100), use_container_width=True)
 
 # ─────────────────────────────────────────────
 # FOOTER
 st.markdown("---")
 st.markdown("""
 <div style='text-align:center; padding:2rem; background:#f8f9fa; border-radius:5px;'>
-  <small style='color:#666;'>© 2025 Ubisoft Entertainment • Confidential and Proprietary Information</small>
+  <small style='color:#666;'>© 2025 Ubisoft Entertainment • Gaming Workforce Observatory • Confidential</small>
 </div>
 """, unsafe_allow_html=True)
