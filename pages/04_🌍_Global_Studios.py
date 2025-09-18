@@ -570,7 +570,7 @@ st.markdown("---")
 st.markdown(f"""
 <div style='text-align: center; padding: 2rem; background: #f8f9fa; border-radius: 5px; margin-top: 2rem;'>
     <p style='color: #666; margin: 0; font-size: 0.9rem;'>
-        © 2024 Ubisoft Entertainment - Gaming Workforce Observatory<br>
+        © Gaming Workforce Observatory<br>
         Global Studios Dashboard • Covering {studios_data['country'].nunique()} Countries • 
         Data Updated: {datetime.now().strftime('%Y-%m-%d %H:%M')} • Confidential and Proprietary
     </p>
