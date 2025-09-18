@@ -301,7 +301,7 @@ st.markdown("---")
 st.markdown("""
 <div style='text-align: center; padding: 2rem; background: #f8f9fa; border-radius: 5px; margin-top: 2rem;'>
     <p style='color: #666; margin: 0; font-size: 0.9rem;'>
-        © 2024 Ubisoft Entertainment - Gaming Workforce Observatory<br>
+        © Gaming Workforce Observatory<br>
         Talent Wars Dashboard • Strategic Talent Intelligence • Confidential and Proprietary
     </p>
 </div>
