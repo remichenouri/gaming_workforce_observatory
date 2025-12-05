@@ -1,6 +1,5 @@
 """
-🎮 Gaming Workforce Observatory - Application Streamlit CORRIGÉE
-Version 2.0 - TOUS LES BUGS CORRIGÉS
+🎮 Gaming Workforce Observatory 
 """
 
 import streamlit as st
