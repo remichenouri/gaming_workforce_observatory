@@ -237,15 +237,8 @@ with col2:
 
 # TABLE PERFORMANCE
 st.markdown("### 📊 ML Models Performance Summary")
-st.dataframe(
-    models_df.style.background_gradient(subset=['Accuracy', 'Precision', 'Recall'], cmap='RdYlGn').format({
-        'Accuracy': '{:.1f}%',
-        'Precision': '{:.1f}%', 
-        'Recall': '{:.1f}%',
-        'Business_Impact': '${:,.0f}'
-    }),
-    width='stretch'
-)
+st.dataframe(models_df, use_container_width=True)
+    
 
 # SECTION RISK PREDICTIONS
 st.markdown(create_ubisoft_section_header("🔮 Workforce Risk Predictions"), unsafe_allow_html=True)
